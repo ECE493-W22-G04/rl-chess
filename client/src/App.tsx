@@ -1,63 +1,87 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-
-function App() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const token = sessionStorage.getItem('token');
-    console.log('This is your token', token);
-
-    const handleClick = () => {
-        const opts = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-            }),
+import AuthService from './services/auth.service';
+import Login from './components/login.component';
+import Register from './components/register.component';
+import Home from './components/home.component';
+import EventBus from './common/EventBus';
+type Props = Record<string, unknown>;
+type State = {
+    currentUser: string | undefined;
+};
+class App extends Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+        this.logOut = this.logOut.bind(this);
+        this.state = {
+            currentUser: undefined,
         };
-
-        fetch('http://localhost:5555/token', opts)
-            .then((resp) => {
-                if (resp.status === 200) return resp.json();
-                else alert('There has been some error');
-            })
-            .then((data) => {
-                sessionStorage.setItem('token', data.access_token);
-            })
-            .catch((error) => {
-                console.error('There was an error:' + error);
+    }
+    componentDidMount() {
+        const user = AuthService.getCurrentUser();
+        if (user) {
+            this.setState({
+                currentUser: user,
             });
-    };
-
-    return (
-        <div className="App">
-            <header className="App-header">
-                <h1>Login</h1>
-                {token && token != '' && token != undefined ? (
-                    'You are logged in with ' + token
-                ) : (
-                    <div>
-                        <input
-                            type="text"
-                            placeholder="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <input
-                            type="password"
-                            placeholder="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <button onClick={handleClick}>Login</button>
-                    </div>
-                )}
-            </header>
-        </div>
-    );
+        }
+        EventBus.on('logout', this.logOut);
+    }
+    componentWillUnmount() {
+        EventBus.remove('logout', this.logOut);
+    }
+    logOut() {
+        AuthService.logout();
+        this.setState({
+            currentUser: undefined,
+        });
+    }
+    render() {
+        const { currentUser } = this.state;
+        return (
+            <div>
+                <nav className="navbar navbar-expand navbar-dark bg-dark">
+                    <Link to={'/'} className="navbar-brand">
+                        RL Chess
+                    </Link>
+                    {currentUser ? (
+                        <div className="navbar-nav ml-auto">
+                            <li className="nav-item">
+                                <a
+                                    href="/login"
+                                    className="nav-link"
+                                    onClick={this.logOut}
+                                >
+                                    LogOut
+                                </a>
+                            </li>
+                        </div>
+                    ) : (
+                        <div className="navbar-nav ml-auto">
+                            <li className="nav-item">
+                                <Link to={'/login'} className="nav-link">
+                                    Login
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to={'/register'} className="nav-link">
+                                    Sign Up
+                                </Link>
+                            </li>
+                        </div>
+                    )}
+                </nav>
+                <div className="container mt-3">
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                    </Routes>
+                </div>
+                {/*<AuthVerify logOut={this.logOut}/> */}
+            </div>
+        );
+    }
 }
-
 export default App;
