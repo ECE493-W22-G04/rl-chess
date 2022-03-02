@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
@@ -12,7 +11,6 @@ type State = {
     password: string;
     loading: boolean;
     message: string;
-    success: boolean;
 };
 
 export default class Login extends Component<Props, State> {
@@ -25,7 +23,6 @@ export default class Login extends Component<Props, State> {
             password: '',
             loading: false,
             message: '',
-            success: false,
         };
     }
 

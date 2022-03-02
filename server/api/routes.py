@@ -21,7 +21,7 @@ def create_token():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
     # TODO: Check database for email and password
-    if email != "test" or password != "test":
+    if email != "test@test.test" or password != "test123test":
         return jsonify({"message": "Bad username or password"}), 401
 
     access_token = create_access_token(identity=email)
@@ -33,20 +33,21 @@ def signup():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
     # TODO: Put email and password in database
-    # TODO: Return success if email doesn't already exist
-    if email != "test" or password != "test":
+    # TODO: Return error if email already exists
+    if email != "test@test.test" or password != "test123test":
         return jsonify({"message": "Bad username or password"}), 401
 
-    return jsonify(), 200
+    return jsonify({"message": "Registration Successful!"}), 200
 
-# Create a route to register a new user.
+# Create a route to display a homepage message to unauthenticated user
 @api.route("/api/home", methods=["GET"])
 def home():
     return jsonify({"message": "This is the generic homepage"}), 200
 
-# Create a route to register a new user.
+# Create a route to display a homepage message to an authenticated user
 @api.route("/api/user", methods=["GET"])
 def user():
     token = request.headers.get("authorization", None)
+    # TODO: Check that token is valid
     response_msg = 'This is the homepage of user with token: ' + token
     return jsonify({"message": response_msg}), 200
