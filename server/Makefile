@@ -22,6 +22,11 @@ build-reqs:
 	$(PIP_COMMAND) install pipreqs
 	pipreqs . --force
 
+.PHONY = format
+format:
+	$(PIP_COMMAND) install yapf
+	yapf -r -i .
+
 .PHONY = clean
 clean:
 	rm -rf __pycache__
