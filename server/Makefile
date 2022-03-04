@@ -1,8 +1,6 @@
 SHELL := /bin/bash
 VENV = venv
 include .env
-PYTHON_COMMAND := python3
-PIP_COMMAND := pip3
 
 .PHONY = start
 start: $(VENV)/bin/activate
