@@ -17,4 +17,4 @@ def client():
 
 def test_default_route(client):
     test = client.get("/", follow_redirects=True)
-    assert b"Hello World!" in test.data
+    assert b"This is the default route for this app, you can write more routes here" in test.data
