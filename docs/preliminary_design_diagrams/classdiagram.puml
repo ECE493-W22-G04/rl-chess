@@ -92,5 +92,18 @@ Player <|-- HumanPlayer
 
 Game "1" *-- "0..1" GameRecord
 
+class Leaderboard {
+  LeaderboardEntry[] entries
+
+  LeaderboardEntry[] getLeaderboard()
+}
+
+class LeaderboardEntry {
+  Player player
+  int numWins
+
+  void LeaderboardEntry(Player player)
+}
+
 @enduml
 
