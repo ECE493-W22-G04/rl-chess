@@ -1,0 +1,29 @@
+@startuml
+
+title Offer Draw
+
+autoactivate on
+
+actor Player1
+actor Player2
+
+alt Player2 accepts draw
+    Player1 -> Game : offerDraw()
+    Game -> Player2 : drawRequest()
+    return drawRequest(true)
+    break
+        Game -> GameRecord: draw()
+        GameRecord -> GameRecord: saveGame()
+        return saveGame()
+        return draw()
+        return offerDraw(true)
+    end
+else
+    Player1 -> Game : offerDraw()
+    Game -> Player2 : drawRequest()
+    return drawRequest(false)
+    return offerDraw(false)
+end
+
+@enduml
+
