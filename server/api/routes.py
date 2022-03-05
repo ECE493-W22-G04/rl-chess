@@ -8,6 +8,7 @@ from flask_jwt_extended import JWTManager
 
 api = Blueprint("api", __name__)
 
+
 @api.route("/", methods=["POST", "GET"])
 def handle_default():
     response_body = {"message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"}
@@ -27,6 +28,7 @@ def create_token():
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token)
 
+
 # Create a route to register a new user.
 @api.route("/api/auth/signup", methods=["POST"])
 def signup():
@@ -39,10 +41,12 @@ def signup():
 
     return jsonify({"message": "Registration Successful!"}), 200
 
+
 # Create a route to display a homepage message to unauthenticated user
 @api.route("/api/home", methods=["GET"])
 def home():
     return jsonify({"message": "This is the generic homepage"}), 200
+
 
 # Create a route to display a homepage message to an authenticated user
 @api.route("/api/user", methods=["GET"])
