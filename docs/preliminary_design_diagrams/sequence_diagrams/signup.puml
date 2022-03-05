@@ -1,5 +1,7 @@
 @startuml
 
+title Registration
+
 autoactivate on
 
 actor Player
@@ -18,11 +20,12 @@ loop user not created
         alt invalid_fields.length > 0
             return ValidationError[]
         else
-            RegistrationForm -> AuthenticationService : submit()
+            RegistrationForm -> AuthenticationService : submit(registrationForm)
         end
     end
 
     AuthenticationService -> AuthenticationService : validateUserDetails(username, password)
+
     alt duplicate_user
         return DuplicateUserError
         return UserAlreadyExistError
