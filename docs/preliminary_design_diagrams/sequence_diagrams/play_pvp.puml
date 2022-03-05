@@ -4,7 +4,7 @@ actor BlackPlayer
 actor WhitePlayer
 
 loop game not finished
-    loop current player has not made their turn
+    loop move played is invalid
         alt black turn
             Game -> BlackPlayer : getMove(board)
             activate BlackPlayer
@@ -31,24 +31,23 @@ loop game not finished
             alt move is invalid
                 Board --> Game : false
             else move is valid
+                Board -> Board : updateBoard(move)
                 Board -> Move : storeMove()
                 Board --> Game : true
                 deactivate Board
             end
         deactivate Board
-
-
-        Game -> Board : isCheckmate()
-        Board --> Game : isCheckmate
-        Game -> Game : isFinished = isCheckmate
-
-        Game -> Board : isStalemate()
-        Board --> Game : isStalemate
-        Game -> Game : isFinished |= isStalemate        
-
-
-        Game -> Game : turn++
     end
+
+    Game -> Board : isCheckmate()
+    Board --> Game : isCheckmate
+    Game -> Game : isFinished = isCheckmate
+
+    Game -> Board : isStalemate()
+    Board --> Game : isStalemate
+    Game -> Game : isFinished |= isStalemate
+
+    Game -> Game : turn++
 end
 
 @enduml

@@ -11,6 +11,7 @@ class Board {
   boolean isRepetition(string move)
   boolean isCheckmate(string move)
   boolean isStalemate(string move)
+  void updateBoard(move)
 
   boolean move(string move)
 }
