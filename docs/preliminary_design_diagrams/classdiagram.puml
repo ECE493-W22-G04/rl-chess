@@ -1,0 +1,96 @@
+@startuml
+
+class Board {
+  int gameId
+  int currentTurn
+  MoveHistory[] moveHistory
+  int[][] currentBoard
+  boolean isFinished
+
+  boolean validateMove(string move)
+  boolean isRepetition(string move)
+  boolean isCheckmate(string move)
+  boolean isCheck(string move)
+  boolean isStalemate(string move)
+
+  boolean move(string move)
+}
+
+class MoveHistory {
+  int gameId
+  int turn
+  string move
+
+  Move Move(string move)
+
+  void storeMove(int gameId, int turn)
+}
+
+Board "1" *-- "0..*" MoveHistory
+
+class Game {
+  int id
+  Player whitePlayer
+  Player blackPlayer
+  Board board
+  
+  boolean isDrawing
+
+  Game Game(boolean pvp)
+  boolean addPlayer(Player player)
+  boolean startGame()
+
+  void concede()
+  void draw()
+}
+
+Game "1" *-- "1" Board
+
+class GameRecord {
+  int gameId
+  GameType gameType
+  boolean isDraw
+  Optional<Player> winner
+  
+  GameRecord saveGame(Game game)
+}
+
+enum GameType {
+  string PVP
+  string AI
+}
+
+GameRecord "*" -- "1" GameType
+
+class Player {
+  int id
+
+  Move getMove(int[][] board)
+}
+
+class HumanPlayer {
+  int id
+  String username
+  String password
+
+  void offerDraw()
+  void respondDraw(boolean shouldDraw)
+  Move getMove(int[][] board)
+}
+
+class RlAgent {
+  int id
+  FilePointer filePointer
+
+  Move getMove(int[][] board)
+}
+
+Game "1" o-- "2" Player
+
+Player <|-- RlAgent
+Player <|-- HumanPlayer
+
+Game "1" *-- "0..1" GameRecord
+
+@enduml
+

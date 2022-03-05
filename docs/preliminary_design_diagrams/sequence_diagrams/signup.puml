@@ -1,0 +1,40 @@
+@startuml
+
+autoactivate on
+
+actor Player
+
+Player -> AuthenticationService : signUp()
+AuthenticationService -> RegistrationForm : RegistrationForm()
+return RegistrationForm
+return RegistrationForm
+
+loop user not created
+    loop form_not_submitted
+        Player -> RegistrationForm: fillUserDetails(username, password)
+        RegistrationForm -> RegistrationForm : validateFields()
+        return ValidationError[]
+
+        alt invalid_fields.length > 0
+            return ValidationError[]
+        else
+            RegistrationForm -> AuthenticationService : submit()
+        end
+    end
+
+    AuthenticationService -> AuthenticationService : validateUserDetails(username, password)
+    alt duplicate_user
+        return DuplicateUserError
+        return UserAlreadyExistError
+        RegistrationForm --> Player : UserAlreadyExistError
+    else
+        AuthenticationService -> AuthenticationService : createUser(username, password)
+    end
+end
+
+AuthenticationService -> LoginForm : LoginForm()
+return LoginForm
+AuthenticationService -> Player : LoginForm
+
+@enduml
+
