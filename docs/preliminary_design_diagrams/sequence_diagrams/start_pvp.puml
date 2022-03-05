@@ -1,0 +1,44 @@
+@startuml
+
+title Start a PvP game
+
+actor Host
+actor Player
+
+Host -> Game **
+Host -> Game : addPlayer(host)
+activate Game
+Game -> Game : assignPlayer(host, true)
+activate Game
+deactivate Game
+deactivate Game
+
+Player -> Game : addPlayer(player)
+activate Game
+Game -> Game : assignPlayer(player, false)
+activate Game
+deactivate Game
+deactivate Game
+
+alt host is playing white
+    Host -> Game : assignPlayer(host, true)
+    activate Game
+    Game -> Game : assignPlayer(player, false)
+    activate Game
+    deactivate Game
+    deactivate Game
+else host is playing black
+    Host -> Game : assignPlayer(host, false)
+    activate Game
+    Game -> Game : assignPlayer(player, true)
+    activate Game
+    deactivate Game
+    deactivate Game
+end
+
+Host -> Game : startGame()
+activate Game
+
+' TODO: Add reference to play game here
+
+@enduml
