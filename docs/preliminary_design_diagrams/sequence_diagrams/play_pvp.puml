@@ -1,0 +1,54 @@
+@startuml
+
+actor BlackPlayer
+actor WhitePlayer
+
+loop game not finished
+    loop current player has not made their turn
+        alt black turn
+            Game -> BlackPlayer : getMove(board)
+            activate BlackPlayer
+            BlackPlayer --> Game : move
+            deactivate BlackPlayer
+        else white turn
+            Game -> WhitePlayer : getMove(board)
+            activate WhitePlayer
+            WhitePlayer --> Game : move
+            deactivate WhitePlayer
+        end
+        Game -> Board : move(move)
+        activate Board
+            Board -> Board : validateMove(move)
+            activate Board
+                Board -> Board : isRepetition(move)
+                    activate Board
+                    deactivate Board
+                Board -> Board : isStalemate(move)
+                    activate Board
+                    deactivate Board
+            deactivate Board
+
+            alt move is invalid
+                Board --> Game : false
+            else move is valid
+                Board -> Move : storeMove()
+                Board --> Game : true
+                deactivate Board
+            end
+        deactivate Board
+
+
+        Game -> Board : isCheckmate()
+        Board --> Game : isCheckmate
+        Game -> Game : isFinished = isCheckmate
+
+        Game -> Board : isStalemate()
+        Board --> Game : isStalemate
+        Game -> Game : isFinished |= isStalemate        
+
+
+        Game -> Game : turn++
+    end
+end
+
+@enduml
