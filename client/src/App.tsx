@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import AuthService from './services/auth.service';
-import Login from './components/login.component';
-import Register from './components/register.component';
-import Home from './components/home.component';
+import AuthService from './services/auth';
+import Login from './components/login';
+import Register from './components/register';
+import Home from './components/home';
 
 const App: React.FunctionComponent = () => {
     const [currentUser, setCurrentUser] = useState<string>('');
@@ -22,7 +22,7 @@ const App: React.FunctionComponent = () => {
     }, []);
 
     return (
-        <div>
+        <BrowserRouter>
             <nav className="navbar navbar-expand navbar-dark bg-dark">
                 <Link to={'/'} className="navbar-brand">
                     RL Chess
@@ -61,7 +61,7 @@ const App: React.FunctionComponent = () => {
                     <Route path="/register" element={<Register />} />
                 </Routes>
             </div>
-        </div>
+        </BrowserRouter>
     );
 };
 

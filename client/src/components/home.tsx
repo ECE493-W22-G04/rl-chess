@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import UserService from '../services/user.service';
+import UserService from '../services/user';
 
 const Home: React.FunctionComponent = () => {
     const [content, setContent] = useState<string | undefined>(undefined);
