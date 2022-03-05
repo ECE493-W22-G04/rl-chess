@@ -11,7 +11,7 @@ AuthenticationService -> LoginForm : LoginForm()
 return LoginForm
 return LoginForm
 
-loop user not logged in
+loop user not logged in (user has no token)
     loop form_not_submitted
         Player -> LoginForm: fillUserDetails(username, password)
         LoginForm -> LoginForm : validateFields()
@@ -30,7 +30,7 @@ loop user not logged in
         return InvalidUserCredentialsError
         LoginForm --> Player : InvalidUserCredentialsError
     else
-        AuthenticationService --> Player : JWT
+        AuthenticationService --> Player : token
     end
 end
 
