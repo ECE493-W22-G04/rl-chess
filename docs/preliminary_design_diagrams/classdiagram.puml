@@ -38,6 +38,7 @@ class Game {
 
   Game Game(boolean pvp)
   boolean addPlayer(Player player)
+  void assignPlayer(Player player, boolean isPlayingWhite)
   boolean startGame()
 
   void concede()
