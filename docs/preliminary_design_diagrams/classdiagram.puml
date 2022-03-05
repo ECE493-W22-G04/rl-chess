@@ -83,6 +83,7 @@ class RlAgent {
   FilePointer filePointer
 
   Move getMove(int[][] board)
+  void train(FilePointer filePointer, GameRecord[] games)
 }
 
 Game "1" o-- "2" Player

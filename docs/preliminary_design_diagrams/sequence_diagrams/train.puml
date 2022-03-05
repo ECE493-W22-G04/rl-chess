@@ -1,0 +1,15 @@
+@startuml
+
+title Training (belief revision)
+
+autoactivate on
+
+actor RlAgent
+
+Admin -> GameService : getGames()
+return games
+
+Admin -> RlAgent : train(pointerToNewFile, games)
+
+@enduml
+
