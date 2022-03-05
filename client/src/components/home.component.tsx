@@ -1,59 +1,45 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import UserService from '../services/user.service';
-type Props = Record<string, unknown>;
-type State = {
-    content: string;
-};
-export default class Home extends Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            content: '',
-        };
-    }
-    componentDidMount() {
+
+const Home: React.FunctionComponent = () => {
+    const [content, setContent] = useState<string | undefined>(undefined);
+    useEffect(() => {
         const tokenStr = localStorage.getItem('token');
         if (!tokenStr) {
             UserService.getPublicContent().then(
                 (response) => {
-                    this.setState({
-                        content: response.data.message,
-                    });
+                    setContent(response.data.message);
                 },
                 (error) => {
-                    this.setState({
-                        content:
-                            (error.response && error.response.data) ||
+                    setContent(
+                        (error.response && error.response.data) ||
                             error.message ||
-                            error.toString(),
-                    });
+                            error.toString()
+                    );
                 }
             );
         } else {
             UserService.getUserBoard().then(
                 (response) => {
-                    this.setState({
-                        content: response.data.message,
-                    });
+                    setContent(response.data.message);
                 },
                 (error) => {
-                    this.setState({
-                        content:
-                            (error.response && error.response.data) ||
+                    setContent(
+                        (error.response && error.response.data) ||
                             error.message ||
-                            error.toString(),
-                    });
+                            error.toString()
+                    );
                 }
             );
         }
-    }
-    render() {
-        return (
-            <div className="container">
-                <header className="jumbotron">
-                    <h3>{this.state.content}</h3>
-                </header>
-            </div>
-        );
-    }
-}
+    }, []);
+    return (
+        <div className="container">
+            <header className="jumbotron">
+                <h3>{content}</h3>
+            </header>
+        </div>
+    );
+};
+
+export default Home;

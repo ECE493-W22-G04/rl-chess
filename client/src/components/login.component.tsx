@@ -1,45 +1,25 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 import AuthService from '../services/auth.service';
 
-type Props = Record<string, unknown>;
+const Login: React.FunctionComponent = () => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const [message, setMessage] = useState<string>('');
 
-type State = {
-    email: string;
-    password: string;
-    loading: boolean;
-    message: string;
-};
-
-export default class Login extends Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.handleLogin = this.handleLogin.bind(this);
-
-        this.state = {
-            email: '',
-            password: '',
-            loading: false,
-            message: '',
-        };
-    }
-
-    validationSchema() {
+    const validationSchema = () => {
         return Yup.object().shape({
             email: Yup.string().required('This field is required!'),
             password: Yup.string().required('This field is required!'),
         });
-    }
+    };
 
-    handleLogin(formValue: { email: string; password: string }) {
+    const handleLogin = (formValue: { email: string; password: string }) => {
         const { email, password } = formValue;
 
-        this.setState({
-            message: '',
-            loading: true,
-        });
+        setMessage('');
+        setLoading(true);
 
         AuthService.login(email, password).then(
             () => {
@@ -55,86 +35,82 @@ export default class Login extends Component<Props, State> {
                     error.message ||
                     error.toString();
 
-                this.setState({
-                    loading: false,
-                    message: resMessage,
-                });
+                setMessage(resMessage);
+                setLoading(false);
             }
         );
-    }
+    };
 
-    render() {
-        const { loading, message } = this.state;
+    const initialValues = {
+        email: '',
+        password: '',
+    };
 
-        const initialValues = {
-            email: '',
-            password: '',
-        };
+    return (
+        <div className="col-md-12">
+            <div className="card card-container">
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={handleLogin}
+                >
+                    <Form>
+                        <div className="form-group">
+                            <label htmlFor="email">Email</label>
+                            <Field
+                                name="email"
+                                type="text"
+                                className="form-control"
+                            />
+                            <ErrorMessage
+                                name="email"
+                                component="div"
+                                className="alert alert-danger"
+                            />
+                        </div>
 
-        return (
-            <div className="col-md-12">
-                <div className="card card-container">
-                    <Formik
-                        initialValues={initialValues}
-                        validationSchema={this.validationSchema}
-                        onSubmit={this.handleLogin}
-                    >
-                        <Form>
+                        <div className="form-group">
+                            <label htmlFor="password">Password</label>
+                            <Field
+                                name="password"
+                                type="password"
+                                className="form-control"
+                            />
+                            <ErrorMessage
+                                name="password"
+                                component="div"
+                                className="alert alert-danger"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <button
+                                type="submit"
+                                className="btn btn-primary btn-block"
+                                disabled={loading}
+                            >
+                                {loading && (
+                                    <span className="spinner-border spinner-border-sm"></span>
+                                )}
+                                <span>Login</span>
+                            </button>
+                        </div>
+
+                        {message && (
                             <div className="form-group">
-                                <label htmlFor="email">Email</label>
-                                <Field
-                                    name="email"
-                                    type="text"
-                                    className="form-control"
-                                />
-                                <ErrorMessage
-                                    name="email"
-                                    component="div"
+                                <div
                                     className="alert alert-danger"
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="password">Password</label>
-                                <Field
-                                    name="password"
-                                    type="password"
-                                    className="form-control"
-                                />
-                                <ErrorMessage
-                                    name="password"
-                                    component="div"
-                                    className="alert alert-danger"
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary btn-block"
-                                    disabled={loading}
+                                    role="alert"
                                 >
-                                    {loading && (
-                                        <span className="spinner-border spinner-border-sm"></span>
-                                    )}
-                                    <span>Login</span>
-                                </button>
-                            </div>
-
-                            {message && (
-                                <div className="form-group">
-                                    <div
-                                        className="alert alert-danger"
-                                        role="alert"
-                                    >
-                                        {message}
-                                    </div>
+                                    {message}
                                 </div>
-                            )}
-                        </Form>
-                    </Formik>
-                </div>
+                            </div>
+                        )}
+                    </Form>
+                </Formik>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
+
+export default Login;

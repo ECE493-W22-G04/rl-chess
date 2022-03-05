@@ -1,63 +1,35 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 import AuthService from '../services/auth.service';
 
-type Props = Record<string, unknown>;
+const Register: React.FunctionComponent = () => {
+    const [successful, setSuccessful] = useState<boolean>(false);
+    const [message, setMessage] = useState<string>('');
 
-type State = {
-    email: string;
-    password: string;
-    successful: boolean;
-    message: string;
-};
-
-export default class Register extends Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.handleRegister = this.handleRegister.bind(this);
-
-        this.state = {
-            email: '',
-            password: '',
-            successful: false,
-            message: '',
-        };
-    }
-
-    validationSchema() {
+    const validationSchema = () => {
         return Yup.object().shape({
             email: Yup.string()
                 .email('This is not a valid email.')
                 .required('This field is required!'),
             password: Yup.string()
-                .test(
-                    'len',
-                    'The password must be between 6 and 40 characters.',
-                    (val: any) =>
-                        val &&
-                        val.toString().length >= 6 &&
-                        val.toString().length <= 40
-                )
+                .min(8, 'The password must be between 8 and 40 characters.')
+                .max(40, 'The password must be between 8 and 40 characters.')
                 .required('This field is required!'),
         });
-    }
+    };
 
-    handleRegister(formValue: { email: string; password: string }) {
+    const handleRegister = (formValue: { email: string; password: string }) => {
         const { email, password } = formValue;
 
-        this.setState({
-            message: '',
-            successful: false,
-        });
+        setMessage('');
+        setSuccessful(false);
 
         AuthService.register(email, password).then(
             (response) => {
-                this.setState({
-                    message: response.data.message,
-                    successful: true,
-                });
+                setMessage(response.data.message);
+                setSuccessful(true);
             },
             (error) => {
                 const resMessage =
@@ -66,94 +38,86 @@ export default class Register extends Component<Props, State> {
                         error.response.data.message) ||
                     error.message ||
                     error.toString();
-
-                this.setState({
-                    successful: false,
-                    message: resMessage,
-                });
+                setMessage(resMessage);
+                setSuccessful(false);
             }
         );
-    }
+    };
 
-    render() {
-        const { successful, message } = this.state;
+    const initialValues = {
+        email: '',
+        password: '',
+    };
 
-        const initialValues = {
-            email: '',
-            password: '',
-        };
-
-        return (
-            <div className="col-md-12">
-                <div className="card card-container">
-                    <Formik
-                        initialValues={initialValues}
-                        validationSchema={this.validationSchema}
-                        onSubmit={this.handleRegister}
-                    >
-                        <Form>
-                            {!successful && (
-                                <div>
-                                    <div className="form-group">
-                                        <label htmlFor="email"> Email </label>
-                                        <Field
-                                            name="email"
-                                            type="email"
-                                            className="form-control"
-                                        />
-                                        <ErrorMessage
-                                            name="email"
-                                            component="div"
-                                            className="alert alert-danger"
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label htmlFor="password">
-                                            {' '}
-                                            Password{' '}
-                                        </label>
-                                        <Field
-                                            name="password"
-                                            type="password"
-                                            className="form-control"
-                                        />
-                                        <ErrorMessage
-                                            name="password"
-                                            component="div"
-                                            className="alert alert-danger"
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <button
-                                            type="submit"
-                                            className="btn btn-primary btn-block"
-                                        >
-                                            Sign Up
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-
-                            {message && (
+    return (
+        <div className="col-md-12">
+            <div className="card card-container">
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={handleRegister}
+                >
+                    <Form>
+                        {!successful && (
+                            <div>
                                 <div className="form-group">
-                                    <div
-                                        className={
-                                            successful
-                                                ? 'alert alert-success'
-                                                : 'alert alert-danger'
-                                        }
-                                        role="alert"
-                                    >
-                                        {message}
-                                    </div>
+                                    <label htmlFor="email"> Email </label>
+                                    <Field
+                                        name="email"
+                                        type="email"
+                                        className="form-control"
+                                    />
+                                    <ErrorMessage
+                                        name="email"
+                                        component="div"
+                                        className="alert alert-danger"
+                                    />
                                 </div>
-                            )}
-                        </Form>
-                    </Formik>
-                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="password"> Password </label>
+                                    <Field
+                                        name="password"
+                                        type="password"
+                                        className="form-control"
+                                    />
+                                    <ErrorMessage
+                                        name="password"
+                                        component="div"
+                                        className="alert alert-danger"
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary btn-block"
+                                    >
+                                        Sign Up
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {message && (
+                            <div className="form-group">
+                                <div
+                                    className={
+                                        successful
+                                            ? 'alert alert-success'
+                                            : 'alert alert-danger'
+                                    }
+                                    role="alert"
+                                >
+                                    {message}
+                                </div>
+                            </div>
+                        )}
+                    </Form>
+                </Formik>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
+
+export default Register;
