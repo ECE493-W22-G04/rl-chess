@@ -16,5 +16,19 @@ def client():
 
 
 def test_default_route(client):
-    test = client.get("/", follow_redirects=True)
-    assert b"This is the default route for this app, you can write more routes here" in test.data
+    response = client.get("/", follow_redirects=True)
+    assert "Hello! I'm a message that came from the backend" in response.json["message"]
+
+def test_home_route(client):
+    response = client.get("/api/home", follow_redirects=True)
+    assert "This is the generic homepage" in response.json["message"]
+
+def test_invalid_token_user_route(client):
+    response = client.get("/api/user", follow_redirects=True)
+    assert "token given in authorization header is invalid" in response.json["message"]
+
+def test_valid_token_user_route(client):
+    token = "1"
+    response = client.get("/api/user", follow_redirects=True, headers={"Authorization": token})
+    assert "This is the homepage of user with token: " + token in response.json["message"]
+    

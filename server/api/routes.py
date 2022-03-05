@@ -11,7 +11,7 @@ api = Blueprint("api", __name__)
 
 @api.route("/", methods=["POST", "GET"])
 def handle_default():
-    response_body = {"message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"}
+    response_body = {"message": "Hello! I'm a message that came from the backend"}
     return jsonify(response_body), 200
 
 
@@ -53,5 +53,10 @@ def home():
 def user():
     token = request.headers.get("authorization", None)
     # TODO: Check that token is valid
-    response_msg = 'This is the homepage of user with token: ' + token
-    return jsonify({"message": response_msg}), 200
+    if token:
+        response_msg = 'This is the homepage of user with token: ' + token
+        response_code = 200
+    else:
+        response_msg = 'token given in authorization header is invalid'
+        response_code = 401
+    return jsonify({"message": response_msg}), response_code
