@@ -1,0 +1,38 @@
+@startuml
+
+title Log in
+
+autoactivate on
+
+actor Player
+
+Player -> AuthenticationService : login()
+AuthenticationService -> LoginForm : LoginForm()
+return LoginForm
+return LoginForm
+
+loop user not logged in
+    loop form_not_submitted
+        Player -> LoginForm: fillUserDetails(username, password)
+        LoginForm -> LoginForm : validateFields()
+        return ValidationError[]
+
+        alt invalid_fields.length > 0
+            return ValidationError[]
+        else
+            LoginForm -> AuthenticationService : submit(loginForm)
+        end
+    end
+
+    AuthenticationService -> AuthenticationService : verifyUserCredentials(username, password)
+    alt invalid user credentials
+        return CredentialsMismatchError
+        return InvalidUserCredentialsError
+        LoginForm --> Player : InvalidUserCredentialsError
+    else
+        AuthenticationService --> Player : JWT
+    end
+end
+
+@enduml
+
