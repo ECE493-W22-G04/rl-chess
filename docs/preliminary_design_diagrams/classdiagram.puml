@@ -35,7 +35,7 @@ class Game {
   
   boolean isDrawing
 
-  Game Game(boolean pvp)
+  Game createGame(Player player, boolean pvp)
   boolean addPlayer(Player player)
   void assignPlayer(Player player, Colour colour)
   boolean startGame()

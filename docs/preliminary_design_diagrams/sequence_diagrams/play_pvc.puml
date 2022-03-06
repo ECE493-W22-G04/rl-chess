@@ -6,14 +6,14 @@ autoactivate on
 
 actor HumanPlayer
 actor RLAgent
-HumanPlayer -> Game: Game(False)
+HumanPlayer -> Game: createGame(self, False)
 return Game
 HumanPlayer -> Game: assignPlayer(self, Side color)
     Game -> Game: startGame()
         Game -> Board: initializeBoard()
         return Board
-    return True
     deactivate
+    return True
 
 loop game has not ended
         
