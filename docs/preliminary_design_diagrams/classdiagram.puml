@@ -119,9 +119,9 @@ class LeaderboardEntry {
   void LeaderboardEntry(Player player)
 }
 
-Player "1" -- "0..1" LeaderboardEntry
+Player "1" *-- "0..1" LeaderboardEntry
 
-Leaderboard *-- "0..*" LeaderboardEntry
+Leaderboard "1" -- "0..*" LeaderboardEntry
 
 class LoginForm {
   String usernameField
