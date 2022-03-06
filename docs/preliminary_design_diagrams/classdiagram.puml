@@ -70,7 +70,7 @@ enum GameType {
 
 GameRecord "*" -- "1" GameType
 
-class Player {
+abstract class Player {
   int id
 
   string getMove(int[][] board)
@@ -79,7 +79,7 @@ class Player {
 class HumanPlayer {
   int id
   String username
-  String password
+  Hash password
 
   void offerDraw()
   void respondDraw(boolean shouldDraw)
@@ -111,7 +111,7 @@ class Leaderboard {
 }
 
 class LeaderboardEntry {
-  Player player
+  HumanPlayer player
   int numWins
 
   void LeaderboardEntry(Player player)
