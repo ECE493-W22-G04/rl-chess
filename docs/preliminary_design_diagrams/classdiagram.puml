@@ -38,8 +38,10 @@ class Game {
   Game createGame(Player player, boolean pvp)
   string generateInvite()
   boolean addPlayer(Player player)
-  void assignPlayer(Player player, Colour colour)
   boolean startGame()
+  
+  void assignPlayer(Player player, Colour colour)
+  void offerDraw()
 
   void concede()
   void draw()
@@ -82,7 +84,7 @@ class HumanPlayer {
   Hash password
 
   void offerDraw()
-  void respondDraw(boolean shouldDraw)
+  boolean getDrawResponse()
   string getMove(int[][] board)
 
   void displayError(String error)
