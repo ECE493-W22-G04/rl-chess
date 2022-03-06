@@ -31,17 +31,23 @@ loop game has not ended
         return string
     end
     Game -> Board: updateBoard(move)
-        Board -> Board: validateMove(move)
-        deactivate
-        Board -> Board: isRepetition(move)
-        deactivate
-        Board -> Board: isCheckmate(move)
-        deactivate
-        Board -> Board: isStalemate(move)
-        deactivate
-        Board -> MoveHistory: storeMove(move, turn)
-        deactivate
-    return boolean
+        activate Board
+            Board -> Board: validateMove(move)
+            deactivate
+            Board -> Board: isRepetition(move)
+            deactivate
+            Board -> Board: isCheckmate(move)
+            deactivate
+            Board -> Board: isStalemate(move)
+            deactivate
+            alt move is invalid
+                Board --> Game : false
+            else move is valid
+                Board -> Move : storeMove()
+                deactivate
+                Board --> Game : true
+            end
+        deactivate Board
 end
 
 Game -> GameRecord: saveGame(self)
