@@ -23,6 +23,9 @@ loop game not finished
                 Board -> Board : isRepetition(move)
                     activate Board
                     deactivate Board
+                Board -> Board : isCheckmate(move)
+                    activate Board
+                    deactivate Board
                 Board -> Board : isStalemate(move)
                     activate Board
                     deactivate Board
@@ -39,15 +42,12 @@ loop game not finished
         deactivate Board
     end
 
-    Game -> Board : isCheckmate()
-    Board --> Game : isCheckmate
-    Game -> Game : isFinished = isCheckmate
-
-    Game -> Board : isStalemate()
-    Board --> Game : isStalemate
-    Game -> Game : isFinished |= isStalemate
-
     Game -> Game : turn++
 end
 
+alt is stalemate
+    Game -> GameRecord ** : GameRecord(winner = null)
+else
+    Game -> GameRecord ** : GameRecord(lastPlayerMoved)
+end
 @enduml
