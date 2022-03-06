@@ -2,35 +2,40 @@
 
 title Log in
 
-autoactivate on
-
 actor Player
+participant LoginForm
+collections Players
 
-Player -> AuthenticationService : login()
-AuthenticationService -> LoginForm : LoginForm()
-return LoginForm
-return LoginForm
+Player -> LoginForm ** 
 
-loop user not logged in (user has no token)
-    loop form_not_submitted
+loop user has no token
+    loop form fields incomplete
         Player -> LoginForm: fillUserDetails(username, password)
-        LoginForm -> LoginForm : validateFields()
-        return ValidationError[]
+        activate LoginForm
+            LoginForm -> LoginForm : validateFields()
+            activate LoginForm
+            LoginForm --> LoginForm : validation_errors
+            deactivate LoginForm
 
-        alt invalid_fields.length > 0
-            return ValidationError[]
-        else
-            LoginForm -> AuthenticationService : submit(loginForm)
-        end
+            alt validation_errors.length > 0
+                LoginForm --> Player : displayErrors(validation_errors)
+            end
+        deactivate LoginForm
     end
 
-    AuthenticationService -> AuthenticationService : verifyUserCredentials(username, password)
-    alt invalid user credentials
-        return CredentialsMismatchError
-        return InvalidUserCredentialsError
-        LoginForm --> Player : InvalidUserCredentialsError
+    Player -> LoginForm : submit(loginForm)
+    activate LoginForm
+    LoginForm -> Players : getPlayerByUsernamePassword(username, password)
+    activate Players
+
+    alt no user found
+        Players --> LoginForm : null
+        LoginForm --> Player : displayError("invalid user credentials")
     else
-        AuthenticationService --> Player : token
+        Players --> LoginForm : player
+        deactivate Players
+        LoginForm --> Player : token
+        deactivate LoginForm
     end
 end
 

@@ -2,42 +2,46 @@
 
 title Registration
 
-autoactivate on
+actor User
+participant RegistrationForm
+participant Player
+collections Players
 
-actor Player
-
-Player -> AuthenticationService : signUp()
-AuthenticationService -> RegistrationForm : RegistrationForm()
-return RegistrationForm
-return RegistrationForm
+User -> RegistrationForm **
 
 loop user not created
-    loop form_not_submitted
-        Player -> RegistrationForm: fillUserDetails(username, password)
-        RegistrationForm -> RegistrationForm : validateFields()
-        return ValidationError[]
-
-        alt invalid_fields.length > 0
-            return ValidationError[]
-        else
-            RegistrationForm -> AuthenticationService : submit(registrationForm)
+    loop form fields incomplete
+        User -> RegistrationForm: fillUserDetails(username, password)
+        activate RegistrationForm
+            RegistrationForm -> RegistrationForm : validateFields()
+            activate RegistrationForm
+            return validation_errors
+        alt validation_errors.length > 0
+            return displayFieldErrors()
         end
     end
+    User -> RegistrationForm : submit(registrationForm)
+    activate RegistrationForm
 
-    AuthenticationService -> AuthenticationService : validateUserDetails(username, password)
+    RegistrationForm -> Players : getPlayerByUsername(username)
+    activate Players
 
-    alt duplicate_user
-        return DuplicateUserError
-        return UserAlreadyExistError
-        RegistrationForm --> Player : UserAlreadyExistError
+    alt user exists
+        Players --> RegistrationForm : player
+        RegistrationForm --> User : displayError("user already exists")
     else
-        AuthenticationService -> AuthenticationService : createUser(username, password)
+        Players --> RegistrationForm: null
+        deactivate Players
+        RegistrationForm -> Player **
+        RegistrationForm -> Player : save()
+        activate Player
+        deactivate Player
     end
 end
 
-AuthenticationService -> LoginForm : LoginForm()
-return LoginForm
-AuthenticationService -> Player : LoginForm
+RegistrationForm -> LoginForm **
+RegistrationForm --> User : loginForm
+deactivate RegistrationForm
 
 @enduml
 
