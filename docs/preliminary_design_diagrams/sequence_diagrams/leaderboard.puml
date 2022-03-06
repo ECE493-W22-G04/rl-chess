@@ -7,8 +7,6 @@ actor Player
 
 Player -> Leaderboard : getLeaderboardEntries()
 
-Leaderboard -> GameService : getGameRecords(COMPUTER)
-return GameRecord[]
-
 Leaderboard --> Player: LeaderboardEntry[]
+
 @enduml

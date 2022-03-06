@@ -1,0 +1,14 @@
+@startuml
+
+title Training the RL Agent
+
+autoactivate on
+
+actor Developer
+collections GameRecord
+Developer -> GameRecord : getAllGameRecords()
+GameRecord --> Developer : GameRecord[]
+Developer -> RlAgent : updateBeliefs(game_records)
+
+
+@enduml
