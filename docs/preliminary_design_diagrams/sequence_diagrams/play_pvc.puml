@@ -1,0 +1,48 @@
+@startuml Play Against Computer
+
+title Play Against Computer
+
+autoactivate on
+
+actor HumanPlayer
+actor RLAgent
+HumanPlayer -> Game: Game(False)
+return Game
+HumanPlayer -> Game: assignPlayer(self, Side color)
+    Game -> Game: startGame()
+    return True
+    deactivate
+
+loop game has not ended
+        
+    alt HumanPlayer's turn
+        break player decides to concede
+            HumanPlayer -> Game: concede()
+            Game -> GameRecord: saveGame(self)
+            deactivate
+            deactivate
+        end
+        Game -> HumanPlayer: getMove(board)
+        return string
+    else AI's turn
+        Game -> RLAgent: getMove(board)
+        return string
+    end
+    Game -> Board: updateBoard(move)
+        Board -> Board: validateMove(move)
+        deactivate
+        Board -> Board: isRepetition(move)
+        deactivate
+        Board -> Board: isCheckmate(move)
+        deactivate
+        Board -> Board: isStalemate(move)
+        deactivate
+        Board -> MoveHistory: storeMove(move, turn)
+        deactivate
+    return boolean
+end
+
+Game -> GameRecord: saveGame(self)
+deactivate
+
+@enduml
