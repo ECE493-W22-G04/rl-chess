@@ -5,40 +5,32 @@ title Start a PvP game
 actor Host
 actor Player
 
-Host -> Game **
-Host -> Game : addPlayer(host)
+Host -> Game : createGame(host, pvp=True)
 activate Game
-Game -> Game : assignPlayer(host, true)
-activate Game
-deactivate Game
+Game --> Host : Game
 deactivate Game
 
+alt Player has not logged in
+   ref over Player, Game: login
+end
 Player -> Game : addPlayer(player)
 activate Game
-Game -> Game : assignPlayer(player, false)
-activate Game
-deactivate Game
 deactivate Game
 
-alt host is playing white
-    Host -> Game : assignPlayer(host, true)
+    Host -> Game : assignPlayer(host, color=color)
+    Game -> Game : assignPlayer(player, color=other_color)
     activate Game
-    Game -> Game : assignPlayer(player, false)
+    Game -> Game : startGame()
     activate Game
+Game -> Board : initializeBoard()
+activate Board
+Board --> Game : Board
+deactivate Board
     deactivate Game
-    deactivate Game
-else host is playing black
-    Host -> Game : assignPlayer(host, false)
-    activate Game
-    Game -> Game : assignPlayer(player, true)
-    activate Game
-    deactivate Game
-    deactivate Game
-end
 
-Host -> Game : startGame()
-activate Game
+Game --> Host: True
+deactivate Game
 
-' TODO: Add reference to play game here
+ref over Host, Player, Game, Board : Play PvP
 
 @enduml

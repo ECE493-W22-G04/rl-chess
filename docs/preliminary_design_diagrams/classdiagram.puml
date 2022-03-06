@@ -46,8 +46,8 @@ class Game {
 }
 
 enum Colour {
-    string black
-    string white
+    BLACK
+    WHITE
 }
 
 Game "*" -- "1" Colour
