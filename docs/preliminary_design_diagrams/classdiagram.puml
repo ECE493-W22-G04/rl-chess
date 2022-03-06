@@ -36,6 +36,7 @@ class Game {
   boolean isDrawing
 
   Game createGame(Player player, boolean pvp)
+  string generateInvite()
   boolean addPlayer(Player player)
   void assignPlayer(Player player, Colour colour)
   boolean startGame()
@@ -90,7 +91,7 @@ class RlAgent {
   FilePointer filePointer
 
   string getMove(int[][] board)
-  void train(FilePointer filePointer, GameRecord[] games)
+  void updateBeliefs(GameRecord[] games)
 }
 
 Game "1" o-- "2" Player
