@@ -66,8 +66,8 @@ class GameRecord {
 }
 
 enum GameType {
-  string PVP
-  string AI
+  PVP
+  AI
 }
 
 GameRecord "*" -- "1" GameType
