@@ -16,31 +16,30 @@ loop game not finished
             WhitePlayer --> Game : move
             deactivate WhitePlayer
         end
-        Game -> Board : move(move)
-        activate Board
-            Board -> Board : validateMove(move)
+        autoactivate off
+        Game -> Board: updateBoard(move)
             activate Board
-                Board -> Board : isRepetition(move)
+                Board -> Board: validateMove(move)
                     activate Board
                     deactivate Board
-                Board -> Board : isCheckmate(move)
+                Board -> Board: isRepetition(move)
                     activate Board
                     deactivate Board
-                Board -> Board : isStalemate(move)
+                Board -> Board: isCheckmate(move)
                     activate Board
                     deactivate Board
-            deactivate Board
-
-            alt move is invalid
-                Board --> Game : false
-            else move is valid
-                Board -> Board : updateBoard(move)
-                Board -> Move : storeMove()
-                Board --> Game : true
-                deactivate Board
-            end
-        deactivate Board
-    end
+                Board -> Board: isStalemate(move)
+                    activate Board
+                    deactivate Board
+                alt move is invalid
+                    Board --> Game : false
+                else move is valid
+                    Board -> Move : storeMove()
+                    Board --> Game : true
+                    deactivate Board
+                end
+        autoactivate on
+        end
 
     Game -> Game : turn++
 end

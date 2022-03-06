@@ -30,24 +30,29 @@ loop game has not ended
         Game -> RLAgent: getMove(board)
         return string
     end
+    autoactivate off
     Game -> Board: updateBoard(move)
         activate Board
             Board -> Board: validateMove(move)
-            deactivate
+                activate Board
+                deactivate Board
             Board -> Board: isRepetition(move)
-            deactivate
+                activate Board
+                deactivate Board
             Board -> Board: isCheckmate(move)
-            deactivate
+                activate Board
+                deactivate Board
             Board -> Board: isStalemate(move)
-            deactivate
+                activate Board
+                deactivate Board
             alt move is invalid
                 Board --> Game : false
             else move is valid
                 Board -> Move : storeMove()
-                deactivate
                 Board --> Game : true
+                deactivate Board
             end
-        deactivate Board
+    autoactivate on
 end
 
 Game -> GameRecord: saveGame(self)
