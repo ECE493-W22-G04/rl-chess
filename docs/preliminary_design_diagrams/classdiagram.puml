@@ -1,4 +1,4 @@
-@startuml
+@startuml Class Diagram
 
 class Board {
   int gameId
@@ -7,6 +7,7 @@ class Board {
   int[][] currentBoard
   boolean isFinished
 
+  Board initializeBoard()
   boolean validateMove(string move)
   boolean isRepetition(string move)
   boolean isCheckmate(string move)
@@ -20,8 +21,6 @@ class MoveHistory {
   int gameId
   int turn
   string move
-
-  Move Move(string move)
 
   void storeMove(int gameId, int turn)
 }
@@ -38,12 +37,19 @@ class Game {
 
   Game Game(boolean pvp)
   boolean addPlayer(Player player)
-  void assignPlayer(Player player, boolean isPlayingWhite)
+  void assignPlayer(Player player, Colour colour)
   boolean startGame()
 
   void concede()
   void draw()
 }
+
+enum Colour {
+    string black
+    string white
+}
+
+Game "*" -- "1" Colour
 
 Game "1" *-- "1" Board
 
@@ -66,7 +72,7 @@ GameRecord "*" -- "1" GameType
 class Player {
   int id
 
-  Move getMove(int[][] board)
+  string getMove(int[][] board)
 }
 
 class HumanPlayer {
@@ -76,14 +82,14 @@ class HumanPlayer {
 
   void offerDraw()
   void respondDraw(boolean shouldDraw)
-  Move getMove(int[][] board)
+  string getMove(int[][] board)
 }
 
 class RlAgent {
   int id
   FilePointer filePointer
 
-  Move getMove(int[][] board)
+  string getMove(int[][] board)
   void train(FilePointer filePointer, GameRecord[] games)
 }
 

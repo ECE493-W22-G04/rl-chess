@@ -10,6 +10,8 @@ HumanPlayer -> Game: Game(False)
 return Game
 HumanPlayer -> Game: assignPlayer(self, Side color)
     Game -> Game: startGame()
+        Game -> Board: initializeBoard()
+        return Board
     return True
     deactivate
 
