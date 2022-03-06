@@ -20,6 +20,10 @@ loop game has not ended
             deactivate Game
         end
 
+        alt black player decides to draw
+        ref over BlackPlayer, WhitePlayer, Game : Offer Draw
+        end
+
         Game -> BlackPlayer : getMove(board)
         activate BlackPlayer
         BlackPlayer --> Game : move
@@ -34,6 +38,11 @@ loop game has not ended
             deactivate GameRecord
             deactivate Game
         end
+
+        alt white player decides to draw
+        ref over BlackPlayer, WhitePlayer, Game : Offer Draw
+        end
+
 
         Game -> WhitePlayer : getMove(board)
         activate WhitePlayer
