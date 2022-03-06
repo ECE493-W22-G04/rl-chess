@@ -8,7 +8,7 @@ collections Players
 
 Player -> LoginForm ** 
 
-loop user has no token
+loop player has no token
     loop form fields incomplete
         Player -> LoginForm: fillUserDetails(username, password)
         activate LoginForm
