@@ -84,6 +84,9 @@ class HumanPlayer {
   void offerDraw()
   void respondDraw(boolean shouldDraw)
   string getMove(int[][] board)
+
+  void displayError(String error)
+  void displayErrors(String[] errors)
 }
 
 class RlAgent {
@@ -114,5 +117,34 @@ class LeaderboardEntry {
   void LeaderboardEntry(Player player)
 }
 
-@enduml
+Player "1" -- "0..1" LeaderboardEntry
 
+Leaderboard *-- "0..*" LeaderboardEntry
+
+class LoginForm {
+  String usernameField
+  String passwordField
+
+  ValidationError[] validateFields()
+  void submit()
+}
+
+class RegistrationForm {
+  String usernameField
+  String passwordField
+
+  void submit()
+}
+
+class ValidationErrors {
+  String fieldName
+  String error
+
+  ValidationError[] validateFields()
+  String toString()
+}
+
+LoginForm *-- "0..*" ValidationErrors
+RegistrationForm *-- "0..*" ValidationErrors
+
+@enduml
