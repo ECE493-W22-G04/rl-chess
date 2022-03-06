@@ -45,9 +45,5 @@ loop game not finished
     Game -> Game : turn++
 end
 
-alt is stalemate
-    Game -> GameRecord ** : GameRecord(winner = null)
-else
-    Game -> GameRecord ** : GameRecord(lastPlayerMoved)
-end
+Game -> GameRecord ** : GameRecord(game)
 @enduml
