@@ -6,6 +6,10 @@ include .env
 start: $(VENV)/bin/activate
 	$(PYTHON_COMMAND) main.py
 
+.PHONY = prod
+prod: $(VENV)/bin/activate
+	gunicorn --worker-class eventlet -w 1 main:app -b 0.0.0.0:5555
+
 .PHONY = test
 test: $(VENV)/bin/activate
 	pytest -v
