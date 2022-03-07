@@ -1,12 +1,10 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
 import App from './App';
 import { shallow } from 'enzyme';
 
 test('renders learn react link', () => {
-    render(<App />);
-    const linkElement = screen.getByText(/learn react/i);
-    expect(linkElement).toBeInTheDocument();
+    const res = shallow(<App />);
+    expect(res.find('a').text()).toContain('Learn React');
 });
 
 test('contains logo', () => {
