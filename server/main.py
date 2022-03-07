@@ -7,6 +7,8 @@ from flask_jwt_extended import JWTManager
 from config import load_config, get_log_folder
 from pbu import Logger
 from api.routes import routes
+from flask_socketio import SocketIO
+from ws.socket_events import register_ws_events
 
 
 def create_app():
@@ -31,8 +33,12 @@ def main():
 
     app = create_app()
 
+    # Set-up Socket.io
+    socketio = SocketIO(app, cors_allowed_origins="*")
+    register_ws_events(socketio)
+
     # start flask app
-    app.run(host="0.0.0.0", port=5555)
+    socketio.run(app, host="0.0.0.0", port="5555")
 
 
 if __name__ == "__main__":
