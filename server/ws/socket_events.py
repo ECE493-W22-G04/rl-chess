@@ -12,3 +12,8 @@ def register_ws_events(socketio: SocketIO):
     def disconnect():
         # TODO: Remove this
         print("client disconnected")
+
+    @socketio.on("click")
+    def handle_click(data):
+        # TODO: Remove this
+        print(data)
