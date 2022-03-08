@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import logo from './logo.svg';
 import './App.css';
 import AuthService from './services/auth';
 import Login from './components/login';
@@ -25,6 +26,7 @@ const App: React.FunctionComponent = () => {
         <BrowserRouter>
             <nav className="navbar navbar-expand navbar-dark bg-dark">
                 <Link to={'/'} className="navbar-brand">
+                    <img src={logo} className="App-logo" alt="logo" />
                     RL Chess
                 </Link>
                 {currentUser ? (
