@@ -1,4 +1,4 @@
-import config from '../env';
+import config from '../config';
 import { io } from 'socket.io-client';
 
 const socket = io(config.SERVER_ENDPOINT);
