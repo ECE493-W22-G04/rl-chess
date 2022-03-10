@@ -10,13 +10,8 @@ const Register: React.FunctionComponent = () => {
 
     const validationSchema = () => {
         return Yup.object().shape({
-            email: Yup.string()
-                .email('This is not a valid email.')
-                .required('This field is required!'),
-            password: Yup.string()
-                .min(8, 'The password must be between 8 and 40 characters.')
-                .max(40, 'The password must be between 8 and 40 characters.')
-                .required('This field is required!'),
+            email: Yup.string().email('This is not a valid email.').required('This field is required!'),
+            password: Yup.string().min(8, 'The password must be between 8 and 40 characters.').max(40, 'The password must be between 8 and 40 characters.').required('This field is required!'),
         });
     };
 
@@ -32,12 +27,7 @@ const Register: React.FunctionComponent = () => {
                 setSuccessful(true);
             },
             (error) => {
-                const resMessage =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
+                const resMessage = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
                 setMessage(resMessage);
                 setSuccessful(false);
             }
@@ -52,47 +42,24 @@ const Register: React.FunctionComponent = () => {
     return (
         <div className="col-md-12">
             <div className="card card-container">
-                <Formik
-                    initialValues={initialValues}
-                    validationSchema={validationSchema}
-                    onSubmit={handleRegister}
-                >
+                <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleRegister}>
                     <Form>
                         {!successful && (
                             <div>
                                 <div className="form-group">
                                     <label htmlFor="email"> Email </label>
-                                    <Field
-                                        name="email"
-                                        type="email"
-                                        className="form-control"
-                                    />
-                                    <ErrorMessage
-                                        name="email"
-                                        component="div"
-                                        className="alert alert-danger"
-                                    />
+                                    <Field name="email" type="email" className="form-control" />
+                                    <ErrorMessage name="email" component="div" className="alert alert-danger" />
                                 </div>
 
                                 <div className="form-group">
                                     <label htmlFor="password"> Password </label>
-                                    <Field
-                                        name="password"
-                                        type="password"
-                                        className="form-control"
-                                    />
-                                    <ErrorMessage
-                                        name="password"
-                                        component="div"
-                                        className="alert alert-danger"
-                                    />
+                                    <Field name="password" type="password" className="form-control" />
+                                    <ErrorMessage name="password" component="div" className="alert alert-danger" />
                                 </div>
 
                                 <div className="form-group">
-                                    <button
-                                        type="submit"
-                                        className="btn btn-primary btn-block"
-                                    >
+                                    <button type="submit" className="btn btn-primary btn-block">
                                         Sign Up
                                     </button>
                                 </div>
@@ -101,14 +68,7 @@ const Register: React.FunctionComponent = () => {
 
                         {message && (
                             <div className="form-group">
-                                <div
-                                    className={
-                                        successful
-                                            ? 'alert alert-success'
-                                            : 'alert alert-danger'
-                                    }
-                                    role="alert"
-                                >
+                                <div className={successful ? 'alert alert-success' : 'alert alert-danger'} role="alert">
                                     {message}
                                 </div>
                             </div>

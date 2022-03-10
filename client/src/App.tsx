@@ -32,11 +32,7 @@ const App: React.FunctionComponent = () => {
                 {currentUser ? (
                     <div className="navbar-nav ml-auto">
                         <li className="nav-item">
-                            <a
-                                href="/login"
-                                className="nav-link"
-                                onClick={logout}
-                            >
+                            <a href="/login" className="nav-link" onClick={logout}>
                                 LogOut
                             </a>
                         </li>
