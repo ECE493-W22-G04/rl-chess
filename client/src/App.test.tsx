@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 
 test('renders RL Chess homepage', () => {
     const resp = shallow(<App />);
-    const link = resp.find(Link);
-    expect(link.text).toBe('RL Chess');
+    const link = resp.find(Link).first();
+    expect(link.text()).toBe('RL Chess');
 });
 
 test('contains logo', () => {
