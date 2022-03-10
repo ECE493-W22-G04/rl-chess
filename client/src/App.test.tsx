@@ -1,10 +1,12 @@
 import React from 'react';
 import App from './App';
 import { shallow } from 'enzyme';
+import { Link } from 'react-router-dom';
 
-test('renders learn react link', () => {
-    const res = shallow(<App />);
-    expect(res.find('a').text()).toContain('Learn React');
+test('renders RL Chess homepage', () => {
+    const resp = shallow(<App />);
+    const link = resp.find(Link);
+    expect(link.text).toBe('RL Chess');
 });
 
 test('contains logo', () => {

@@ -1,9 +1,10 @@
-Flask==2.0.1
+Flask==2.0.3
+Flask_Cors==3.0.10
 Flask_JWT_Extended==4.3.1
 Flask_SocketIO==5.1.1
-pbu==0.7.2
-pytest==6.2.5
+pbu==0.7.5
+pytest==7.0.1
 python-dotenv==0.19.2
-gunicorn==20.1.
+gunicorn==20.1.0
 eventlet==0.30.2
 yapf==0.32.0
