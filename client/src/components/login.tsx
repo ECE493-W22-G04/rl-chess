@@ -28,12 +28,7 @@ const Login: React.FunctionComponent = () => {
                 window.location.assign('/');
             },
             (error) => {
-                const resMessage =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
+                const resMessage = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
 
                 setMessage(resMessage);
                 setLoading(false);
@@ -49,59 +44,30 @@ const Login: React.FunctionComponent = () => {
     return (
         <div className="col-md-12">
             <div className="card card-container">
-                <Formik
-                    initialValues={initialValues}
-                    validationSchema={validationSchema}
-                    onSubmit={handleLogin}
-                >
+                <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleLogin}>
                     <Form>
                         <div className="form-group">
                             <label htmlFor="email">Email</label>
-                            <Field
-                                name="email"
-                                type="text"
-                                className="form-control"
-                            />
-                            <ErrorMessage
-                                name="email"
-                                component="div"
-                                className="alert alert-danger"
-                            />
+                            <Field name="email" type="text" className="form-control" />
+                            <ErrorMessage name="email" component="div" className="alert alert-danger" />
                         </div>
 
                         <div className="form-group">
                             <label htmlFor="password">Password</label>
-                            <Field
-                                name="password"
-                                type="password"
-                                className="form-control"
-                            />
-                            <ErrorMessage
-                                name="password"
-                                component="div"
-                                className="alert alert-danger"
-                            />
+                            <Field name="password" type="password" className="form-control" />
+                            <ErrorMessage name="password" component="div" className="alert alert-danger" />
                         </div>
 
                         <div className="form-group">
-                            <button
-                                type="submit"
-                                className="btn btn-primary btn-block"
-                                disabled={loading}
-                            >
-                                {loading && (
-                                    <span className="spinner-border spinner-border-sm"></span>
-                                )}
+                            <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+                                {loading && <span className="spinner-border spinner-border-sm"></span>}
                                 <span>Login</span>
                             </button>
                         </div>
 
                         {message && (
                             <div className="form-group">
-                                <div
-                                    className="alert alert-danger"
-                                    role="alert"
-                                >
+                                <div className="alert alert-danger" role="alert">
                                     {message}
                                 </div>
                             </div>

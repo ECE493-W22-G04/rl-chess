@@ -11,11 +11,7 @@ const Home: React.FunctionComponent = () => {
                     setContent(response.data.message);
                 },
                 (error) => {
-                    setContent(
-                        (error.response && error.response.data) ||
-                            error.message ||
-                            error.toString()
-                    );
+                    setContent((error.response && error.response.data) || error.message || error.toString());
                 }
             );
         } else {
@@ -24,11 +20,7 @@ const Home: React.FunctionComponent = () => {
                     setContent(response.data.message);
                 },
                 (error) => {
-                    setContent(
-                        (error.response && error.response.data) ||
-                            error.message ||
-                            error.toString()
-                    );
+                    setContent((error.response && error.response.data) || error.message || error.toString());
                 }
             );
         }
