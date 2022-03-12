@@ -6,6 +6,8 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 
+from api.models import Player, db
+
 api = Blueprint("api", __name__)
 
 
@@ -32,14 +34,21 @@ def create_token():
 # Create a route to register a new user.
 @api.route("/api/auth/signup", methods=["POST"])
 def signup():
-    email = request.json.get("email", None)
-    password = request.json.get("password", None)
-    # TODO: Put email and password in database
-    # TODO: Return error if email already exists
-    if email != "test@test.test" or password != "test123test":
-        return jsonify({"message": "Bad username or password"}), 401
+    if request.is_json:
+        email = request.json.get("email", None)
+        password = request.json.get("password", None)
+        new_player = Player(email=email, password=password)
 
-    return jsonify({"message": "Registration Successful!"}), 200
+        # TODO: Return error if email already exists
+        if email == "test@test.test":
+            return jsonify({"message": "username already exists"}), 400
+
+        # TODO: Put email and password in database
+        db.session.add(new_player)
+        db.session.commit()
+        return jsonify({"message": "Registration Successful!"}), 200
+    else:
+        return jsonify({"message": "The payload is not in JSON format"}), 400
 
 
 # Create a route to display a homepage message to unauthenticated user

@@ -23,6 +23,10 @@ $(VENV)/bin/activate: requirements.txt
 build-reqs:
 	$(PIP_COMMAND) install pipreqs
 	pipreqs . --force
+	echo 'gunicorn==20.1.0' >> requirements.txt
+	echo 'eventlet==0.30.2' >> requirements.txt
+	echo 'yapf==0.32.0' >> requirements.txt
+	echo 'psycopg2==2.9.3' >> requirements.txt
 
 .PHONY = format
 format:
