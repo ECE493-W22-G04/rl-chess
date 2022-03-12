@@ -32,7 +32,6 @@ def signin():
         if not password:
             return jsonify({"message": "No password provided"}), 400
 
-        # TODO: Check database for email and password
         player = Player.query.filter_by(email=email).first()
 
         if not player:
@@ -61,21 +60,18 @@ def signup():
             if not password:
                 return jsonify({"message": "No password provided"}), 400
 
+            # Hash password and store hashed value in db
             hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-
             new_player = Player(email=email, password=hashed.decode('utf-8'))
 
-            # TODO: Return error if email already exists
-            if email == "test@test.test":
-                return jsonify({"message": "username already exists"}), 400
-
-            # TODO: Put email and password in database
+            # Put new player in database
             db.session.add(new_player)
             db.session.commit()
             return jsonify({"message": f"Registration Successful {email}!"}), 200
         else:
             return jsonify({"message": "The payload is not in JSON format"}), 400
     except IntegrityError:
+        # Catch error where email already exists
         # rollback reverts the changes made to the db
         db.session.rollback()
         return jsonify({"message": "Email already exists"}), 400

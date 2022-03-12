@@ -11,7 +11,7 @@ def load_config():
         "LOG_FOLDER": os.getenv("LOG_FOLDER"),
         "IS_DEBUG": os.getenv("IS_DEBUG") == "1",
         # Heroku defaults to using postgres:// but that is no longer supported
-        # Only postgresql:// is supported
+        # Only postgresql:// is supported in latest SQLAlchemy version
         "DATABASE_URL": os.getenv('DATABASE_URL').replace("://", "ql://", 1),
     }
 
