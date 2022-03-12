@@ -1,4 +1,3 @@
-from api import create_app
 import pytest
 import sys
 import os
@@ -6,6 +5,7 @@ import json
 
 # access parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from main import create_app
 
 
 # Preload an app client which we can access in the tests
