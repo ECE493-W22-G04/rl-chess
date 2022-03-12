@@ -36,6 +36,7 @@ def create_app():
     db.init_app(app)
     migrate = Migrate(app, db)
     with app.app_context():
+        db.drop_all() # Clears all tables and resets them, possibly later we will want to migrate
         db.create_all()
 
     # Set-up JWT manager
