@@ -1,5 +1,8 @@
 import os
 
+from sqlalchemy.exc import IntegrityError
+import bcrypt
+
 from flask import Flask, request, jsonify, url_for, Blueprint
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
@@ -17,38 +20,68 @@ def handle_default():
     return jsonify(response_body), 200
 
 
-# Create a route to authenticate your users and return JWTs. The
-# create_access_token() function is used to actually generate the JWT.
+# Create a route to authenticate users and return JWTs.
 @api.route("/api/auth/signin", methods=["POST"])
-def create_token():
-    email = request.json.get("email", None)
-    password = request.json.get("password", None)
-    # TODO: Check database for email and password
-    if email != "test@test.test" or password != "test123test":
-        return jsonify({"message": "Bad username or password"}), 401
+def signin():
+    try:
+        email = request.json.get("email", None)
+        password = request.json.get("password", None)
 
-    access_token = create_access_token(identity=email)
-    return jsonify(access_token=access_token)
+        if not email:
+            return jsonify({"message": "No email provided!"}), 400
+        if not password:
+            return jsonify({"message": "No password provided"}), 400
 
+        # TODO: Check database for email and password
+        player = Player.query.filter_by(email=email).first()
+
+        if not player:
+            return jsonify({"message": "Email not found"}), 400
+        
+        if bcrypt.checkpw(password.encode('utf-8'), player.password.encode('utf-8')):
+            access_token = create_access_token(identity=email)
+            return jsonify({access_token: access_token, "message": f"Welcome {email}"}), 200
+        else:
+            return jsonify({"message": "Incorrect password"}), 400
+    except:
+        db.session.rollback()
+        return jsonify({"message": "Unsuccessful login attempt"}), 400
+    
 
 # Create a route to register a new user.
 @api.route("/api/auth/signup", methods=["POST"])
 def signup():
-    if request.is_json:
-        email = request.json.get("email", None)
-        password = request.json.get("password", None)
-        new_player = Player(email=email, password=password)
+    try:
+        if request.is_json:
+            email = request.json.get("email", None)
+            password = request.json.get("password", None)
 
-        # TODO: Return error if email already exists
-        if email == "test@test.test":
-            return jsonify({"message": "username already exists"}), 400
+            if not email:
+                return jsonify({"message": "No email provided!"}), 400
+            if not password:
+                return jsonify({"message": "No password provided"}), 400
 
-        # TODO: Put email and password in database
-        db.session.add(new_player)
-        db.session.commit()
-        return jsonify({"message": "Registration Successful!"}), 200
-    else:
-        return jsonify({"message": "The payload is not in JSON format"}), 400
+            hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+            new_player = Player(email=email, password=hashed.decode('utf-8'))
+
+            # TODO: Return error if email already exists
+            if email == "test@test.test":
+                return jsonify({"message": "username already exists"}), 400
+
+            # TODO: Put email and password in database
+            db.session.add(new_player)
+            db.session.commit()
+            return jsonify({"message": f"Registration Successful {email}!"}), 200
+        else:
+            return jsonify({"message": "The payload is not in JSON format"}), 400
+    except IntegrityError:
+        # rollback reverts the changes made to the db
+        db.session.rollback()
+        return jsonify({"message": "Email already exists"}), 400
+    except:
+        db.session.rollback()
+        return jsonify({"message": "Unsuccessful login attempt"}), 400
 
 
 # Create a route to display a homepage message to unauthenticated user
