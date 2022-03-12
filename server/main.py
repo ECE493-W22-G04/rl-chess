@@ -6,9 +6,7 @@ from api import create_app
 from ws.socket_events import register_ws_events
 from api.config import get_log_folder
 
-
 app = create_app()
-
 
 if __name__ == "__main__":
     logger = Logger("MAIN", log_folder=get_log_folder())

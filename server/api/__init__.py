@@ -12,6 +12,7 @@ from .config import load_config, get_log_folder
 from .routes import api
 from .models import db, Player
 
+
 def create_app():
     # load config from .env file
     config = load_config()
@@ -24,11 +25,7 @@ def create_app():
     app.config["JWT_SECRET_KEY"] = config["JWT_SECRET_KEY"]
 
     # Setup the SQLALCHEMY configuration
-    app.config.from_mapping(
-        SECRET_KEY = config['JWT_SECRET_KEY'] or 'dev_key',
-        SQLALCHEMY_DATABASE_URI = config['DATABASE_URL'],
-        SQLALCHEMY_TRACK_MODIFICATIONS = False
-    )
+    app.config.from_mapping(SECRET_KEY=config['JWT_SECRET_KEY'] or 'dev_key', SQLALCHEMY_DATABASE_URI=config['DATABASE_URL'], SQLALCHEMY_TRACK_MODIFICATIONS=False)
 
     app.register_blueprint(api)
 
@@ -36,10 +33,9 @@ def create_app():
     db.init_app(app)
     migrate = Migrate(app, db)
     with app.app_context():
-        db.drop_all() # Clears all tables and resets them, possibly later we will want to migrate
+        db.drop_all()  # Clears all tables and resets them, possibly later we will want to migrate
         db.create_all()
 
     # Set-up JWT manager
     jwt = JWTManager(app)
     return app
-

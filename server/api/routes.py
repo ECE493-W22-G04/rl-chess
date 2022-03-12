@@ -36,7 +36,7 @@ def signin():
 
         if not player:
             return jsonify({"message": "Email not found"}), 400
-        
+
         if bcrypt.checkpw(password.encode('utf-8'), player.password.encode('utf-8')):
             access_token = create_access_token(identity=email)
             return jsonify({access_token: access_token, "message": f"Welcome {email}"}), 200
@@ -45,7 +45,7 @@ def signin():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "Unsuccessful login attempt: {e}"}), 400
-    
+
 
 # Create a route to register a new user.
 @api.route("/api/auth/signup", methods=["POST"])
