@@ -42,9 +42,9 @@ def signin():
             return jsonify({access_token: access_token, "message": f"Welcome {email}"}), 200
         else:
             return jsonify({"message": "Incorrect password"}), 400
-    except:
+    except Exception as e:
         db.session.rollback()
-        return jsonify({"message": "Unsuccessful login attempt"}), 400
+        return jsonify({"message": "Unsuccessful login attempt: {e}"}), 400
     
 
 # Create a route to register a new user.
@@ -74,10 +74,10 @@ def signup():
         # Catch error where email already exists
         # rollback reverts the changes made to the db
         db.session.rollback()
-        return jsonify({"message": "Email already exists"}), 400
-    except:
+        return jsonify({"message": f"Email already exists {email}"}), 400
+    except Exception as e:
         db.session.rollback()
-        return jsonify({"message": "Unsuccessful login attempt"}), 400
+        return jsonify({"message": f"Unsuccessful registration attempt: {e}"}), 400
 
 
 # Create a route to display a homepage message to unauthenticated user
