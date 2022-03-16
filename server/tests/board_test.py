@@ -21,3 +21,11 @@ def test_board_init():
 def test_actions():
     board = Board()
     assert len(board.get_actions()) == 64 * 64
+
+def test_pawn():
+    board = Board()
+    assert board.validate_move([0, 6, 0, 5])
+    assert board.validate_move([0, 6, 0, 4])
+    assert not board.validate_move([0, 6, 0, 3])
+    assert not board.validate_move([0, 6, 1, 6])
+    assert not board.validate_move([0, 6, 1, 5])
