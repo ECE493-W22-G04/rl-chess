@@ -1,5 +1,6 @@
 from game.board import Board, Piece
 
+
 def test_board_init():
     board = Board()
     back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
@@ -18,9 +19,11 @@ def test_board_init():
 
     assert board.state == expected
 
+
 def test_actions():
     board = Board()
     assert len(board.get_actions()) == 64 * 64
+
 
 def test_pawn():
     board = Board()
