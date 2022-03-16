@@ -1,6 +1,7 @@
-from enum import Enum
+from enum import IntEnum
+import itertools
 
-class Piece(Enum):
+class Piece(IntEnum):
     PAWN = 1
     BISHOP = 2
     KNIGHT = 3
@@ -10,7 +11,7 @@ class Piece(Enum):
 
 class Board:
     def __init__(self) -> None:
-        back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.KNIGHT]
+        back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
         front_row = [Piece.PAWN for _ in range(8)]
 
         self.state = [
@@ -23,9 +24,11 @@ class Board:
             [piece for piece in front_row],
             [piece for piece in back_row],
         ]
-    
-    def get_actions():
-        pass
 
-    def get_legal_actions():
+        self.__actions = list(itertools.product(range(8), repeat=4))
+    
+    def get_actions(self):
+        return self.__actions
+
+    def get_legal_actions(self):
         pass
