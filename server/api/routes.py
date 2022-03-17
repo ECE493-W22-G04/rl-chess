@@ -39,7 +39,7 @@ def signin():
 
         if bcrypt.checkpw(password.encode('utf-8'), player.password.encode('utf-8')):
             access_token = create_access_token(identity=email)
-            return jsonify({access_token: access_token, "message": f"Welcome {email}"}), 200
+            return jsonify({"access_token": access_token, "message": f"Welcome {email}"}), 200
         else:
             return jsonify({"message": "Incorrect password"}), 400
     except Exception as e:
