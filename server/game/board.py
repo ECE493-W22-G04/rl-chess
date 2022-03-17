@@ -1,3 +1,4 @@
+from typing import NamedTuple, Optional
 from enum import IntEnum
 import itertools
 
@@ -11,38 +12,46 @@ class Piece(IntEnum):
     KING = 6
 
 
-Move = tuple[int, int, int, int]  # (from_x, from_y, to_x, to_y)
+class Square(NamedTuple):
+    x: int
+    y: int
+
+
+class Move(NamedTuple):
+    from_square: Square
+    to_square: Square
+    promotion: Optional[Piece] = None
 
 
 def is_pawns_first_move(move: Move, is_white: bool):
     if is_white:
-        return move[1] == 6
-    return move[1] == 1
+        return move.from_square.y == 6
+    return move.from_square.y == 1
 
 
 def is_forward_move(move: Move, is_white: bool):
-    if move[0] != move[2]:
+    if move.from_square.x != move.to_square.x:
         return False
     if is_white:
-        return move[3] < move[1]
-    return move[3] > move[1]
+        return move.to_square.y < move.from_square.y
+    return move.to_square.y > move.from_square.y
 
 
 def is_diagonal_move(move: Move):
-    return abs(move[2] - move[0]) == abs(move[3] - move[1])
+    return abs(move.to_square.x - move.from_square.x) == abs(move.to_square.y - move.from_square.y)
 
 
 def is_rook_move(move: Move):
-    if abs(move[2] - move[0]) > 0:
-        return abs(move[3] - move[1]) == 0
-    return abs(move[3] - move[1]) > 0
+    if abs(move.to_square.x - move.from_square.x) > 0:
+        return abs(move.to_square.y - move.from_square.y) == 0
+    return abs(move.to_square.y - move.from_square.y) > 0
 
 
 def is_knight_move(move: Move):
-    if abs(move[2] - move[0]) == 1:
-        return abs(move[3] - move[1]) == 2
-    if abs(move[2] - move[0]) == 2:
-        return abs(move[3] - move[1]) == 1
+    if abs(move.to_square.x - move.from_square.x) == 1:
+        return abs(move.to_square.y - move.from_square.y) == 2
+    if abs(move.to_square.x - move.from_square.x) == 2:
+        return abs(move.to_square.y - move.from_square.y) == 1
     return False
 
 
@@ -81,10 +90,10 @@ class Board:
         pass
 
     def validate_move(self, move: Move):
-        from_x = move[0]
-        from_y = move[1]
-        to_x = move[2]
-        to_y = move[3]
+        from_x = move.from_square.x
+        from_y = move.from_square.y
+        to_x = move.to_square.x
+        to_y = move.to_square.y
 
         piece_to_move = self.state[from_y][from_x]
         piece_at_target = self.state[to_y][to_x]

@@ -1,4 +1,5 @@
 from game.board import Board, Piece
+from server.game.board import Move, Square
 
 
 def test_board_init():
@@ -27,8 +28,15 @@ def test_actions():
 
 def test_pawn():
     board = Board()
-    assert board.validate_move([0, 6, 0, 5])
-    assert board.validate_move([0, 6, 0, 4])
-    assert not board.validate_move([0, 6, 0, 3])
-    assert not board.validate_move([0, 6, 1, 6])
-    assert not board.validate_move([0, 6, 1, 5])
+
+    forward_move = Move(Square(0, 6), Square(0, 5))
+    advance_forward_move = Move(Square(0, 6), Square(0, 4))
+    assert board.validate_move(forward_move)
+    assert board.validate_move(advance_forward_move)
+
+    forward_three_move = Move(Square(0, 6), Square(0, 3))
+    side_move = Move(Square(0, 6), Square(1, 6))
+    diagonal_no_capture_move = Move(Square(0, 6), Square(1, 5))
+    assert not board.validate_move(forward_three_move)
+    assert not board.validate_move(side_move)
+    assert not board.validate_move(diagonal_no_capture_move)
