@@ -41,10 +41,30 @@ def is_diagonal_move(move: Move):
     return abs(move.to_square.x - move.from_square.x) == abs(move.to_square.y - move.from_square.y)
 
 
+def is_diagonal_path_clear(board: list[list[Piece]], move: Move):
+    for i in range(move.from_square.x, move.to_square.x, 1 if move.from_square.x < move.to_square.x else -1):
+        if board[i][i] != 0:
+            return False
+    return True
+
+
 def is_rook_move(move: Move):
     if abs(move.to_square.x - move.from_square.x) > 0:
         return abs(move.to_square.y - move.from_square.y) == 0
     return abs(move.to_square.y - move.from_square.y) > 0
+
+
+def is_rook_path_clear(board: list[list[Piece]], move: Move):
+    if abs(move.to_square.x - move.from_square.x) > 0:
+        for i in range(move.from_square.x, move.to_square.x, 1 if move.from_square.x < move.to_square.x else -1):
+            if board[move.from_square.y][i] != 0:
+                return False
+
+    for i in range(move.from_square.y, move.to_square.y, 1 if move.from_square.y < move.to_square.y else -1):
+        if board[i][move.from_square.x] != 0:
+            return False
+
+    return True
 
 
 def is_knight_move(move: Move):
@@ -111,13 +131,13 @@ class Board:
                 return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) <= 2
             return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1
         if abs(piece_to_move) == Piece.BISHOP:
-            return is_diagonal_move(move)
+            return is_diagonal_move(move) and is_diagonal_path_clear(self.state, move)
         if abs(piece_to_move) == Piece.KNIGHT:
             return is_knight_move(move)
         if abs(piece_to_move) == Piece.ROOK:
-            return is_rook_move(move)
+            return is_rook_move(move) and is_rook_path_clear(self.state, move)
         if abs(piece_to_move) == Piece.QUEEN:
-            return is_diagonal_move(move) or self.is_knight_move(move)
+            return is_diagonal_move(move) and is_diagonal_path_clear(self.state, move) or is_rook_move(move) and is_rook_path_clear(self.state, move)
         if abs(piece_to_move) == Piece.KING:
             return abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1
 
