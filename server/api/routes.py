@@ -43,7 +43,6 @@ def signin():
         else:
             return jsonify({"message": "Incorrect password"}), 400
     except Exception as e:
-        db.session.rollback()
         return jsonify({"message": "Unsuccessful login attempt: {e}"}), 400
 
 

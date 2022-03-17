@@ -25,7 +25,9 @@ def create_app():
     app.config["JWT_SECRET_KEY"] = config["JWT_SECRET_KEY"]
 
     # Setup the SQLALCHEMY configuration
-    app.config.from_mapping(SECRET_KEY=config['JWT_SECRET_KEY'] or 'dev_key', SQLALCHEMY_DATABASE_URI=config['DATABASE_URL'], SQLALCHEMY_TRACK_MODIFICATIONS=False)
+    app.config["SECRET_KEY"] = config["JWT_SECRET_KEY"]
+    app.config["SQLALCHEMY_DATABASE_URI"] = config["DATABASE_URL"]
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     app.register_blueprint(api)
 
