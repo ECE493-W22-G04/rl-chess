@@ -5,7 +5,7 @@ from server.game.piece import Piece
 def test_board_init():
     board = Board()
     back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
-    front_row = [Piece.PAWN for _ in range(8)]
+    front_row = [Piece.PAWN] * 8
 
     expected = [
         [piece * -1 for piece in back_row],

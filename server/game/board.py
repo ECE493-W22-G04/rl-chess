@@ -9,7 +9,7 @@ class Board:
 
     def __init__(self) -> None:
         back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
-        front_row = [Piece.PAWN for _ in range(8)]
+        front_row = [Piece.PAWN] * 8
 
         self.state = [
             [piece * -1 for piece in back_row],  # Black

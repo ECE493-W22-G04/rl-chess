@@ -24,7 +24,7 @@ def test_pawn_forward():
     forward_move = Move(Square(0, 6), Square(0, 5))
 
     back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
-    front_row = [Piece.PAWN for _ in range(8)]
+    front_row = [Piece.PAWN] * 8
     expected_state = [
         [piece * -1 for piece in back_row],
         [piece * -1 for piece in front_row],
@@ -45,7 +45,7 @@ def test_pawn_forward():
 def test_pawn_advance():
     board = Board()
 
-    forward_move = Move(Square(0, 6), Square(0, 4))
+    advance_move = Move(Square(0, 6), Square(0, 4))
 
     back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
     front_row = [Piece.PAWN for _ in range(8)]
@@ -60,9 +60,9 @@ def test_pawn_advance():
         [piece for piece in back_row],
     ]
 
-    assert Board().validate_move(advance_forward_move)
+    assert Board().validate_move(advance_move)
 
-    board.register_move(forward_move)
+    board.register_move(advance_move)
     assert board.state == expected_state
 
 
