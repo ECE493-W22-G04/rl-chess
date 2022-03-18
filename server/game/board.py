@@ -33,7 +33,22 @@ class Board:
                     self.actions.append(Move(Square(column, row), Square(column, row - 1 if row == 1 else row + 1), promotion=promoted_to))
 
     def __str__(self) -> str:
-        return '\n'.join(['\t'.join([str(piece) for piece in row]) for row in self.state])
+
+        def piece_to_str(piece: int):
+            pieces = {
+                Piece.NONE: ' ',
+                Piece.ROOK: '♜',
+                Piece.KNIGHT: '♞',
+                Piece.BISHOP: '♝',
+                Piece.QUEEN: '♛',
+                Piece.KING: '♚',
+                Piece.PAWN: '♟',
+            }
+            black_to_white_offset = ord('♖') - ord('♜')
+            offset = 0 if piece < 0 else black_to_white_offset
+            return chr(ord(pieces[abs(piece)]) + offset)
+
+        return '\n\n'.join(['\t'.join([piece_to_str(piece) for piece in row]) for row in self.state])
 
     def get_actions(self):
         return self.actions
