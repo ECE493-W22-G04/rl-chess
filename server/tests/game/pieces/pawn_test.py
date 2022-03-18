@@ -3,16 +3,6 @@ from server.game.piece import Piece
 from server.game.move import Move, Square
 
 
-def test_validate_pawn_forward():
-    forward_move = Move(Square(0, 6), Square(0, 5))
-    assert Board().validate_move(forward_move)
-
-
-def test_validate_pawn_advance():
-    advance_forward_move = Move(Square(0, 6), Square(0, 4))
-    assert Board().validate_move(advance_forward_move)
-
-
 def test_validate_pawn_forward_three():
     forward_three_move = Move(Square(0, 6), Square(0, 3))
     assert not Board().validate_move(forward_three_move)
@@ -46,6 +36,8 @@ def test_pawn_forward():
         [piece for piece in back_row],
     ]
 
+    assert Board().validate_move(forward_move)
+
     board.register_move(forward_move)
     assert board.state == expected_state
 
@@ -67,6 +59,8 @@ def test_pawn_advance():
         [Piece.NONE, *[Piece.PAWN] * 7],
         [piece for piece in back_row],
     ]
+
+    assert Board().validate_move(advance_forward_move)
 
     board.register_move(forward_move)
     assert board.state == expected_state
