@@ -4,6 +4,7 @@ import itertools
 
 
 class Piece(IntEnum):
+    NONE = 0
     PAWN = 1
     BISHOP = 2
     KNIGHT = 3
@@ -90,18 +91,26 @@ class Board:
         self.state = [
             [piece * -1 for piece in back_row],  # Black
             [piece * -1 for piece in front_row],
-            [0 for _ in range(8)],
-            [0 for _ in range(8)],
-            [0 for _ in range(8)],
-            [0 for _ in range(8)],
+            [Piece.NONE for _ in range(8)],
+            [Piece.NONE for _ in range(8)],
+            [Piece.NONE for _ in range(8)],
+            [Piece.NONE for _ in range(8)],
             [piece for piece in front_row],
             [piece for piece in back_row],  # White
         ]
 
-        self.__actions = list(itertools.product(range(8), repeat=4))
+        self.actions: list[Move] = []
+        for from_coordinate in itertools.product(range(8), repeat=2):
+            for to_coordinate in itertools.product(range(8), repeat=2):
+                self.actions.append(Move(Square(from_coordinate[1], to_coordinate[0]), Square(to_coordinate[1], to_coordinate[1])))
+
+        for promoted_to in [Piece.QUEEN, Piece.BISHOP, Piece.ROOK, Piece.KNIGHT]:
+            for column in range(8):
+                for row in [1, 6]:
+                    self.actions.append(Move(Square(column, row), Square(column, row - 1 if row == 1 else row + 1), promotion=promoted_to))
 
     def get_actions(self):
-        return self.__actions
+        return self.actions
 
     def get_legal_actions(self):
         pass
@@ -126,7 +135,7 @@ class Board:
 
         if abs(piece_to_move) == Piece.PAWN:
             if is_diagonal_move(move):
-                return abs(to_x - from_x) == 1 and is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1 and piece_at_target != 0
+                return abs(to_x - from_x) == 1 and is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE
             if is_pawns_first_move(move, piece_to_move > 0):
                 return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) <= 2
             return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1
