@@ -71,6 +71,7 @@ def test_pawn_advance():
     board.register_move(forward_move)
     assert board.state == expected_state
 
+
 def test_pawn_capture():
     board = Board()
     move_white_left_1 = Move(Square(0, 6), Square(0, 4))
@@ -88,10 +89,10 @@ def test_pawn_capture():
         [Piece.NONE, *[Piece.PAWN] * 7],
         [piece for piece in back_row],
     ]
-    
+
     assert board.validate_move(move_white_left_1)
     board.register_move(move_white_left_1)
-    
+
     assert board.validate_move(move_black_left_1)
     board.register_move(move_black_left_1)
 
