@@ -1,5 +1,6 @@
 from server.game.board import Board
 from server.game.piece import Piece
+from server.game.move import Move, Square
 
 
 def test_board_init():
@@ -28,3 +29,13 @@ def test_actions():
     pieces_to_promote = 8 * 2
     pieces_to_promote_to = 4
     assert len(board.get_actions()) == pieces_to_choose_from * pieces_to_target_to + pieces_to_promote * pieces_to_promote_to
+
+
+def test_turn():
+    board = Board()
+
+    assert board.is_white_turn
+    board.register_move(Move(Square(0, 6), Square(0, 5)))
+    assert not board.is_white_turn
+    board.register_move(Move(Square(0, 1), Square(0, 2)))
+    assert board.is_white_turn
