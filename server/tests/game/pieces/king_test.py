@@ -6,11 +6,10 @@ def test_king_forward():
     board = Board()
 
     back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
-    front_row = [Piece.PAWN] * 8
     expected_state = [
         [piece * -1 for piece in back_row],
-        [piece * -1 for piece in front_row],
-        [Piece.NONE] * 8,
+        [Piece.NONE, *[piece * -1 for piece in [Piece.PAWN] * 7]],
+        [-Piece.PAWN, *[Piece.NONE] * 7],
         [Piece.NONE] * 8,
         [*[Piece.NONE] * 4, Piece.PAWN, *[Piece.NONE] * 3],
         [Piece.NONE] * 8,
@@ -20,6 +19,9 @@ def test_king_forward():
 
     pawn_forward = Move(Square(4, 6), Square(4, 4))
     board.register_move(pawn_forward)
+
+    black_pawn_forward = Move(Square(0, 1), Square(0, 2))
+    board.register_move(black_pawn_forward)
 
     king_forward = Move(Square(4, 7), Square(4, 6))
     assert board.validate_move(king_forward)
