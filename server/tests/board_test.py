@@ -10,10 +10,7 @@ def test_board_init():
     expected = [
         [piece * -1 for piece in back_row],
         [piece * -1 for piece in front_row],
-        [0 for _ in range(8)],
-        [0 for _ in range(8)],
-        [0 for _ in range(8)],
-        [0 for _ in range(8)],
+        *[[Piece.NONE] * 8] * 4,
         [piece for piece in front_row],
         [piece for piece in back_row],
     ]
@@ -46,7 +43,7 @@ def test_validate_pawn():
     assert not board.validate_move(diagonal_no_capture_move)
 
 
-def test_move_pawn():
+def test_pawn_forward():
     board = Board()
 
     forward_move = Move(Square(0, 6), Square(0, 5))
@@ -56,11 +53,31 @@ def test_move_pawn():
     expected_state = [
         [piece * -1 for piece in back_row],
         [piece * -1 for piece in front_row],
-        [Piece.NONE for _ in range(8)],
-        [Piece.NONE for _ in range(8)],
-        [Piece.NONE for _ in range(8)],
-        [Piece.PAWN, Piece.NONE, Piece.NONE, Piece.NONE, Piece.NONE, Piece.NONE, Piece.NONE, Piece.NONE],
-        [Piece.NONE, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN],
+        *([[Piece.NONE] * 8] * 3),
+        [Piece.PAWN, *[Piece.NONE] * 7],
+        [Piece.NONE, *[Piece.PAWN] * 7],
+        [piece for piece in back_row],
+    ]
+
+    board.register_move(forward_move)
+    assert board.state == expected_state
+
+
+def test_pawn_advance():
+    board = Board()
+
+    forward_move = Move(Square(0, 6), Square(0, 4))
+
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    front_row = [Piece.PAWN for _ in range(8)]
+    expected_state = [
+        [piece * -1 for piece in back_row],
+        [piece * -1 for piece in front_row],
+        [Piece.NONE] * 8,
+        [Piece.NONE] * 8,
+        [Piece.PAWN, *[Piece.NONE] * 7],
+        [Piece.NONE] * 8,
+        [Piece.NONE, *[Piece.PAWN] * 7],
         [piece for piece in back_row],
     ]
 
