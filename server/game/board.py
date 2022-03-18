@@ -91,10 +91,10 @@ class Board:
         self.state = [
             [piece * -1 for piece in back_row],  # Black
             [piece * -1 for piece in front_row],
-            [Piece.NONE for _ in range(8)],
-            [Piece.NONE for _ in range(8)],
-            [Piece.NONE for _ in range(8)],
-            [Piece.NONE for _ in range(8)],
+            [Piece.NONE] * 8,
+            [Piece.NONE] * 8,
+            [Piece.NONE] * 8,
+            [Piece.NONE] * 8,
             [piece for piece in front_row],
             [piece for piece in back_row],  # White
         ]
@@ -108,6 +108,9 @@ class Board:
             for column in range(8):
                 for row in [1, 6]:
                     self.actions.append(Move(Square(column, row), Square(column, row - 1 if row == 1 else row + 1), promotion=promoted_to))
+
+    def __str__(self) -> str:
+        return '\n'.join(['\t'.join([str(piece) for piece in row]) for row in self.state])
 
     def get_actions(self):
         return self.actions
