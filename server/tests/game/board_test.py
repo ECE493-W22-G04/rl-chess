@@ -10,7 +10,10 @@ def test_board_init():
     expected = [
         [piece * -1 for piece in back_row],
         [piece * -1 for piece in front_row],
-        *[[Piece.NONE] * 8] * 4,
+        [Piece.NONE] * 8,
+        [Piece.NONE] * 8,
+        [Piece.NONE] * 8,
+        [Piece.NONE] * 8,
         [piece for piece in front_row],
         [piece for piece in back_row],
     ]
