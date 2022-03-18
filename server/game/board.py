@@ -2,6 +2,7 @@ import itertools
 
 from .piece import Piece
 from .move import Move, Square
+from .validators import is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear
 
 
 class Board:

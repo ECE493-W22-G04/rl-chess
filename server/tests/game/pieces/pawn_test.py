@@ -1,5 +1,6 @@
-from game.board import Board, Piece
-from server.game.board import Move, Square
+from server.game.board import Board
+from server.game.piece import Piece
+from server.game.move import Move, Square
 
 
 def test_validate_pawn_forward():

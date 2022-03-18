@@ -1,5 +1,5 @@
-from game.board import Board, Piece
-from server.game.board import Move, Square
+from server.game.board import Board
+from server.game.piece import Piece
 
 
 def test_board_init():
