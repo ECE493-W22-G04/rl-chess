@@ -22,19 +22,21 @@ from absl import app
 from absl import flags
 from absl import logging
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from open_spiel.python import rl_environment
 from open_spiel.python.algorithms import dqn
 from open_spiel.python.algorithms import random_agent
 
+import os
+
 FLAGS = flags.FLAGS
 
 # Training parameters
-flags.DEFINE_string("checkpoint_dir", "/tmp/dqn_test", "Directory to save/load the agent models.")
-flags.DEFINE_integer("save_every", int(1e3), "Episode frequency at which the DQN agent models are saved.")
+flags.DEFINE_string("checkpoint_dir", f"{os.getcwd()}/dqn_test", "Directory to save/load the agent models.")
+flags.DEFINE_integer("save_every", int(1e2), "Episode frequency at which the DQN agent models are saved.")
 flags.DEFINE_integer("num_train_episodes", int(1e4), "Number of training episodes.")
-flags.DEFINE_integer("eval_every", 1000, "Episode frequency at which the DQN agents are evaluated.")
+flags.DEFINE_integer("eval_every", 10, "Episode frequency at which the DQN agents are evaluated.")
 
 # DQN model hyper-parameters
 flags.DEFINE_list("hidden_layers_sizes", [64, 64], "Number of hidden units in the Q-Network MLP.")
@@ -98,7 +100,7 @@ def main(_):
 
         for ep in range(FLAGS.num_train_episodes):
             if (ep + 1) % FLAGS.eval_every == 0:
-                r_mean = eval_against_random_bots(env, agents, random_agents, 500)
+                r_mean = eval_against_random_bots(env, agents, random_agents, 10)
                 logging.info("[%s] Mean episode rewards %s", ep + 1, r_mean)
             if (ep + 1) % FLAGS.save_every == 0:
                 for agent in agents:
