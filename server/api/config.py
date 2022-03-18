@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-DEFAULTS = {"JWT_SECRET_KEY": "", "LOG_FOLDER": "_logs", "IS_DEBUG": False}
+DEFAULTS = {"JWT_SECRET_KEY": "", "LOG_FOLDER": "_logs", "IS_DEBUG": False, "DATABASE_URL": "postgresql://postgres:postgres@localhost:5432/postgres"}
 
 
 def load_config():
@@ -10,6 +10,9 @@ def load_config():
         "JWT_SECRET_KEY": os.getenv("JWT_SECRET_KEY"),
         "LOG_FOLDER": os.getenv("LOG_FOLDER"),
         "IS_DEBUG": os.getenv("IS_DEBUG") == "1",
+        # Heroku defaults to using postgres:// but that is no longer supported
+        # Only postgresql:// is supported in latest SQLAlchemy version
+        "DATABASE_URL": os.getenv('DATABASE_URL').replace("postgres://", "postgresql://", 1),
     }
 
     # apply defaults for missing config params
