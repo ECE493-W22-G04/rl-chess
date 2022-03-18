@@ -2,17 +2,7 @@ from game.board import Board, Piece
 from server.game.board import Move, Square
 
 
-def test_validate_bishop_diagonal():
-    board = Board()
-
-    pawn = Square(1, 6)
-    board.state[pawn.y][pawn.x] = Piece.NONE
-
-    bishop_diagonal = Move(Square(2, 7), Square(0, 5))
-    assert board.validate_move(bishop_diagonal)
-
-
-def test_move_bishop_diagonal():
+def test_bishop_diagonal():
     board = Board()
 
     pawn = Square(1, 6)
@@ -32,6 +22,8 @@ def test_move_bishop_diagonal():
         [Piece.PAWN, Piece.NONE, Piece.PAWN, *[Piece.PAWN] * 5],
         [Piece.ROOK, Piece.KNIGHT, Piece.NONE, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
     ]
+
+    assert board.validate_move(bishop_diagonal)
 
     board.register_move(bishop_diagonal)
     assert board.state == expected_state
