@@ -32,8 +32,8 @@ FLAGS = flags.FLAGS
 
 # Training parameters
 flags.DEFINE_string("checkpoint_dir", "/tmp/dqn_test", "Directory to save/load the agent models.")
-flags.DEFINE_integer("save_every", int(1e4), "Episode frequency at which the DQN agent models are saved.")
-flags.DEFINE_integer("num_train_episodes", int(1e6), "Number of training episodes.")
+flags.DEFINE_integer("save_every", int(1e3), "Episode frequency at which the DQN agent models are saved.")
+flags.DEFINE_integer("num_train_episodes", int(1e4), "Number of training episodes.")
 flags.DEFINE_integer("eval_every", 1000, "Episode frequency at which the DQN agents are evaluated.")
 
 # DQN model hyper-parameters
@@ -98,7 +98,7 @@ def main(_):
 
         for ep in range(FLAGS.num_train_episodes):
             if (ep + 1) % FLAGS.eval_every == 0:
-                r_mean = eval_against_random_bots(env, agents, random_agents, 1000)
+                r_mean = eval_against_random_bots(env, agents, random_agents, 500)
                 logging.info("[%s] Mean episode rewards %s", ep + 1, r_mean)
             if (ep + 1) % FLAGS.save_every == 0:
                 for agent in agents:
