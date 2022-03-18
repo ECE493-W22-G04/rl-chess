@@ -22,6 +22,8 @@ class Board:
             [piece for piece in back_row],  # White
         ]
 
+        self.is_white_turn = True
+
         self.actions: list[Move] = []
         for from_coordinate in itertools.product(range(8), repeat=2):
             for to_coordinate in itertools.product(range(8), repeat=2):
@@ -69,6 +71,8 @@ class Board:
         self.state[move.to_square.y][move.to_square.x] = piece_to_move
         self.state[move.from_square.y][move.from_square.x] = Piece.NONE
 
+        self.is_white_turn = not self.is_white_turn
+
     def validate_move(self, move: Move):
         from_x = move.from_square.x
         from_y = move.from_square.y
@@ -77,6 +81,12 @@ class Board:
 
         piece_to_move = self.state[from_y][from_x]
         piece_at_target = self.state[to_y][to_x]
+
+        if self.is_white_turn and piece_to_move < 0:
+            return False
+
+        if not self.is_white_turn and piece_to_move > 0:
+            return False
 
         if to_x == from_x and to_y == from_y:
             return False
