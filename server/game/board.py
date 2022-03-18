@@ -113,10 +113,20 @@ class Board:
         return self.actions
 
     def get_legal_actions(self):
-        pass
+        legal_actions: list[Move] = []
+        for move in self.actions:
+            if not self.validate_move(move):
+                continue
+            legal_actions.append(move)
+        return legal_actions
 
-    def register(self, from_to: Move):
-        pass
+    def register_move(self, move: Move):
+        if not self.validate_move(move):
+            return
+
+        piece_to_move = self.state[move.from_square.y][move.from_square.x]
+        self.state[move.to_square.y][move.to_square.x] = piece_to_move
+        self.state[move.from_square.y][move.from_square.x] = Piece.NONE
 
     def validate_move(self, move: Move):
         from_x = move.from_square.x

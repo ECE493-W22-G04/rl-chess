@@ -30,7 +30,7 @@ def test_actions():
     assert len(board.get_actions()) == pieces_to_choose_from * pieces_to_target_to + pieces_to_promote * pieces_to_promote_to
 
 
-def test_pawn():
+def test_validate_pawn():
     board = Board()
 
     forward_move = Move(Square(0, 6), Square(0, 5))
@@ -44,3 +44,24 @@ def test_pawn():
     assert not board.validate_move(forward_three_move)
     assert not board.validate_move(side_move)
     assert not board.validate_move(diagonal_no_capture_move)
+
+
+def test_move_pawn():
+    board = Board()
+
+    forward_move = Move(Square(0, 6), Square(0, 5))
+    board.register_move(forward_move)
+
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    front_row = [Piece.PAWN for _ in range(8)]
+
+    board.state = [
+        [piece * -1 for piece in back_row],  # Black
+        [piece * -1 for piece in front_row],
+        [Piece.NONE for _ in range(8)],
+        [Piece.NONE for _ in range(8)],
+        [Piece.NONE for _ in range(8)],
+        [Piece.PAWN, Piece.NONE, Piece.NONE, Piece.NONE, Piece.NONE, Piece.NONE, Piece.NONE, Piece.NONE],
+        [Piece.NONE, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN, Piece.PAWN],
+        [piece for piece in back_row],  # White
+    ]
