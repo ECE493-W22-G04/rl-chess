@@ -43,7 +43,7 @@ def signin():
         else:
             return jsonify({"message": "Incorrect password"}), 400
     except Exception as e:
-        return jsonify({"message": "Unsuccessful login attempt: {e}"}), 400
+        return jsonify({"message": f"Unsuccessful login attempt: {e}"}), 400
 
 
 # Create a route to register a new user.
