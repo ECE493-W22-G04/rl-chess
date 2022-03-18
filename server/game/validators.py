@@ -2,6 +2,13 @@ from .piece import Piece
 from .move import Move
 
 
+def exclusive_range(i: int, j: int):
+    """Helper function to return the range exclusive of the ends and determines the step size automatically"""
+    if j > i:
+        return range(i + 1, j, 1)
+    return range(i - 1, j, -1)
+
+
 def is_pawns_first_move(move: Move, is_white: bool):
     if is_white:
         return move.from_square.y == 6
@@ -21,8 +28,11 @@ def is_diagonal_move(move: Move):
 
 
 def is_diagonal_path_clear(board: list[list[Piece]], move: Move):
-    for i in range(move.from_square.x, move.to_square.x, 1 if move.from_square.x < move.to_square.x else -1):
-        if board[i][i] != 0:
+    xs = exclusive_range(move.from_square.x, move.to_square.x)
+    ys = exclusive_range(move.from_square.y, move.to_square.y)
+    coordinates = zip(xs, ys)
+    for coordinate in coordinates:
+        if board[coordinate[1]][coordinate[0]] != Piece.NONE:
             return False
     return True
 
@@ -35,12 +45,12 @@ def is_rook_move(move: Move):
 
 def is_rook_path_clear(board: list[list[Piece]], move: Move):
     if abs(move.to_square.x - move.from_square.x) > 0:
-        for i in range(move.from_square.x, move.to_square.x, 1 if move.from_square.x < move.to_square.x else -1):
-            if board[move.from_square.y][i] != 0:
+        for i in exclusive_range(move.from_square.x, move.to_square.x):
+            if board[move.from_square.y][i] != Piece.NONE:
                 return False
 
-    for i in range(move.from_square.y, move.to_square.y, 1 if move.from_square.y < move.to_square.y else -1):
-        if board[i][move.from_square.x] != 0:
+    for i in exclusive_range(move.from_square.y, move.to_square.y):
+        if board[i][move.from_square.x] != Piece.NONE:
             return False
 
     return True
