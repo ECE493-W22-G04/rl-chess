@@ -90,12 +90,7 @@ def test_pawn_capture():
         [piece for piece in back_row],
     ]
 
-    assert board.validate_move(move_white_left_1)
     board.register_move(move_white_left_1)
-
-    assert board.validate_move(move_black_left_1)
     board.register_move(move_black_left_1)
-
-    assert board.validate_move(move_white_left_2)
     board.register_move(move_white_left_2)
     assert board.state == expected_state
