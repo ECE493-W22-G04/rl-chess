@@ -148,7 +148,7 @@ class Board:
 
         if abs(piece_to_move) == Piece.PAWN:
             if is_diagonal_move(move):
-                return abs(to_x - from_x) == 1 and is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE
+                return abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE
             if is_pawns_first_move(move, piece_to_move > 0):
                 return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) <= 2
             return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1
