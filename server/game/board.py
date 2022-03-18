@@ -99,6 +99,6 @@ class Board:
         if abs(piece_to_move) == Piece.QUEEN:
             return (is_diagonal_move(move) and is_diagonal_path_clear(self.state, move)) or (is_rook_move(move) and is_rook_path_clear(self.state, move))
         if abs(piece_to_move) == Piece.KING:
-            return abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1
+            return abs(to_x - from_x) <= 1 and abs(to_y - from_y) <= 1
 
         return False
