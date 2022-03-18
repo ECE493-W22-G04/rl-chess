@@ -1,9 +1,8 @@
-from numpy import piecewise
 from game.board import Board, Piece
 from server.game.board import Move, Square
 
 
-def test_validate_queen_diagonal():
+def test_queen_diagonal():
     board = Board()
 
     pawn = Square(2, 6)
