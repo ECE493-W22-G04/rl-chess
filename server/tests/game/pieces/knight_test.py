@@ -20,9 +20,9 @@ def test_knight():
     ]
 
     assert board.validate_move(knight_forward)
-    board.register_move(knight_forward)
+    assert board.register_move(knight_forward)
 
     black_pawn_forward = Move(Square(0, 1), Square(0, 2))
-    board.register_move(black_pawn_forward)
+    assert board.register_move(black_pawn_forward)
 
     assert board.state == first_expected_state

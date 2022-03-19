@@ -35,7 +35,7 @@ def test_turn():
     board = Board()
 
     assert board.is_white_turn
-    board.register_move(Move(Square(0, 6), Square(0, 5)))
+    assert board.register_move(Move(Square(0, 6), Square(0, 5)))
     assert not board.is_white_turn
-    board.register_move(Move(Square(0, 1), Square(0, 2)))
+    assert board.register_move(Move(Square(0, 1), Square(0, 2)))
     assert board.is_white_turn

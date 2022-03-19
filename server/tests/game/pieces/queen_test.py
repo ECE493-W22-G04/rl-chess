@@ -25,7 +25,7 @@ def test_queen_diagonal():
 
     assert board.validate_move(queen_diagonal)
 
-    board.register_move(queen_diagonal)
+    assert board.register_move(queen_diagonal)
     assert board.state == expected_state
 
 
@@ -50,7 +50,7 @@ def test_queen_vertical():
     queen_vertical = Move(Square(3, 7), Square(3, 1))
     assert board.validate_move(queen_vertical)
 
-    board.register_move(queen_vertical)
+    assert board.register_move(queen_vertical)
     assert board.state == expected_state
 
 
@@ -76,5 +76,5 @@ def test_queen_horizontal():
     queen_horizontal = Move(Square(3, 7), Square(2, 7))
     assert board.validate_move(queen_horizontal)
 
-    board.register_move(queen_horizontal)
+    assert board.register_move(queen_horizontal)
     assert board.state == expected_state

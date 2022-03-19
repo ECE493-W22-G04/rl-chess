@@ -18,13 +18,13 @@ def test_king_forward():
     ]
 
     pawn_forward = Move(Square(4, 6), Square(4, 4))
-    board.register_move(pawn_forward)
+    assert board.register_move(pawn_forward)
 
     black_pawn_forward = Move(Square(0, 1), Square(0, 2))
-    board.register_move(black_pawn_forward)
+    assert board.register_move(black_pawn_forward)
 
     king_forward = Move(Square(4, 7), Square(4, 6))
     assert board.validate_move(king_forward)
 
-    board.register_move(king_forward)
+    assert board.register_move(king_forward)
     assert board.state == expected_state

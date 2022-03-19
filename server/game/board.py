@@ -63,15 +63,16 @@ class Board:
             legal_actions.append(move)
         return legal_actions
 
-    def register_move(self, move: Move):
+    def register_move(self, move: Move) -> bool:
         if not self.validate_move(move):
-            return
+            return False
 
         piece_to_move = self.state[move.from_square.y][move.from_square.x]
         self.state[move.to_square.y][move.to_square.x] = piece_to_move
         self.state[move.from_square.y][move.from_square.x] = Piece.NONE
 
         self.is_white_turn = not self.is_white_turn
+        return True
 
     def validate_move(self, move: Move):
         from_x = move.from_square.x

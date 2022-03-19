@@ -23,7 +23,7 @@ def test_rook_vertical():
     rook_vertical = Move(Square(0, 7), Square(0, 1))
     assert board.validate_move(rook_vertical)
 
-    board.register_move(rook_vertical)
+    assert board.register_move(rook_vertical)
     assert board.state == expected_state
 
 
@@ -49,5 +49,5 @@ def test_rook_horizontal():
     rook_horizontal = Move(Square(0, 7), Square(1, 7))
     assert board.validate_move(rook_horizontal)
 
-    board.register_move(rook_horizontal)
+    assert board.register_move(rook_horizontal)
     assert board.state == expected_state

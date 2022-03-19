@@ -25,5 +25,5 @@ def test_bishop_diagonal():
 
     assert board.validate_move(bishop_diagonal)
 
-    board.register_move(bishop_diagonal)
+    assert board.register_move(bishop_diagonal)
     assert board.state == expected_state

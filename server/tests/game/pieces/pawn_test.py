@@ -38,7 +38,7 @@ def test_pawn_forward():
 
     assert Board().validate_move(forward_move)
 
-    board.register_move(forward_move)
+    assert board.register_move(forward_move)
     assert board.state == expected_state
 
 
@@ -62,7 +62,7 @@ def test_pawn_advance():
 
     assert Board().validate_move(advance_move)
 
-    board.register_move(advance_move)
+    assert board.register_move(advance_move)
     assert board.state == expected_state
 
 
@@ -84,7 +84,7 @@ def test_pawn_capture():
         [piece for piece in back_row],
     ]
 
-    board.register_move(move_white_left_1)
-    board.register_move(move_black_left_1)
-    board.register_move(move_white_left_2)
+    assert board.register_move(move_white_left_1)
+    assert board.register_move(move_black_left_1)
+    assert board.register_move(move_white_left_2)
     assert board.state == expected_state
