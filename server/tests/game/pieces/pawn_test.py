@@ -15,7 +15,7 @@ def test_validate_pawn_side():
     board.state[pawn.y][pawn.x] = Piece.PAWN
 
     side_move = Move(pawn, Square(2, 3))
-    assert not Board().validate_move(side_move)
+    assert not board.validate_move(side_move)
 
 
 def test_validate_diagonal_no_capture():
