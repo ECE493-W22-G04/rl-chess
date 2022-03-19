@@ -86,6 +86,7 @@ def test_pawn_capture():
 
     assert board.register_move(move_white_left_1)
     assert board.register_move(move_black_left_1)
+    assert board.validate_move(move_white_left_2)
     assert board.register_move(move_white_left_2)
     assert board.state == expected_state
 
