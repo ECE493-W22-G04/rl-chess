@@ -80,6 +80,10 @@ class Board:
         to_x = move.to_square.x
         to_y = move.to_square.y
 
+        for coordinate in [from_x, from_y, to_x, to_y]:
+            if coordinate < 0 or coordinate > 7:
+                return False
+
         piece_to_move = self.state[from_y][from_x]
         piece_at_target = self.state[to_y][to_x]
 

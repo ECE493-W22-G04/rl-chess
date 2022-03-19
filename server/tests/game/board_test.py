@@ -18,7 +18,6 @@ def test_board_init():
         [piece for piece in front_row],
         [piece for piece in back_row],
     ]
-
     assert board.state == expected
 
 
@@ -33,9 +32,14 @@ def test_actions():
 
 def test_turn():
     board = Board()
-
     assert board.is_white_turn
     assert board.register_move(Move(Square(0, 6), Square(0, 5)))
     assert not board.is_white_turn
     assert board.register_move(Move(Square(0, 1), Square(0, 2)))
     assert board.is_white_turn
+
+
+def test_bounds():
+    board = Board()
+    move = Move(Square(-1, 0), Square(0, 0))
+    assert not board.validate_move(move)
