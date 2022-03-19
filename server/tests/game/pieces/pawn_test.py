@@ -1,6 +1,7 @@
 from server.game.board import Board
 from server.game.piece import Piece
 from server.game.move import Move, Square
+from server.tests.game.pieces.helper import get_empty_board
 
 
 def test_validate_pawn_forward_three():
@@ -9,7 +10,11 @@ def test_validate_pawn_forward_three():
 
 
 def test_validate_pawn_side():
-    side_move = Move(Square(0, 6), Square(1, 6))
+    board = get_empty_board()
+    pawn = Square(3, 3)
+    board.state[pawn.y][pawn.x] = Piece.PAWN
+
+    side_move = Move(pawn, Square(2, 3))
     assert not Board().validate_move(side_move)
 
 
