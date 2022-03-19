@@ -2,7 +2,7 @@ import itertools
 
 from .piece import Piece
 from .move import Move, Square
-from .validators import is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear
+from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear
 
 
 class Board:
@@ -96,7 +96,7 @@ class Board:
             return False
 
         if abs(piece_to_move) == Piece.PAWN:
-            if is_diagonal_move(move):
+            if is_diagonal_forward(move, piece_to_move > 0):
                 return abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE
             if is_pawns_first_move(move, piece_to_move > 0):
                 return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) <= 2

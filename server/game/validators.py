@@ -23,6 +23,12 @@ def is_forward_move(move: Move, is_white: bool):
     return move.to_square.y > move.from_square.y
 
 
+def is_diagonal_forward(move: Move, is_white: bool):
+    if is_white:
+        return is_diagonal_move(move) and move.to_square.y < move.from_square.y
+    return is_diagonal_move(move) and move.to_square.y > move.from_square.y
+
+
 def is_diagonal_move(move: Move):
     return abs(move.to_square.x - move.from_square.x) == abs(move.to_square.y - move.from_square.y)
 

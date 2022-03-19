@@ -88,3 +88,21 @@ def test_pawn_capture():
     assert board.register_move(move_black_left_1)
     assert board.register_move(move_white_left_2)
     assert board.state == expected_state
+
+
+def test_pawn_capture_backwards():
+    board = Board()
+    board.state = [
+        [*[piece * -1 for piece in [Piece.NONE] * 7], Piece.KING * -1],
+        [Piece.NONE] * 8,
+        [Piece.NONE] * 8,
+        [Piece.PAWN, *[Piece.NONE] * 7],
+        [Piece.NONE, -Piece.PAWN, *[Piece.NONE] * 6],
+        [Piece.NONE] * 8,
+        [Piece.NONE] * 8,
+        [*[[Piece.NONE] * 7], Piece.KING],
+    ]
+
+    pawn_capture_backwards = Move(Square(0, 3), Square(1, 4))
+
+    assert not board.validate_move(pawn_capture_backwards)
