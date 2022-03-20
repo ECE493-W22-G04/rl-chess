@@ -1,27 +1,15 @@
-import os
-
 from sqlalchemy.exc import IntegrityError
 import bcrypt
 
-from flask import Flask, request, jsonify, url_for, Blueprint
+from flask import request, jsonify,  Blueprint
 from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
-from flask_jwt_extended import jwt_required
-from flask_jwt_extended import JWTManager
 
 from api.models import Player, db
 
-api = Blueprint("api", __name__)
-
-
-@api.route("/", methods=["POST", "GET"])
-def handle_default():
-    response_body = {"message": "Hello! I'm a message that came from the backend"}
-    return jsonify(response_body), 200
-
+auth = Blueprint("auth", __name__, url_prefix="/auth")
 
 # Create a route to authenticate users and return JWTs.
-@api.route("/api/auth/signin", methods=["POST"])
+@auth.route("/signin", methods=["POST"])
 def signin():
     try:
         email = request.json.get("email", None)
@@ -47,7 +35,7 @@ def signin():
 
 
 # Create a route to register a new user.
-@api.route("/api/auth/signup", methods=["POST"])
+@auth.route("/signup", methods=["POST"])
 def signup():
     try:
         if request.is_json:
@@ -79,14 +67,8 @@ def signup():
         return jsonify({"message": f"Unsuccessful registration attempt: {e}"}), 400
 
 
-# Create a route to display a homepage message to unauthenticated user
-@api.route("/api/home", methods=["GET"])
-def home():
-    return jsonify({"message": "This is the generic homepage"}), 200
-
-
 # Create a route to display a homepage message to an authenticated user
-@api.route("/api/user", methods=["GET"])
+@auth.route("/user", methods=["GET"])
 def user():
     token = request.headers.get("authorization", None)
     # TODO: Check that token is valid
