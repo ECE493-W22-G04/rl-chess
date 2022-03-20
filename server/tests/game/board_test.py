@@ -1,6 +1,6 @@
-from server.game.board import Board
-from server.game.piece import Piece
-from server.game.move import Move, Square
+from game.board import Board
+from game.piece import Piece
+from game.move import Move, Square
 
 
 def test_board_init():
