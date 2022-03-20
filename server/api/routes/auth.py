@@ -1,12 +1,13 @@
 from sqlalchemy.exc import IntegrityError
 import bcrypt
 
-from flask import request, jsonify,  Blueprint
+from flask import request, jsonify, Blueprint
 from flask_jwt_extended import create_access_token
 
 from api.models import Player, db
 
 auth = Blueprint("auth", __name__, url_prefix="/auth")
+
 
 # Create a route to authenticate users and return JWTs.
 @auth.route("/signin", methods=["POST"])
