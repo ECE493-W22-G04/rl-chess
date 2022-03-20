@@ -5,6 +5,7 @@ from .game import game
 
 api = Blueprint("api", __name__, url_prefix="/api")
 api.register_blueprint(auth)
+api.register_blueprint(game)
 
 # Create a route to display a homepage message to unauthenticated user
 @api.route("/home", methods=["GET"])
