@@ -1,5 +1,7 @@
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 import config from '../config';
+import { Jwt } from '../types';
 
 const API_URL = `${config.SERVER_ENDPOINT}/api/auth/`;
 
@@ -28,8 +30,11 @@ class AuthService {
     }
     getCurrentUser() {
         const tokenStr = localStorage.getItem('token');
-        if (tokenStr) return tokenStr;
-        return null;
+        if (tokenStr == null) {
+            return null;
+        }
+        const jwt = jwtDecode<Jwt>(tokenStr);
+        return jwt.sub;
     }
 }
 
