@@ -1,9 +1,10 @@
 import React from 'react';
 import App from './App';
 import { shallow } from 'enzyme';
-import { Link } from 'react-router-dom';
 import socket from './services/socket';
 import { io } from 'socket.io-client';
+import Header from './components/Header';
+import Home from './components/home';
 
 jest.mock('./services/socket');
 const mockSocket = jest.mocked(socket);
@@ -13,13 +14,13 @@ const mockedIo = jest.mocked(io);
 mockedIo.mockReturnValue(mockSocket);
 
 test('renders RL Chess homepage', () => {
-    const resp = shallow(<App />);
-    const link = resp.find(Link).first();
-    expect(link.text()).toBe('RL Chess');
+    const res = shallow(<App />);
+    const home = res.find(<Home />);
+    expect(home).not.toBeNull();
 });
 
-test('contains logo', () => {
+test('contains Header', () => {
     const res = shallow(<App />);
-    const imageNode = res.find('img');
-    expect(imageNode.prop('alt')).toBe('logo');
+    const header = res.find(<Header />);
+    expect(header).not.toBeNull();
 });
