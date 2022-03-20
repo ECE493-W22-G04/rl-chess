@@ -9,8 +9,9 @@ from flask_migrate import Migrate
 
 # local imports
 from .config import load_config, get_log_folder
-from .routes import api
-from .models import db, Player
+from .routes.api import api
+from .routes.index import index
+from .models import db
 
 
 def create_app():
@@ -29,6 +30,7 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = config["DATABASE_URL"]
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+    app.register_blueprint(index)
     app.register_blueprint(api)
 
     # Set-up SQLAlchemy
