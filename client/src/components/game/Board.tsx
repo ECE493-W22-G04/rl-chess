@@ -6,7 +6,7 @@ type BoardProps = {
 };
 
 const Board: FC<BoardProps> = ({ board }: BoardProps) => {
-    return <div>Board</div>;
+    return <div>{board}</div>;
 };
 
 export default Board;
