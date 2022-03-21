@@ -1,7 +1,7 @@
-from flask_sqlalchemy import SQLAlchemy
 from uuid import uuid4
+from flask_sqlalchemy import SQLAlchemy
 
-from server.api.exceptions import PlayerDoesNotExist
+from .exceptions import PlayerDoesNotExist
 
 db = SQLAlchemy()
 
@@ -19,20 +19,20 @@ class Player(db.Model):
 
 class Game:
 
-    def __init__(self, host_player_id: int) -> None:
+    def __init__(self, host_email: int) -> None:
         self.id = uuid4()
-        if Player.query.get(host_player_id) == None:
+        if Player.query.filter_by(email=host_email).first() == None:
             raise PlayerDoesNotExist()
-        self.host = host_player_id
+        self.host = host_email
         self.black_player = None
         self.white_player = None
 
-    def set_white_player(self, player_id: int):
-        if Player.query.get(player_id) == None:
+    def set_white_player(self, player_email: int):
+        if Player.query.filter_by(email=player_email).first() == None:
             raise PlayerDoesNotExist()
-        self.white_player = player_id
+        self.white_player = player_email
 
-    def set_black_player(self, player_id: int):
-        if Player.query.get(player_id) == None:
+    def set_black_player(self, player_email: int):
+        if Player.query.filter_by(email=player_email).first() == None:
             raise PlayerDoesNotExist()
-        self.black_player = player_id
+        self.black_player = player_email
