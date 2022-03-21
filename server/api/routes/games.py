@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 
-game = Blueprint("game", __name__, url_prefix="/game")
+game = Blueprint("games", __name__, url_prefix="/games")
 
 GAME = {
     'id': 1,
@@ -19,6 +19,5 @@ def create_game():
 
 @game.route("/<game_id>", methods=["GET"])
 def get_game(game_id):
-    print(game_id)
     # TODO: Get game dynamically
     return jsonify(GAME), 200
