@@ -2,7 +2,7 @@ import axios from 'axios';
 import config from '../config';
 import authHeader from './auth-header';
 
-const API_URL = `${config.SERVER_ENDPOINT}/api/game/`;
+const API_URL = `${config.SERVER_ENDPOINT}/api/games/`;
 
 export async function createGame(isPvP: boolean) {
     const payload = {
