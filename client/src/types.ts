@@ -7,6 +7,7 @@ export type Player = string; // Player is identified by their email (can be foun
 
 export type Game = {
     id: string;
+    board: Board;
     whitePlayer: Player | null;
     blackPlayer: Player | null;
     host: Player;
