@@ -14,7 +14,7 @@ export async function createGame(isPvP: boolean) {
         });
         return resp.data;
     } catch (err) {
-        console.log(err);
+        console.error(err);
         return null;
     }
 }
@@ -26,7 +26,7 @@ export async function getGameDetails(gameId: string) {
         });
         return resp.data;
     } catch (err) {
-        console.log(err);
+        console.error(err);
         return null;
     }
 }
