@@ -9,7 +9,7 @@ import { Game } from '../../types';
 const Room: FC = () => {
     const { gameId } = useParams();
     const [game, setGame] = useState<Game | null>(null);
-    const [hasGameStarted, setHasGameStarted] = useState<boolean>(false);
+    const [hasGameStarted, setHasGameStarted] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
