@@ -30,6 +30,7 @@ def create_game():
 @game.route("/<game_id>", methods=["GET"])
 @jwt_required()
 def get_game(game_id):
-    if not game_id in current_games:
+    game_uuid = UUID(game_id)
+    if not game_uuid in current_games:
         return jsonify({}), 404
-    return jsonify(current_games[game_id]), 200
+    return jsonify(current_games[game_uuid].__dict__), 200
