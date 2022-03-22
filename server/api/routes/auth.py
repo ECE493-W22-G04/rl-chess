@@ -1,6 +1,5 @@
-from sqlalchemy.exc import IntegrityError
 import bcrypt
-
+from sqlalchemy.exc import IntegrityError
 from flask import request, jsonify, Blueprint
 from flask_jwt_extended import create_access_token
 
