@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import Board from './Board';
 import Lobby from './Lobby';
-import { getGameDetails, joinGame } from '../../services/game';
+import { getGameDetails } from '../../services/game';
 import socket from '../../services/socket';
 import { Game } from '../../types';
 import AuthService from '../../services/auth';

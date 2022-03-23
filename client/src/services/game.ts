@@ -30,15 +30,3 @@ export async function getGameDetails(gameId: string) {
         return null;
     }
 }
-
-export async function joinGame(gameId: string) {
-    try {
-        const resp = await axios.get(`${API_URL}${gameId}`, {
-            headers: authHeader(),
-        });
-        return resp.data;
-    } catch (err) {
-        console.error(err);
-        return null;
-    }
-}
