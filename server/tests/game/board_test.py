@@ -43,3 +43,16 @@ def test_bounds():
     board = Board()
     move = Move(Square(-1, 0), Square(0, 0))
     assert not board.validate_move(move)
+
+def test_checkmate():
+    board = get_empty_board()
+
+    king = Square(3, 0)
+    queen = Square(3, 1)
+    bishop = Square(4, 2)
+
+    board.state[king.y][king.x] = -Piece.KING
+    board.state[queen.y][queen.x] = Piece.QUEEN
+    board.state[bishop.y][bishop.x] = Piece.BISHOP
+
+    assert board.is_checkmate()

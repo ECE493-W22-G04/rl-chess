@@ -54,12 +54,31 @@ class Board:
         return legal_actions
 
     def is_check(self) -> bool:
+        """Returns true if the current player is checks the opposing player"""
         legal_actions = self.get_legal_actions()
         for legal_action in legal_actions:
             target_piece = self.state[legal_action.to_square.y][legal_action.to_square.x]
             if abs(target_piece) == Piece.KING:
                 return True
         return False
+
+    def is_checkmate(self) -> bool:
+        """Returns true if the current player is checks the opposing player"""
+        was_white_turn = self.is_white_turn
+        # View moves as opposing player
+        self.is_white_turn = not self.is_white_turn
+
+        legal_actions = self.get_legal_actions()
+        can_king_move = False
+        for legal_action in legal_actions:
+            from_piece = self.state[legal_action.from_square.y][legal_action.from_square.x]
+            if abs(from_piece) == Piece.KING:
+                can_king_move = True
+                break
+
+        # Revert state
+        self.is_white_turn = was_white_turn
+        return not can_king_move
 
     def __register_move_unsafe(self, move: Move) -> bool:
         """Registers move without validation"""
