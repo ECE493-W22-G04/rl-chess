@@ -52,8 +52,8 @@ def test_check():
     king = Square(3, 3)
     knight = Square(5, 4)
 
-    board.state[king.y][king.x] = -Piece.KING
-    board.state[knight.y][knight.x] = Piece.KNIGHT
+    board.state[king.y][king.x] = Piece.KING
+    board.state[knight.y][knight.x] = -Piece.KNIGHT
 
     assert board.is_check()
 
@@ -64,10 +64,42 @@ def test_check2():
     king = Square(4, 0)
     queen = Square(3, 1)
 
+    board.state[king.y][king.x] = Piece.KING
+    board.state[queen.y][queen.x] = -Piece.QUEEN
+
+    assert board.is_check()
+
+
+def test_check_unblock():
+    board = get_empty_board()
+
+    king = Square(4, 0)
+    pawn = Square(5, 1)
+    queen = Square(3, 2)
+
+    board.state[king.y][king.x] = Piece.KING
+    board.state[pawn.y][pawn.x] = Piece.PAWN
+    board.state[queen.y][queen.x] = -Piece.QUEEN
+
+    pawn_unblock_queen = Move(pawn, Square(5, 2))
+
+    assert not board.validate_move(pawn_unblock_queen)
+
+
+def test_move_to_check():
+    board = get_empty_board()
+
+    king = Square(4, 4)
+    queen = Square(3, 6)
+
     board.state[king.y][king.x] = -Piece.KING
     board.state[queen.y][queen.x] = Piece.QUEEN
 
+    move = Move(queen, Square(3, 3))
+
+    assert board.register_move(move)
     assert board.is_check()
+    assert not board.is_checkmate()
 
 
 def test_checkmate():
@@ -77,8 +109,14 @@ def test_checkmate():
     queen = Square(3, 1)
     bishop = Square(4, 2)
 
-    board.state[king.y][king.x] = -Piece.KING
-    board.state[queen.y][queen.x] = Piece.QUEEN
-    board.state[bishop.y][bishop.x] = Piece.BISHOP
+    board.state[king.y][king.x] = Piece.KING
+    board.state[queen.y][queen.x] = -Piece.QUEEN
+    board.state[bishop.y][bishop.x] = -Piece.BISHOP
 
+    assert board.is_check()
     assert board.is_checkmate()
+
+
+def test_checkmate2():
+    board = Board()
+    assert not board.is_checkmate()
