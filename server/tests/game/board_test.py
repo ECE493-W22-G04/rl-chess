@@ -1,6 +1,7 @@
 from game.board import Board
 from game.piece import Piece
 from game.move import Move, Square
+from server.tests.game.pieces.helper import get_empty_board
 
 
 def test_board_init():
@@ -43,6 +44,31 @@ def test_bounds():
     board = Board()
     move = Move(Square(-1, 0), Square(0, 0))
     assert not board.validate_move(move)
+
+
+def test_check():
+    board = get_empty_board()
+
+    king = Square(3, 3)
+    knight = Square(5, 4)
+
+    board.state[king.y][king.x] = -Piece.KING
+    board.state[knight.y][knight.x] = Piece.KNIGHT
+
+    assert board.is_check()
+
+
+def test_check2():
+    board = get_empty_board()
+
+    king = Square(4, 0)
+    queen = Square(3, 1)
+
+    board.state[king.y][king.x] = -Piece.KING
+    board.state[queen.y][queen.x] = Piece.QUEEN
+
+    assert board.is_check()
+
 
 def test_checkmate():
     board = get_empty_board()
