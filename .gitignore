@@ -130,3 +130,6 @@ dmypy.json
 
 _logs/
 .vscode/
+logs/
+
+dqn_test/
