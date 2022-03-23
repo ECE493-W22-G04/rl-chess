@@ -1,8 +1,7 @@
-import itertools
-
 from .piece import Piece
-from .move import Move, Square
+from .move import Move
 from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear
+from .actions import ACTIONS
 
 
 class Board:
@@ -24,16 +23,6 @@ class Board:
 
         self.is_white_turn = True
 
-        self.actions: list[Move] = []
-        for from_coordinate in itertools.product(range(8), repeat=2):
-            for to_coordinate in itertools.product(range(8), repeat=2):
-                self.actions.append(Move(Square(from_coordinate[1], from_coordinate[0]), Square(to_coordinate[1], to_coordinate[0])))
-
-        for promoted_to in [Piece.QUEEN, Piece.BISHOP, Piece.ROOK, Piece.KNIGHT]:
-            for column in range(8):
-                for row in [1, 6]:
-                    self.actions.append(Move(Square(column, row), Square(column, row - 1 if row == 1 else row + 1), promotion=promoted_to))
-
     def __str__(self) -> str:
 
         def piece_to_str(piece: int):
@@ -53,11 +42,11 @@ class Board:
         return '\n\n'.join(['\t'.join([piece_to_str(piece) for piece in row]) for row in self.state])
 
     def get_actions(self):
-        return self.actions
+        return ACTIONS
 
     def get_legal_actions(self):
         legal_actions: list[Move] = []
-        for move in self.actions:
+        for move in ACTIONS:
             if not self.validate_move(move):
                 continue
             legal_actions.append(move)
