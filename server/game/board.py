@@ -2,6 +2,7 @@ from .piece import Piece
 from .move import Move
 from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear
 from .actions import ACTIONS
+from copy import deepcopy
 
 
 class Board:
@@ -60,16 +61,20 @@ class Board:
                 return True
         return False
 
-    def register_move(self, move: Move) -> bool:
-        if not self.validate_move(move):
-            return False
-
+    def __register_move_unsafe(self, move: Move) -> bool:
+        """Registers move without validation"""
         piece_to_move = self.state[move.from_square.y][move.from_square.x]
         self.state[move.to_square.y][move.to_square.x] = piece_to_move
         self.state[move.from_square.y][move.from_square.x] = Piece.NONE
 
         self.is_white_turn = not self.is_white_turn
         return True
+
+    def register_move(self, move: Move) -> bool:
+        if not self.validate_move(move):
+            return False
+
+        return self.__register_move_unsafe(move)
 
     def validate_move(self, move: Move):
         from_x = move.from_square.x
@@ -111,7 +116,11 @@ class Board:
         if abs(piece_to_move) == Piece.QUEEN:
             return (is_diagonal_move(move) and is_diagonal_path_clear(self.state, move)) or (is_rook_move(move) and is_rook_path_clear(self.state, move))
         if abs(piece_to_move) == Piece.KING:
-            # TODO: Check if move results in a 'check' -> invalid
-            return abs(to_x - from_x) <= 1 and abs(to_y - from_y) <= 1
+            is_valid = abs(to_x - from_x) <= 1 and abs(to_y - from_y) <= 1
+            if not is_valid:
+                return False
+            new_board = deepcopy(self)
+            new_board.__register_move_unsafe(move)
+            return not new_board.is_check()
 
         return False

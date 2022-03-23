@@ -1,6 +1,7 @@
 from game.board import Board, Piece
 from server.game.move import Move, Square
 from server.tests.game.pieces.helper import get_empty_board
+from copy import deepcopy
 
 
 def test_king_forward():
@@ -41,3 +42,20 @@ def test_king_check():
     board.state[knight.y][knight.x] = Piece.KNIGHT
 
     assert board.is_check()
+
+
+def test_forbid_king_move_to_check():
+    board = get_empty_board()
+
+    king = Square(2, 3)
+    queen = Square(4, 4)
+
+    board.state[king.y][king.x] = Piece.KING
+    board.state[queen.y][queen.x] = -Piece.QUEEN
+
+    king_to_check = Move(king, Square(3, 3))
+
+    old_board_state = deepcopy(board.state)
+    assert not board.validate_move(king_to_check)
+    assert not board.register_move(king_to_check)
+    assert old_board_state == board.state
