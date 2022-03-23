@@ -1,5 +1,5 @@
 from game.board import Board, Piece
-from server.game.board import Move, Square
+from server.game.move import Move, Square
 
 
 def test_king_forward():
