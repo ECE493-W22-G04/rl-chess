@@ -45,28 +45,47 @@ class Board:
     def get_actions(self):
         return ACTIONS
 
-    def get_legal_actions(self):
+    def get_legal_actions(self) -> list[Move]:
+        """Returns a subset of possible actions such that none of the actions result in a check"""
+        legal_actions = []
+        for action in self.get_possible_actions():
+            new_state = deepcopy(self)
+            new_state.__register_move_unsafe(action)
+            new_state.is_white_turn = self.is_white_turn
+            if new_state.is_check():
+                continue
+            legal_actions.append(action)
+        return legal_actions
+
+    def get_possible_actions(self):
         legal_actions: list[Move] = []
         for move in ACTIONS:
-            if not self.validate_move(move):
+            if not self.is_move_possible(move):
                 continue
             legal_actions.append(move)
         return legal_actions
 
     def is_check(self) -> bool:
-        """Returns true if the current player is checks the opposing player"""
-        legal_actions = self.get_legal_actions()
-        for legal_action in legal_actions:
-            target_piece = self.state[legal_action.to_square.y][legal_action.to_square.x]
+        """Returns true if the current player is being checked"""
+        was_white_turn = self.is_white_turn
+
+        # See if opponent has a move that can capture a king
+        self.is_white_turn = not self.is_white_turn
+        possible_actions = self.get_possible_actions()
+
+        for action in possible_actions:
+            target_piece = self.state[action.to_square.y][action.to_square.x]
             if abs(target_piece) == Piece.KING:
+                self.is_white_turn = was_white_turn
                 return True
+
+        self.is_white_turn = was_white_turn
         return False
 
     def is_checkmate(self) -> bool:
-        """Returns true if the current player is checks the opposing player"""
-        was_white_turn = self.is_white_turn
-        # View moves as opposing player
-        self.is_white_turn = not self.is_white_turn
+        """Returns true if the current player is being checkmated"""
+        if not self.is_check():
+            return False
 
         legal_actions = self.get_legal_actions()
         can_king_move = False
@@ -76,8 +95,6 @@ class Board:
                 can_king_move = True
                 break
 
-        # Revert state
-        self.is_white_turn = was_white_turn
         return not can_king_move
 
     def __register_move_unsafe(self, move: Move) -> bool:
@@ -95,7 +112,7 @@ class Board:
 
         return self.__register_move_unsafe(move)
 
-    def validate_move(self, move: Move):
+    def is_move_possible(self, move: Move):
         from_x = move.from_square.x
         from_y = move.from_square.y
         to_x = move.to_square.x
@@ -135,11 +152,9 @@ class Board:
         if abs(piece_to_move) == Piece.QUEEN:
             return (is_diagonal_move(move) and is_diagonal_path_clear(self.state, move)) or (is_rook_move(move) and is_rook_path_clear(self.state, move))
         if abs(piece_to_move) == Piece.KING:
-            is_valid = abs(to_x - from_x) <= 1 and abs(to_y - from_y) <= 1
-            if not is_valid:
-                return False
-            new_board = deepcopy(self)
-            new_board.__register_move_unsafe(move)
-            return not new_board.is_check()
+            return abs(to_x - from_x) <= 1 and abs(to_y - from_y) <= 1
 
         return False
+
+    def validate_move(self, move: Move) -> bool:
+        return self.is_move_possible(move) and move in self.get_legal_actions()
