@@ -4,6 +4,7 @@ user_rooms = {}
 
 
 def register_ws_events(socketio: SocketIO):
+
     @socketio.on("connect")
     def connect():
         pass
