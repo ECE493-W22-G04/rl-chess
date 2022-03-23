@@ -5,7 +5,7 @@ import AuthService from '../../services/auth';
 import PickSide from './PickSide';
 
 type LobbyProps = {
-    gameId: number;
+    gameId: string;
     host: Player;
 };
 

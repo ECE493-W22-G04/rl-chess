@@ -6,10 +6,10 @@ export type Board = {
 export type Player = string; // Player is identified by their email (can be found in their JWT)
 
 export type Game = {
-    id: number;
+    id: string;
     board: Board;
-    whitePlayer: Player;
-    blackPlayer: Player;
+    whitePlayer: Player | null;
+    blackPlayer: Player | null;
     host: Player;
 };
 
