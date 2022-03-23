@@ -75,6 +75,22 @@ def test_check2():
     assert board.is_check()
 
 
+def test_non_check():
+    board = get_empty_board()
+
+    king = Square(4, 6)
+    pawn = Square(5, 5)
+    queen = Square(3, 4)
+
+    board.state[king.y][king.x] = Piece.KING
+    board.state[pawn.y][pawn.x] = Piece.PAWN
+    board.state[queen.y][queen.x] = -Piece.QUEEN
+
+    pawn_forward = Move(pawn, Square(5, 4))
+
+    assert board.validate_move(pawn_forward)
+
+
 def test_check_unblock():
     board = get_empty_board()
 
