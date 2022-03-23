@@ -61,3 +61,7 @@ def test_forbid_king_move_to_check2():
     king_escape_attempt = Move(king, Square(4, 0))
 
     assert not board.validate_move(king_escape_attempt)
+    assert len(board.get_legal_actions()) == 1
+
+    capture_queen_move = board.get_legal_actions()[0]
+    assert board.state[capture_queen_move.to_square.y][capture_queen_move.to_square.x] == -Piece.QUEEN
