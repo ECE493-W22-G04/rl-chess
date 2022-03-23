@@ -1,5 +1,6 @@
 from game.board import Board, Piece
 from server.game.move import Move, Square
+from server.tests.game.pieces.helper import get_empty_board
 
 
 def test_king_forward():
@@ -28,3 +29,15 @@ def test_king_forward():
 
     assert board.register_move(king_forward)
     assert board.state == expected_state
+
+
+def test_king_check():
+    board = get_empty_board()
+
+    king = Square(3, 3)
+    knight = Square(5, 4)
+
+    board.state[king.y][king.x] = -Piece.KING
+    board.state[knight.y][knight.x] = Piece.KNIGHT
+
+    assert board.is_check()

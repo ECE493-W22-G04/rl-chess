@@ -52,6 +52,14 @@ class Board:
             legal_actions.append(move)
         return legal_actions
 
+    def is_check(self) -> bool:
+        legal_actions = self.get_legal_actions()
+        for legal_action in legal_actions:
+            target_piece = self.state[legal_action.to_square.y][legal_action.to_square.x]
+            if abs(target_piece) == Piece.KING:
+                return True
+        return False
+
     def register_move(self, move: Move) -> bool:
         if not self.validate_move(move):
             return False
