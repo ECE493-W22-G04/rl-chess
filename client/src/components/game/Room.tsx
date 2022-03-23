@@ -2,9 +2,10 @@ import React, { FC, useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import Board from './Board';
 import Lobby from './Lobby';
-import { getGameDetails } from '../../services/game';
+import { getGameDetails, joinGame } from '../../services/game';
 import socket from '../../services/socket';
 import { Game } from '../../types';
+import AuthService from '../../services/auth';
 
 const Room: FC = () => {
     const { gameId } = useParams();
@@ -12,12 +13,19 @@ const Room: FC = () => {
     const [hasGameStarted, setHasGameStarted] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(true);
 
+    let numPlayers = 0;
+    socket.emit('join', { user: AuthService.getCurrentUser(), gameId: gameId });
+
     useEffect(() => {
         socket.on('start_game', () => {
             setHasGameStarted(true);
         });
         socket.on('update', (game: Game) => {
             setGame(game);
+        });
+        socket.on('message', (data) => {
+            numPlayers++;
+            console.log(data);
         });
     }, []);
 
@@ -30,6 +38,11 @@ const Room: FC = () => {
             setIsLoading(false);
         })();
     }, []);
+
+    // and colour chosen
+    if (numPlayers >= 2) {
+        // enable start_game
+    }
 
     if (isLoading) {
         return <div>Loading...</div>;
