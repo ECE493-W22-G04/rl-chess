@@ -31,6 +31,11 @@ def test_actions():
     assert len(board.get_actions()) < pieces_to_choose_from * pieces_to_target_to + pieces_to_promote * pieces_to_promote_to
 
 
+def test_no_duplicate_actions():
+    board = Board()
+    assert len(set(board.get_actions())) == len(board.get_actions())
+
+
 def test_turn():
     board = Board()
     assert board.is_white_turn
@@ -74,14 +79,14 @@ def test_check_unblock():
     board = get_empty_board()
 
     king = Square(4, 0)
-    pawn = Square(5, 1)
-    queen = Square(3, 2)
+    pawn = Square(3, 1)
+    queen = Square(2, 2)
 
     board.state[king.y][king.x] = Piece.KING
     board.state[pawn.y][pawn.x] = Piece.PAWN
     board.state[queen.y][queen.x] = -Piece.QUEEN
 
-    pawn_unblock_queen = Move(pawn, Square(5, 2))
+    pawn_unblock_queen = Move(pawn, Square(3, 2))
 
     assert not board.validate_move(pawn_unblock_queen)
 
