@@ -16,6 +16,15 @@ const Lobby: FC<LobbyProps> = ({ gameId, host }: LobbyProps) => {
         });
     };
 
+    if (AuthService.getCurrentUser() !== host) {
+        return (
+            <div>
+                <h1>Lobby</h1>
+                Waiting for host
+            </div>
+        );
+    }
+
     return (
         <div>
             <h1>Lobby</h1>
@@ -27,6 +36,7 @@ const Lobby: FC<LobbyProps> = ({ gameId, host }: LobbyProps) => {
                 Start game
             </button>
             {AuthService.getCurrentUser() === host && <PickSide />}
+            <div className="invite">Invite URL: {window.location.href}</div>
         </div>
     );
 };

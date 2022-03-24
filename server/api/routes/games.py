@@ -8,11 +8,11 @@ from api.models import Game
 game = Blueprint("games", __name__, url_prefix="/games")
 
 GAME = {
-    'id': 1,
-    'blackPlayer': 'asfd@mail.com',
-    'whitePlayer': 'asfd@mail.com',
-    'game': None,
-    'host': 'asfd@mail.com',
+    "id": 1,
+    "blackPlayer": "asfd@mail.com",
+    "whitePlayer": "asfd@mail.com",
+    "game": None,
+    "host": "asfd@mail.com",
 }
 
 current_games: dict[UUID, Game] = {}

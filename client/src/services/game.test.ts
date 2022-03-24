@@ -2,7 +2,7 @@ import axios from 'axios';
 import config from '../config';
 import authHeader from './auth-header';
 import { createGame, getGameDetails } from './game';
-import { Game } from '../types';
+import { mockGame } from '../testConstants';
 
 jest.mock('axios');
 const mockAxios = jest.mocked(axios, true);
@@ -11,25 +11,6 @@ jest.mock('./auth-header');
 const mockAuthHeader = jest.mocked(authHeader, true);
 
 const API_URL = `${config.SERVER_ENDPOINT}/api/games/`;
-
-const mockGame: Game = {
-    id: 'asdf-asdf-asdf',
-    whitePlayer: null,
-    blackPlayer: null,
-    host: 'bob@gmail.com',
-    board: {
-        state: [
-            [-4, -3, -2, -5, -6, -2, -3, -4],
-            [-1, -1, -1, -1, -1, -1, -1, -1],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 1, 1, 1, 1, 1, 1],
-            [4, 3, 2, 5, 6, 2, 3, 4],
-        ],
-        isWhiteTurn: true,
-    },
-};
 
 describe('createGame', () => {
     const mockPost = jest.fn();
