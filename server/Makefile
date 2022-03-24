@@ -4,7 +4,7 @@ include .env
 
 .PHONY = start
 start: $(VENV)/bin/activate
-	$(PYTHON_COMMAND) main.py
+	pushd .. && $(PYTHON_COMMAND) -m server.main && popd
 
 .PHONY = prod
 prod: $(VENV)/bin/activate
