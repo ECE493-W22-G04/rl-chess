@@ -5,12 +5,15 @@ import Lobby from './Lobby';
 import { getGameDetails } from '../../services/game';
 import socket from '../../services/socket';
 import { Game } from '../../types';
+import AuthService from '../../services/auth';
 
 const Room: FC = () => {
     const { gameId } = useParams();
     const [game, setGame] = useState<Game | null>(null);
-    const [hasGameStarted, setHasGameStarted] = useState<boolean>(true);
+    const [hasGameStarted, setHasGameStarted] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(true);
+
+    let numPlayers = 0;
 
     useEffect(() => {
         socket.on('start_game', () => {
@@ -19,6 +22,11 @@ const Room: FC = () => {
         socket.on('update', (game: Game) => {
             setGame(game);
         });
+        socket.on('message', (data) => {
+            numPlayers++;
+            console.log(data);
+        });
+        socket.emit('join', { user: AuthService.getCurrentUser(), gameId: gameId });
     }, []);
 
     useEffect(() => {
@@ -30,6 +38,11 @@ const Room: FC = () => {
             setIsLoading(false);
         })();
     }, []);
+
+    // and colour chosen
+    if (numPlayers >= 2) {
+        // enable start_game
+    }
 
     if (isLoading) {
         return <div>Loading...</div>;

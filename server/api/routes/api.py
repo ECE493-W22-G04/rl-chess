@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 
 from .auth import auth
-from .game import game
+from .games import game
 
 api = Blueprint("api", __name__, url_prefix="/api")
 api.register_blueprint(auth)

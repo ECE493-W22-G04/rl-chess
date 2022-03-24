@@ -19,8 +19,12 @@ const MainMenu: FC = () => {
         <div>
             <h1>Main menu</h1>
             <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <button onClick={handlePlayAgainstComputer}>Play against computer</button>
-                <button onClick={handlePlayAgainstPlayer}>Play against player</button>
+                <button id={'pvc'} onClick={handlePlayAgainstComputer}>
+                    Play against computer
+                </button>
+                <button id={'pvp'} onClick={handlePlayAgainstPlayer}>
+                    Play against player
+                </button>
             </div>
         </div>
     );

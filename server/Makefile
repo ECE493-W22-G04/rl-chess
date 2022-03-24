@@ -12,7 +12,7 @@ prod: $(VENV)/bin/activate
 
 .PHONY = test
 test: $(VENV)/bin/activate
-	pytest -v
+	pytest -x -v
 
 .PHONY = $(VENV)/bin/activate
 $(VENV)/bin/activate: requirements.txt
