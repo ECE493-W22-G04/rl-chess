@@ -3,11 +3,10 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 
-# local imports
-from .config import load_config, get_log_folder
-from .routes.api import api
-from .routes.index import index
-from .models import db
+from server.api.config import load_config, get_log_folder
+from server.api.routes.api import api
+from server.api.routes.index import index
+from server.api.models import db
 
 
 def create_app():

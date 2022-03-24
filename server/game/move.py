@@ -1,5 +1,5 @@
 from typing import NamedTuple, Optional
-from .piece import Piece
+from server.game.piece import Piece
 
 
 class Square(NamedTuple):

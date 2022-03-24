@@ -8,7 +8,7 @@ start: $(VENV)/bin/activate
 
 .PHONY = prod
 prod: $(VENV)/bin/activate
-	gunicorn --worker-class eventlet -w 1 main:app -b 0.0.0.0:5555
+	pushd .. && gunicorn --worker-class eventlet -w 1 server.main:app -b 0.0.0.0:5555 && popd
 
 .PHONY = test
 test: $(VENV)/bin/activate

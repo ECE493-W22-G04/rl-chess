@@ -1,7 +1,7 @@
 from uuid import uuid4
 from flask_sqlalchemy import SQLAlchemy
 
-from .exceptions import PlayerDoesNotExist
+from server.api.exceptions import PlayerDoesNotExist
 
 db = SQLAlchemy()
 

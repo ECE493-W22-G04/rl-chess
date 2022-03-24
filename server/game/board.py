@@ -1,8 +1,9 @@
-from .piece import Piece
-from .move import Move
-from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear
-from .actions import ACTIONS
 from copy import deepcopy
+
+from server.game.piece import Piece
+from server.game.move import Move
+from server.game.validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear
+from server.game.actions import ACTIONS
 
 
 class Board:

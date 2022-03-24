@@ -1,5 +1,5 @@
-from .piece import Piece
-from .move import Move
+from server.game.piece import Piece
+from server.game.move import Move
 
 
 def exclusive_range(i: int, j: int):

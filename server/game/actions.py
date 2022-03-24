@@ -1,7 +1,7 @@
 import itertools
 
-from .piece import Piece
-from .move import Move, Square
+from server.game.piece import Piece
+from server.game.move import Move, Square
 
 ACTIONS = []
 for (from_x, from_y) in itertools.product(range(8), repeat=2):
