@@ -11,9 +11,11 @@ type BoardTileProps = {
     piece: number;
     tileRow: number;
     tileCol: number;
+    onTileClick: () => void;
+    isSelected: boolean;
 };
 
-const BoardTile: FC<BoardTileProps> = ({ piece, tileRow, tileCol }: BoardTileProps) => {
+const BoardTile: FC<BoardTileProps> = ({ piece, tileRow, tileCol, onTileClick, isSelected }: BoardTileProps) => {
     const getTileColor = () => {
         const evenRow: boolean = tileRow % 2 == 0;
         const evenCol: boolean = tileCol % 2 == 0;
@@ -30,8 +32,9 @@ const BoardTile: FC<BoardTileProps> = ({ piece, tileRow, tileCol }: BoardTilePro
         height: '4em',
         width: '4em',
         borderStyle: 'solid',
-        borderWidth: '1px',
+        borderWidth: 'thin',
         backgroundColor: getTileColor(),
+        borderColor: isSelected ? 'yellow' : 'black',
     };
 
     const pieceToSvg = (p: number) => {
@@ -57,7 +60,11 @@ const BoardTile: FC<BoardTileProps> = ({ piece, tileRow, tileCol }: BoardTilePro
         return <EmptySvg />;
     };
 
-    return <div style={tileStyle}>{pieceToSvg(piece)}</div>;
+    return (
+        <button onClick={onTileClick} style={tileStyle}>
+            {pieceToSvg(piece)}
+        </button>
+    );
 };
 
 export default BoardTile;

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Board as BoardType } from '../../types';
 import BoardTile from './BoardTile';
 
@@ -22,6 +22,32 @@ const test_board: BoardType = {
 };
 
 const Board: FC<BoardProps> = ({ board }: BoardProps) => {
+    const [tile1, setTile1] = useState<string | null>(null);
+    const [tile2, setTile2] = useState<string | null>(null);
+
+    useEffect(() => {
+        document;
+    }, [tile1]);
+
+    useEffect(() => {
+        if (tile1 && tile2) {
+            console.log(`Selected Move ${tile1}${tile2}`);
+            setTile1(null);
+            setTile2(null);
+        }
+    }, [tile2]);
+
+    const selectTile = (tile: string) => {
+        console.log(`Selected Tile: ${tile}`);
+        if (!tile1) {
+            setTile1(tile);
+        } else if (!tile2) {
+            setTile2(tile);
+        } else {
+            console.log('HOW DID THIS HAPPEN!');
+        }
+    };
+
     return (
         <div>
             {test_board.state.reverse().map((row, rowIndex) => (
@@ -29,7 +55,7 @@ const Board: FC<BoardProps> = ({ board }: BoardProps) => {
                     {row.map((piece, colIndex) => {
                         // Use position as a unique key for the boardtile
                         const position = rowIndex.toString() + colIndex.toString();
-                        return <BoardTile key={position} piece={piece} tileRow={rowIndex} tileCol={colIndex} />;
+                        return <BoardTile key={position} onTileClick={() => selectTile(position)} piece={piece} tileRow={rowIndex} tileCol={colIndex} isSelected={position == tile1} />;
                     })}
                 </div>
             ))}
