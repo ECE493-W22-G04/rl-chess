@@ -1,10 +1,9 @@
 from pbu import Logger
 from flask_socketio import SocketIO
 
-# local imports
-from api import create_app
-from ws.socket_events import register_ws_events
-from api.config import get_log_folder
+from server.api import create_app
+from server.ws.socket_events import register_ws_events
+from server.api.config import get_log_folder
 
 app = create_app()
 # Set-up Socket.io

@@ -1,7 +1,9 @@
-from game.board import Board, Piece
+from copy import deepcopy
+
+from server.game.board import Board
+from server.game.piece import Piece
 from server.game.move import Move, Square
 from server.tests.game.pieces.helper import get_empty_board
-from copy import deepcopy
 
 
 def test_king_forward():

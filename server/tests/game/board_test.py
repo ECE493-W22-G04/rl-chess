@@ -1,6 +1,6 @@
-from game.board import Board
-from game.piece import Piece
-from game.move import Move, Square
+from server.game.board import Board
+from server.game.piece import Piece
+from server.game.move import Move, Square
 from server.tests.game.pieces.helper import get_empty_board
 
 

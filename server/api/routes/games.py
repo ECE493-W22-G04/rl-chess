@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 
-from api.models import Game
+from server.api.models import Game
 
 game = Blueprint("games", __name__, url_prefix="/games")
 
