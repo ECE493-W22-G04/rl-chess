@@ -1,6 +1,7 @@
 from game.board import Board
 from game.piece import Piece
 from game.move import Move, Square
+from server.tests.game.pieces.helper import get_empty_board
 
 
 def test_board_init():
@@ -27,7 +28,12 @@ def test_actions():
     pieces_to_target_to = 8 * 8
     pieces_to_promote = 8 * 2
     pieces_to_promote_to = 4
-    assert len(board.get_actions()) == pieces_to_choose_from * pieces_to_target_to + pieces_to_promote * pieces_to_promote_to
+    assert len(board.get_actions()) < pieces_to_choose_from * pieces_to_target_to + pieces_to_promote * pieces_to_promote_to
+
+
+def test_no_duplicate_actions():
+    board = Board()
+    assert len(set(board.get_actions())) == len(board.get_actions())
 
 
 def test_turn():
@@ -43,3 +49,122 @@ def test_bounds():
     board = Board()
     move = Move(Square(-1, 0), Square(0, 0))
     assert not board.validate_move(move)
+
+
+def test_check():
+    board = get_empty_board()
+
+    king = Square(3, 3)
+    knight = Square(5, 4)
+
+    board.state[king.y][king.x] = Piece.KING
+    board.state[knight.y][knight.x] = -Piece.KNIGHT
+
+    assert board.is_check()
+
+
+def test_check2():
+    board = get_empty_board()
+
+    king = Square(4, 0)
+    queen = Square(3, 1)
+
+    board.state[king.y][king.x] = Piece.KING
+    board.state[queen.y][queen.x] = -Piece.QUEEN
+
+    assert board.is_check()
+
+
+def test_non_check():
+    board = get_empty_board()
+
+    king = Square(4, 6)
+    pawn = Square(5, 5)
+    queen = Square(3, 4)
+
+    board.state[king.y][king.x] = Piece.KING
+    board.state[pawn.y][pawn.x] = Piece.PAWN
+    board.state[queen.y][queen.x] = -Piece.QUEEN
+
+    pawn_forward = Move(pawn, Square(5, 4))
+
+    assert board.validate_move(pawn_forward)
+
+
+def test_check_unblock():
+    board = get_empty_board()
+
+    king = Square(4, 0)
+    pawn = Square(3, 1)
+    queen = Square(2, 2)
+
+    board.state[king.y][king.x] = Piece.KING
+    board.state[pawn.y][pawn.x] = Piece.PAWN
+    board.state[queen.y][queen.x] = -Piece.QUEEN
+
+    pawn_unblock_queen = Move(pawn, Square(3, 2))
+
+    assert not board.validate_move(pawn_unblock_queen)
+
+
+def test_move_to_check():
+    board = get_empty_board()
+
+    king = Square(4, 4)
+    queen = Square(3, 6)
+
+    board.state[king.y][king.x] = -Piece.KING
+    board.state[queen.y][queen.x] = Piece.QUEEN
+
+    move = Move(queen, Square(3, 3))
+
+    assert board.register_move(move)
+    assert board.is_check()
+    assert not board.is_checkmate()
+
+
+def test_checkmate():
+    board = get_empty_board()
+
+    king = Square(3, 0)
+    queen = Square(3, 1)
+    bishop = Square(4, 2)
+
+    board.state[king.y][king.x] = Piece.KING
+    board.state[queen.y][queen.x] = -Piece.QUEEN
+    board.state[bishop.y][bishop.x] = -Piece.BISHOP
+
+    assert board.is_check()
+    assert board.is_checkmate()
+
+
+def test_checkmate2():
+    board = Board()
+    assert not board.is_checkmate()
+
+
+def test_checkmate3():
+    board = get_empty_board()
+
+    king = Square(2, 0)
+    queen = Square(0, 1)
+    bishop = Square(4, 2)
+
+    board.state[king.y][king.x] = Piece.KING
+    board.state[queen.y][queen.x] = -Piece.QUEEN
+    board.state[bishop.y][bishop.x] = -Piece.BISHOP
+
+    move1 = Move(king, Square(3, 0))
+    move2 = Move(queen, Square(3, 1))
+
+    assert board.is_check()
+    assert not board.is_checkmate()
+    assert len(board.get_legal_actions()) == 1
+
+    assert board.register_move(move1)
+    assert not board.is_check()
+    assert not board.is_checkmate()
+    assert board.register_move(move2)
+
+    assert board.is_check()
+    assert board.is_checkmate()

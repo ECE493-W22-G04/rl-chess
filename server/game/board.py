@@ -1,8 +1,8 @@
-import itertools
-
 from .piece import Piece
-from .move import Move, Square
+from .move import Move
 from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear
+from .actions import ACTIONS
+from copy import deepcopy
 
 
 class Board:
@@ -24,16 +24,6 @@ class Board:
 
         self.is_white_turn = True
 
-        self.actions: list[Move] = []
-        for from_coordinate in itertools.product(range(8), repeat=2):
-            for to_coordinate in itertools.product(range(8), repeat=2):
-                self.actions.append(Move(Square(from_coordinate[1], from_coordinate[0]), Square(to_coordinate[1], to_coordinate[0])))
-
-        for promoted_to in [Piece.QUEEN, Piece.BISHOP, Piece.ROOK, Piece.KNIGHT]:
-            for column in range(8):
-                for row in [1, 6]:
-                    self.actions.append(Move(Square(column, row), Square(column, row - 1 if row == 1 else row + 1), promotion=promoted_to))
-
     def __str__(self) -> str:
 
         def piece_to_str(piece: int):
@@ -53,20 +43,62 @@ class Board:
         return '\n\n'.join(['\t'.join([piece_to_str(piece) for piece in row]) for row in self.state])
 
     def get_actions(self):
-        return self.actions
+        return ACTIONS
 
-    def get_legal_actions(self):
+    def get_legal_actions(self) -> list[Move]:
+        """Returns a subset of possible actions such that none of the actions result in a check"""
+        legal_actions = []
+        for action in self.get_possible_actions():
+            new_state = deepcopy(self)
+            new_state.__register_move_unsafe(action)
+            new_state.is_white_turn = self.is_white_turn
+            if new_state.is_check():
+                continue
+            legal_actions.append(action)
+        return legal_actions
+
+    def get_possible_actions(self):
         legal_actions: list[Move] = []
-        for move in self.actions:
-            if not self.validate_move(move):
+        for move in ACTIONS:
+            if not self.is_move_possible(move):
                 continue
             legal_actions.append(move)
         return legal_actions
 
-    def register_move(self, move: Move) -> bool:
-        if not self.validate_move(move):
+    def is_check(self) -> bool:
+        """Returns true if the current player is being checked"""
+        was_white_turn = self.is_white_turn
+
+        # See if opponent has a move that can capture a king
+        self.is_white_turn = not self.is_white_turn
+        possible_actions = self.get_possible_actions()
+
+        for action in possible_actions:
+            target_piece = self.state[action.to_square.y][action.to_square.x]
+            if abs(target_piece) == Piece.KING:
+                self.is_white_turn = was_white_turn
+                return True
+
+        self.is_white_turn = was_white_turn
+        return False
+
+    def is_checkmate(self) -> bool:
+        """Returns true if the current player is being checkmated"""
+        if not self.is_check():
             return False
 
+        legal_actions = self.get_legal_actions()
+        can_king_move = False
+        for legal_action in legal_actions:
+            from_piece = self.state[legal_action.from_square.y][legal_action.from_square.x]
+            if abs(from_piece) == Piece.KING:
+                can_king_move = True
+                break
+
+        return not can_king_move
+
+    def __register_move_unsafe(self, move: Move) -> bool:
+        """Registers move without validation"""
         piece_to_move = self.state[move.from_square.y][move.from_square.x]
         self.state[move.to_square.y][move.to_square.x] = piece_to_move
         self.state[move.from_square.y][move.from_square.x] = Piece.NONE
@@ -74,7 +106,13 @@ class Board:
         self.is_white_turn = not self.is_white_turn
         return True
 
-    def validate_move(self, move: Move):
+    def register_move(self, move: Move) -> bool:
+        if not self.validate_move(move):
+            return False
+
+        return self.__register_move_unsafe(move)
+
+    def is_move_possible(self, move: Move):
         from_x = move.from_square.x
         from_y = move.from_square.y
         to_x = move.to_square.x
@@ -114,7 +152,9 @@ class Board:
         if abs(piece_to_move) == Piece.QUEEN:
             return (is_diagonal_move(move) and is_diagonal_path_clear(self.state, move)) or (is_rook_move(move) and is_rook_path_clear(self.state, move))
         if abs(piece_to_move) == Piece.KING:
-            # TODO: Check if move results in a 'check' -> invalid
             return abs(to_x - from_x) <= 1 and abs(to_y - from_y) <= 1
 
         return False
+
+    def validate_move(self, move: Move) -> bool:
+        return self.is_move_possible(move) and move in self.get_legal_actions()
