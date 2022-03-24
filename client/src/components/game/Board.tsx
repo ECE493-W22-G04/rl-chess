@@ -54,7 +54,7 @@ const Board: FC<BoardProps> = ({ board }: BoardProps) => {
                 <div key={rowIndex.toString()} style={{ display: 'flex', flexDirection: 'row' }}>
                     {row.map((piece, colIndex) => {
                         // Use position as a unique key for the boardtile
-                        const position = rowIndex.toString() + colIndex.toString();
+                        const position = colIndex.toString() + rowIndex.toString();
                         return <BoardTile key={position} onTileClick={() => selectTile(position)} piece={piece} tileRow={rowIndex} tileCol={colIndex} isSelected={position == tile1} />;
                     })}
                 </div>
