@@ -14,7 +14,6 @@ const Room: FC = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     let numPlayers = 0;
-    socket.emit('join', { user: AuthService.getCurrentUser(), gameId: gameId });
 
     useEffect(() => {
         socket.on('start_game', () => {
@@ -27,6 +26,7 @@ const Room: FC = () => {
             numPlayers++;
             console.log(data);
         });
+        socket.emit('join', { user: AuthService.getCurrentUser(), gameId: gameId });
     }, []);
 
     useEffect(() => {
