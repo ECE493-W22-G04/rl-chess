@@ -26,10 +26,6 @@ const Board: FC<BoardProps> = ({ board }: BoardProps) => {
     const [tile2, setTile2] = useState<string | null>(null);
 
     useEffect(() => {
-        document;
-    }, [tile1]);
-
-    useEffect(() => {
         if (tile1 && tile2) {
             console.log(`Selected Move ${tile1}${tile2}`);
             setTile1(null);
