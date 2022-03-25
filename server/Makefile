@@ -22,13 +22,14 @@ $(VENV)/bin/activate: requirements.txt
 .PHONY = build-reqs
 build-reqs:
 	$(PIP_COMMAND) install pipreqs
-	pipreqs . --force
-	echo 'gunicorn==20.1.0' >> requirements.txt
-	echo 'eventlet==0.30.2' >> requirements.txt
-	echo 'yapf==0.32.0' >> requirements.txt
-	echo 'psycopg2-binary==2.9.3' >> requirements.txt
-	sed -i 's/python_bcrypt==0.3.2/bcrypt==3.2.0/g' requirements.txt
-	sed -i '/server==0.0.0/d' requirements.txt
+	pipreqs . --force --encoding=utf8
+	echo gunicorn==20.1.0 >> requirements.txt
+	echo eventlet==0.30.2 >> requirements.txt
+	echo yapf==0.32.0 >> requirements.txt
+	echo psycopg2-binary==2.9.3 >> requirements.txt
+	echo toml==0.10.2 >> requirements.txt
+	sed -i 's/python_bcrypt==0.3.2/bcrypt==3.2.0/g' ./requirements.txt
+	sed -i '/server==0.0.0/d' ./requirements.txt
 
 .PHONY = format
 format:
@@ -41,3 +42,4 @@ clean:
 	rm -rf venv
 	rm -rf _logs
 	rm -rf .pytest_cache
+

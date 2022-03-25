@@ -132,3 +132,6 @@ _logs/
 .vscode/
 
 **/.DS_Store
+
+# for windows sed
+sed* 
