@@ -7,22 +7,24 @@ type BoardProps = {
     board: BoardType;
 };
 
+type Tile = [number, number];
+
 const Board: FC<BoardProps> = ({ board }: BoardProps) => {
-    const [tile1, setTile1] = useState<string | null>(null);
-    const [tile2, setTile2] = useState<string | null>(null);
+    const [tile1, setTile1] = useState<Tile | null>(null);
+    const [tile2, setTile2] = useState<Tile | null>(null);
 
     // TODO: Remove this line when board is actually passed in
     board = mockGame.board;
 
     useEffect(() => {
         if (tile1 && tile2) {
-            console.log(`Selected Move ${tile1}${tile2}`);
+            console.log(`Selected Move from ${tile1} to ${tile2}`);
             setTile1(null);
             setTile2(null);
         }
     }, [tile2]);
 
-    const selectTile = (tile: string) => {
+    const selectTile = (tile: Tile) => {
         console.log(`Selected Tile: ${tile}`);
         if (!tile1) {
             setTile1(tile);
@@ -36,11 +38,11 @@ const Board: FC<BoardProps> = ({ board }: BoardProps) => {
     return (
         <div>
             {board.state.reverse().map((row, rowIndex) => (
-                <div key={rowIndex.toString()} style={{ display: 'flex', flexDirection: 'row' }}>
+                <div key={`${rowIndex}`} style={{ display: 'flex', flexDirection: 'row' }}>
                     {row.map((piece, colIndex) => {
                         // Use position as a unique key for the boardtile
-                        const position = colIndex.toString() + rowIndex.toString();
-                        return <BoardTile key={position} onTileClick={() => selectTile(position)} piece={piece} tileRow={rowIndex} tileCol={colIndex} isSelected={position == tile1} />;
+                        const position: Tile = [colIndex, rowIndex];
+                        return <BoardTile key={`${position}`} onTileClick={() => selectTile(position)} piece={piece} tileRow={rowIndex} tileCol={colIndex} isSelected={`${position}` === `${tile1}`} />;
                     })}
                 </div>
             ))}

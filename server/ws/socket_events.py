@@ -1,4 +1,4 @@
-from flask_socketio import SocketIO, join_room, leave_room, send
+from flask_socketio import SocketIO, join_room, emit, send
 
 user_rooms = {}
 
@@ -12,6 +12,11 @@ def register_ws_events(socketio: SocketIO):
     @socketio.on("disconnect")
     def disconnect():
         pass
+
+    @socketio.on("start_game")
+    def start_game(data):
+        game_id = data["gameId"]
+        emit('start_game', None, broadcast=True, to=game_id)
 
     @socketio.on("join")
     def on_join(data):

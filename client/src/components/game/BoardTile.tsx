@@ -44,20 +44,22 @@ const BoardTile: FC<BoardTileProps> = ({ piece, tileRow, tileCol, onTileClick, i
             pieceStyle = { filter: 'invert(100%)' };
         }
 
-        if (Math.abs(p) == 1) {
-            return <PawnSvg style={pieceStyle} />;
-        } else if (Math.abs(p) == 2) {
-            return <BishopSvg style={pieceStyle} />;
-        } else if (Math.abs(p) == 3) {
-            return <KnightSvg style={pieceStyle} />;
-        } else if (Math.abs(p) == 4) {
-            return <RookSvg style={pieceStyle} />;
-        } else if (Math.abs(p) == 5) {
-            return <QueenSvg style={pieceStyle} />;
-        } else if (Math.abs(p) == 6) {
-            return <KingSvg style={pieceStyle} />;
+        switch (Math.abs(p)) {
+            case 1:
+                return <PawnSvg style={pieceStyle} />;
+            case 2:
+                return <BishopSvg style={pieceStyle} />;
+            case 3:
+                return <KnightSvg style={pieceStyle} />;
+            case 4:
+                return <RookSvg style={pieceStyle} />;
+            case 5:
+                return <QueenSvg style={pieceStyle} />;
+            case 6:
+                return <KingSvg style={pieceStyle} />;
+            default:
+                return <EmptySvg />;
         }
-        return <EmptySvg />;
     };
 
     return (
