@@ -12,7 +12,7 @@ type LobbyProps = {
 const Lobby: FC<LobbyProps> = ({ gameId, host }: LobbyProps) => {
     const broadcastGameStarted = () => {
         socket.emit('start_game', {
-            gameId,
+            gameId: gameId,
         });
     };
 
@@ -35,7 +35,7 @@ const Lobby: FC<LobbyProps> = ({ gameId, host }: LobbyProps) => {
             >
                 Start game
             </button>
-            {AuthService.getCurrentUser() === host && <PickSide />}
+            {AuthService.getCurrentUser() === host && <PickSide gameId={gameId} />}
             <div className="invite">Invite URL: {window.location.href}</div>
         </div>
     );

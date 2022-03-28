@@ -13,42 +13,52 @@ const Room: FC = () => {
     const [hasGameStarted, setHasGameStarted] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    let numPlayers = 0;
-
-    useEffect(() => {
-        socket.on('start_game', () => {
-            setHasGameStarted(true);
-        });
-        socket.on('update', (game: Game) => {
-            setGame(game);
-        });
-        socket.on('message', (data) => {
-            numPlayers++;
-            console.log(data);
-        });
-        socket.emit('join', { user: AuthService.getCurrentUser(), gameId: gameId });
-    }, []);
-
     useEffect(() => {
         if (gameId == null) {
             return;
         }
         (async () => {
-            setGame(await getGameDetails(gameId));
+            const gameDetails = await getGameDetails(gameId);
+            setGame(gameDetails);
             setIsLoading(false);
         })();
     }, []);
 
-    // and colour chosen
-    if (numPlayers >= 2) {
-        // enable start_game
-    }
+    useEffect(() => {
+        if (game != null) {
+            socket.on('start_game', () => {
+                if (game != null) {
+                    if (game.board.state != null) {
+                        setHasGameStarted(true);
+                        return;
+                    }
+                    console.log('Board not ready to start.');
+                }
+                console.log('Game not ready to start' + game);
+            });
+        }
+    }, [game]);
+
+    useEffect(() => {
+        socket.on('update', (data) => {
+            const new_game: Game = JSON.parse(data);
+            setGame(new_game);
+        });
+
+        socket.on('message', (data) => {
+            console.log(data);
+        });
+    }, []);
+
+    useEffect(() => {
+        socket.emit('join', { user: AuthService.getCurrentUser(), gameId: gameId });
+    }, [game]);
 
     if (isLoading) {
         return <div>Loading...</div>;
     }
 
-    if (game === null) {
+    if (game == null) {
         return <Navigate to="/" />;
     }
 
@@ -56,7 +66,7 @@ const Room: FC = () => {
         return <Lobby gameId={game.id} host={game.host} />;
     }
 
-    return <Board board={game.board} />;
+    return <Board game={game} />;
 };
 
 export default Room;

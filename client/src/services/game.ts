@@ -1,6 +1,7 @@
 import axios from 'axios';
 import config from '../config';
 import authHeader from './auth-header';
+import { Game } from '../types';
 
 const API_URL = `${config.SERVER_ENDPOINT}/api/games/`;
 
@@ -12,7 +13,7 @@ export async function createGame(isPvP: boolean) {
         const resp = await axios.post(API_URL, payload, {
             headers: authHeader(),
         });
-        return resp.data;
+        return JSON.parse(resp.data);
     } catch (err) {
         console.error(err);
         return null;
@@ -24,7 +25,7 @@ export async function getGameDetails(gameId: string) {
         const resp = await axios.get(`${API_URL}${gameId}`, {
             headers: authHeader(),
         });
-        return resp.data;
+        return JSON.parse(resp.data);
     } catch (err) {
         console.error(err);
         return null;
