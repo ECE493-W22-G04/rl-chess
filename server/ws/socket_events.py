@@ -14,13 +14,10 @@ def register_ws_events(socketio: SocketIO):
     def disconnect():
         pass
 
-    @socketio.on("start_game")
-    def start_game(data):
-        game_id = data["gameId"]
-        emit('start_game', None, broadcast=True, to=game_id)
-
     @socketio.on("join")
     def on_join(data):
+        # TODO: set expected players based on game type 
+        expected_players = 2
         user = data["user"]
         game_id = data["gameId"]
 
@@ -28,7 +25,7 @@ def register_ws_events(socketio: SocketIO):
         if (game_id in user_rooms.keys()) and (user in user_rooms[game_id]):
             return
         if game_id in user_rooms.keys():
-            if len(user_rooms[game_id]) < 2:
+            if len(user_rooms[game_id]) < expected_players:
                 user_rooms[game_id].append(user)
             else:
                 join_room(game_id)
@@ -41,6 +38,9 @@ def register_ws_events(socketio: SocketIO):
         print(user_rooms)
         join_room(game_id)
         emit("message", user + " has joined the room", broadcast=True, to=game_id)
+        
+        if (len(user_rooms[game_id]) == expected_players):
+            emit("room_full", broadcast=True, to=game_id)
         
     @socketio.on("pick_side")
     def pick_side(data):
@@ -69,6 +69,7 @@ def register_ws_events(socketio: SocketIO):
                 current_games[game_id].set_white_player(other_user)
         emit("message", "White player: " + current_games[game_id].white_player, broadcast=True, to=game_id)
         emit("message", "Black player: " + current_games[game_id].black_player, broadcast=True, to=game_id)
+        emit('start_game', None, broadcast=True, to=game_id)
 
     @socketio.on("make_move")
     def make_move(data):

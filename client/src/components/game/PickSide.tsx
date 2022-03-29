@@ -15,6 +15,7 @@ const PickSide: FC<PickSideProps> = ({ gameId }: PickSideProps) => {
     };
     return (
         <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <h3>Select Your Color </h3>
             <button onClick={handlePickBlack}>Black</button>
             <button onClick={handlePickWhite}>White</button>
         </div>
