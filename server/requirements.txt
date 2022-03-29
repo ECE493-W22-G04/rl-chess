@@ -10,9 +10,8 @@ numpy==1.21.5
 pbu==0.7.5
 pytest==7.1.1
 python-dotenv==0.20.0
-python_bcrypt==0.3.2
+bcrypt==3.2.0
 rl==3.0
-server==0.0.0
 SQLAlchemy==1.4.32
 tensorflow==2.8.0
 tensorflow_macos==2.8.0
