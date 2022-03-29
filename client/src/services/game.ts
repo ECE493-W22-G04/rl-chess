@@ -1,7 +1,6 @@
 import axios from 'axios';
 import config from '../config';
 import authHeader from './auth-header';
-import { Game } from '../types';
 
 const API_URL = `${config.SERVER_ENDPOINT}/api/games/`;
 
