@@ -26,15 +26,11 @@ const Room: FC = () => {
 
     useEffect(() => {
         if (game != null) {
-            socket.on('start_game', () => {
-                if (game != null) {
-                    if (game.board.state != null) {
-                        setHasGameStarted(true);
-                        return;
-                    }
-                    console.log('Board not ready to start.');
-                }
-                console.log('Game not ready to start' + game);
+            socket.on('start_game', (data) => {
+                const new_game: Game = JSON.parse(data);
+                setGame(new_game);
+                setHasGameStarted(true);
+                return;
             });
         }
     }, [game]);

@@ -4,6 +4,7 @@ from game.move import Move, Square
 
 user_rooms = {}
 
+
 def register_ws_events(socketio: SocketIO):
 
     @socketio.on("connect")
@@ -16,7 +17,7 @@ def register_ws_events(socketio: SocketIO):
 
     @socketio.on("join")
     def on_join(data):
-        # TODO: set expected players based on game type 
+        # TODO: set expected players based on game type
         expected_players = 2
         user = data["user"]
         game_id = data["gameId"]
@@ -27,21 +28,17 @@ def register_ws_events(socketio: SocketIO):
         if game_id in user_rooms.keys():
             if len(user_rooms[game_id]) < expected_players:
                 user_rooms[game_id].append(user)
-            else:
-                join_room(game_id)
-                emit("message", user + " attempted to join this full room", broadcast=True, to=game_id)
-                leave_room(game_id)
+            else:  # Don't allow others to join full room
                 return
         else:
             user_rooms[game_id] = [user]
 
-        print(user_rooms)
         join_room(game_id)
         emit("message", user + " has joined the room", broadcast=True, to=game_id)
-        
+
         if (len(user_rooms[game_id]) == expected_players):
             emit("room_full", broadcast=True, to=game_id)
-        
+
     @socketio.on("pick_side")
     def pick_side(data):
         game_id = data["gameId"]
@@ -52,7 +49,7 @@ def register_ws_events(socketio: SocketIO):
         # check game exists
         if game_id not in current_games or game_id not in user_rooms:
             emit("message", "Attempted to pick color with invalid game id " + game_id, broadcast=True, to=game_id)
-            return 
+            return
 
         for user_in_room in user_rooms[game_id]:
             if user_in_room != user:
@@ -67,9 +64,7 @@ def register_ws_events(socketio: SocketIO):
             elif color == "black":
                 current_games[game_id].set_black_player(user)
                 current_games[game_id].set_white_player(other_user)
-        emit("message", "White player: " + current_games[game_id].white_player, broadcast=True, to=game_id)
-        emit("message", "Black player: " + current_games[game_id].black_player, broadcast=True, to=game_id)
-        emit('start_game', None, broadcast=True, to=game_id)
+        emit('start_game', current_games[game_id].toJSON(), broadcast=True, to=game_id)
 
     @socketio.on("make_move")
     def make_move(data):
@@ -80,7 +75,7 @@ def register_ws_events(socketio: SocketIO):
         # check game exists
         if game_id not in current_games:
             emit("message", "Attempted to make move with invalid game id " + game_id, broadcast=True, to=game_id)
-            return 
+            return
 
         # check if move is valid
         (move_from, move_to) = move_str.split("->")
@@ -90,6 +85,4 @@ def register_ws_events(socketio: SocketIO):
         if current_games[game_id].board.register_move(move):
             emit('update', current_games[game_id].toJSON(), broadcast=True, to=game_id)
         else:
-            emit("message", "Invalid move " + move_str, broadcast=True, to=game_id)
-
-        
+            emit("message", "Invalid move " + move_str, to=game_id)

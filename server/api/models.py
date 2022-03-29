@@ -31,8 +31,7 @@ class Game:
         self.board = Board()
 
     def toJSON(self) -> dict:
-        return json.dumps(self, default=lambda o: o.__dict__, 
-            sort_keys=True, indent=4)
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     def set_white_player(self, player_email: str):
         if Player.query.filter_by(email=player_email).first() == None:

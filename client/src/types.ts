@@ -1,6 +1,6 @@
 export type Board = {
     state: number[][];
-    isWhiteTurn: boolean;
+    is_white_turn: boolean;
 };
 
 export type Player = string; // Player is identified by their email (can be found in their JWT)
@@ -8,8 +8,8 @@ export type Player = string; // Player is identified by their email (can be foun
 export type Game = {
     id: string;
     board: Board;
-    whitePlayer: Player | null;
-    blackPlayer: Player | null;
+    white_player: Player | null;
+    black_player: Player | null;
     host: Player;
 };
 
