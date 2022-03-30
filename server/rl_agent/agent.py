@@ -3,7 +3,6 @@ import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation, Flatten
 from tensorflow.keras.optimizers import Adam
-
 from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
@@ -49,11 +48,13 @@ class RlAgent():
     
     def predict(self, board: Board) -> Move:
         random_action_index = self.__agent.forward(board.state)
-        if board.get_actions()[random_action_index] in board.get_legal_actions():
+        predicted_move = board.get_actions()[random_action_index]
+        if predicted_move in board.get_legal_actions():
+            print(f'Agent provided illegal move {predicted_move}', file=stderr)
             return board.get_actions()[random_action_index]
         
         random_action_index = np.random.choice(board.get_legal_action_indices())
-        return board.get_actions[random_action_index]
+        return board.get_actions()[random_action_index]
 
     def train(self, num_episodes: int=50000):
         env = ChessEnv()
