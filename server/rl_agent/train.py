@@ -1,4 +1,3 @@
-from os.path import exists
 from server.rl_agent.agent import RlAgent
 
 if __name__ == '__main__':
