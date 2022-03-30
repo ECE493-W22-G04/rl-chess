@@ -11,9 +11,10 @@ from server.rl_agent.chess_env import ChessEnv
 from server.game.board import Board
 from server.game.move import Move
 
+
 class RlAgent():
     WEIGHTS_FILE = 'checkpoints/checkpoint'
-    
+
     def __init__(self) -> None:
         self.__agent = self.__build_agent()
         self.__load_weights()
@@ -45,18 +46,18 @@ class RlAgent():
         except Exception as err:
             print('Could not find weights file, initializing new one', file=stderr)
             self.train(100)
-    
+
     def predict(self, board: Board) -> Move:
         random_action_index = self.__agent.forward(board.state)
         predicted_move = board.get_actions()[random_action_index]
         if predicted_move in board.get_legal_actions():
             print(f'Agent provided illegal move {predicted_move}', file=stderr)
             return board.get_actions()[random_action_index]
-        
+
         random_action_index = np.random.choice(board.get_legal_action_indices())
         return board.get_actions()[random_action_index]
 
-    def train(self, num_episodes: int=50000):
+    def train(self, num_episodes: int = 50000):
         env = ChessEnv()
         self.__agent.fit(env, nb_steps=num_episodes, visualize=False, verbose=1)
         self.__agent.save_weights(self.WEIGHTS_FILE, overwrite=True)
