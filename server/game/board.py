@@ -47,22 +47,30 @@ class Board:
 
     def get_legal_actions(self) -> list[Move]:
         """Returns a subset of possible actions such that none of the actions result in a check"""
+        return [ACTIONS[i] for i in self.get_legal_action_indices()]
+    
+    def get_legal_action_indices(self) -> list[Move]:
+        """Returns the indices of the subset of possible actions such that none of the actions result in a check"""
         legal_actions = []
-        for action in self.get_possible_actions():
+        possible_actions = self.get_possible_action_indices()
+        for i in possible_actions:
             new_state = deepcopy(self)
-            new_state.__register_move_unsafe(action)
+            new_state.__register_move_unsafe(ACTIONS[i])
             new_state.is_white_turn = self.is_white_turn
             if new_state.is_check():
                 continue
-            legal_actions.append(action)
+            legal_actions.append(i)
         return legal_actions
 
     def get_possible_actions(self):
-        legal_actions: list[Move] = []
-        for move in ACTIONS:
+        return [ACTIONS[i] for i in self.get_possible_action_indices()]
+
+    def get_possible_action_indices(self):
+        legal_actions: list[int] = []
+        for i, move in enumerate(ACTIONS):
             if not self.is_move_possible(move):
                 continue
-            legal_actions.append(move)
+            legal_actions.append(i)
         return legal_actions
 
     def is_check(self) -> bool:
