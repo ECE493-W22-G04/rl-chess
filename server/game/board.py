@@ -23,6 +23,7 @@ class Board:
         ]
 
         self.is_white_turn = True
+        self.board_states = [self.state]
 
     def __str__(self) -> str:
 
@@ -100,10 +101,28 @@ class Board:
     def __register_move_unsafe(self, move: Move) -> bool:
         """Registers move without validation"""
         piece_to_move = self.state[move.from_square.y][move.from_square.x]
-        self.state[move.to_square.y][move.to_square.x] = piece_to_move
-        self.state[move.from_square.y][move.from_square.x] = Piece.NONE
+        # castling
+        if self.is_valid_castle(move):
+            # move the king
+            self.state[move.to_square.y][move.to_square.x] = piece_to_move
+            self.state[move.from_square.y][move.from_square.x] = Piece.NONE
+
+            # move the rook
+            if move.to_square.x == 2:
+                piece_to_move = self.state[move.from_square.y][0]
+                self.state[move.from_square.y][3] = piece_to_move
+                self.state[move.from_square.y][0] = Piece.NONE
+            else:
+                piece_to_move = self.state[move.from_square.y][7]
+                self.state[move.from_square.y][5] = piece_to_move
+                self.state[move.from_square.y][7] = Piece.NONE
+        else:
+            self.state[move.to_square.y][move.to_square.x] = piece_to_move
+            self.state[move.from_square.y][move.from_square.x] = Piece.NONE
 
         self.is_white_turn = not self.is_white_turn
+
+        self.board_states.append(self.state)
         return True
 
     def register_move(self, move: Move) -> bool:
@@ -111,6 +130,115 @@ class Board:
             return False
 
         return self.__register_move_unsafe(move)
+
+    def is_valid_castle(self, move: Move) -> bool:
+        from_x = move.from_square.x
+        from_y = move.from_square.y
+        to_x = move.to_square.x
+        to_y = move.to_square.y
+        from_piece = self.state[from_y][from_x]
+
+        # not a castling move
+        if (not (from_y == 0 or from_y == 7)) or from_y != to_y or from_x != 4 or (not (to_x == 2 or to_x == 6)) or abs(from_piece) != Piece.KING:
+            return False
+
+        # check if a piece is in the way
+        if from_y == 0:
+            if to_x == 2 and self.state[0][0] != -Piece.ROOK and self.state[0][1] != Piece.NONE and self.state[0][2] != Piece.NONE and self.state[0][3] != Piece.NONE and self.state[0][
+                    3] != -Piece.KING:
+                return False
+            if to_x == 6 and self.state[0][7] != -Piece.ROOK and self.state[0][6] != Piece.NONE and self.state[0][5] != Piece.NONE and self.state[0][4] != -Piece.KING:
+                return False
+        else:
+            if to_x == 2 and self.state[7][0] != Piece.ROOK and self.state[7][1] != Piece.NONE and self.state[7][2] != Piece.NONE and self.state[7][3] != Piece.NONE and self.state[7][3] != Piece.KING:
+                return False
+            if to_x == 6 and self.state[7][7] != Piece.ROOK and self.state[7][6] != Piece.NONE and self.state[7][5] != Piece.NONE and self.state[7][4] != Piece.KING:
+                return False
+
+        white_rook_0_moved = False
+        white_rook_7_moved = False
+        white_king_moved = False
+        black_rook_0_moved = False
+        black_rook_7_moved = False
+        black_king_moved = False
+
+        # check if previous boardstates moved the king/rook in question
+        for state in self.board_states:
+            if state[0][0] != -Piece.ROOK:
+                black_rook_0_moved = True
+            if state[0][4] != -Piece.KING:
+                black_king_moved = True
+            if state[0][7] != -Piece.ROOK:
+                black_rook_7_moved = True
+
+            if state[7][0] != Piece.ROOK:
+                white_rook_0_moved = True
+            if state[7][4] != Piece.KING:
+                white_king_moved = True
+            if state[7][7] != Piece.ROOK:
+                white_rook_7_moved = True
+
+        if from_y == 0:
+            if black_king_moved:
+                return False
+            if to_x == 2 and black_rook_0_moved:
+                return False
+            if to_x == 6 and black_rook_7_moved:
+                return False
+        else:
+            if white_king_moved:
+                return False
+            if to_x == 2 and white_rook_0_moved:
+                return False
+            if to_x == 6 and white_rook_7_moved:
+                return False
+
+        # simulate moves
+        test_board = deepcopy(self)
+        if from_y == 0:
+            if to_x == 2:
+                test_board.state[0][4] = Piece.NONE
+                test_board.state[0][3] = -Piece.KING
+                if test_board.is_check():
+                    return False
+                test_board.state[0][3] = Piece.NONE
+                test_board.state[0][2] = -Piece.KING
+                if test_board.is_check():
+                    return False
+            else:
+                test_board.state[0][4] = Piece.NONE
+                test_board.state[0][5] = -Piece.KING
+                if test_board.is_check():
+                    return False
+                test_board.state[0][5] = Piece.NONE
+                test_board.state[0][6] = -Piece.KING
+                if test_board.is_check():
+                    return False
+        else:
+            if to_x == 2:
+                test_board.state[7][4] = Piece.NONE
+                test_board.state[7][3] = Piece.KING
+                if test_board.is_check():
+                    return False
+                test_board.state[7][3] = Piece.NONE
+                test_board.state[7][2] = Piece.KING
+                if test_board.is_check():
+                    return False
+            else:
+                test_board.state[7][4] = Piece.NONE
+                test_board.state[7][5] = Piece.KING
+                if test_board.is_check():
+                    return False
+                test_board.state[7][5] = Piece.NONE
+                test_board.state[7][6] = Piece.KING
+                if test_board.is_check():
+                    return False
+
+        # cannot castle while in check
+        if self.is_check():
+            return False
+
+        return True
 
     def is_move_possible(self, move: Move):
         from_x = move.from_square.x
@@ -152,7 +280,7 @@ class Board:
         if abs(piece_to_move) == Piece.QUEEN:
             return (is_diagonal_move(move) and is_diagonal_path_clear(self.state, move)) or (is_rook_move(move) and is_rook_path_clear(self.state, move))
         if abs(piece_to_move) == Piece.KING:
-            return abs(to_x - from_x) <= 1 and abs(to_y - from_y) <= 1
+            return (abs(to_x - from_x) <= 1 and abs(to_y - from_y) <= 1) or self.is_valid_castle(move)
 
         return False
 
