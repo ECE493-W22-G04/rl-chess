@@ -1,3 +1,4 @@
+from sys import stderr
 import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation, Flatten
@@ -7,9 +8,9 @@ from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
 
-from rl_agent.chess_env import ChessEnv
-from game.board import Board
-from game.move import Move
+from server.rl_agent.chess_env import ChessEnv
+from server.game.board import Board
+from server.game.move import Move
 
 class RlAgent():
     WEIGHTS_FILE = 'checkpoints/checkpoint'
@@ -40,7 +41,11 @@ class RlAgent():
         return dqn
 
     def __load_weights(self):
-        self.__agent.load_weights(self.WEIGHTS_FILE)
+        try:
+            self.__agent.load_weights(self.WEIGHTS_FILE)
+        except Exception as err:
+            print('Could not find weights file, initializing new one', file=stderr)
+            self.train(100)
     
     def predict(self, board: Board) -> Move:
         random_action_index = self.__agent.forward(board.state)
