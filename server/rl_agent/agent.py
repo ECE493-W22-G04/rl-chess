@@ -50,7 +50,7 @@ class RlAgent():
         random_action_index = np.random.choice(board.get_legal_action_indices())
         return board.get_actions[random_action_index]
 
-    def train(self):
+    def train(self, num_episodes: int=50000):
         env = ChessEnv()
-        self.__agent.fit(env, nb_steps=50000, visualize=False, verbose=1)
+        self.__agent.fit(env, nb_steps=num_episodes, visualize=False, verbose=1)
         self.__agent.save_weights(self.WEIGHTS_FILE, overwrite=True)
