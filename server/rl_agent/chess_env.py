@@ -22,18 +22,21 @@ class ChessEnv(Env):
 
         return self.__state.state
 
-    def step(self, action):
+    def step(self, opponent_move):
         done = False
 
-        if not self.__state.register_move(self.__state.get_actions()[action]):
+        if not self.__state.register_move(self.__state.get_actions()[opponent_move]):
             done = True
-            reward = -0.001
+            reward = -999
 
             return self.__state.state, reward, done, {}
 
-        reward = 0
+        opponent_move = np.random.choice(np.array(self.__state.get_legal_action_indices()))
+        self.__state.register_move(self.__state.get_actions()[opponent_move])
+
+        reward = 1
         if self.__state.is_checkmate():
-            reward = 1
+            reward = 100
             done = True
 
         return self.__state.state, reward, done, {}
