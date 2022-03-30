@@ -44,7 +44,6 @@ else:
     print('could not find weights file')
     exit(1)
 
-
 # Okay, now it's time to learn something! We visualize the training here for show, but this
 # slows down training quite a lot. You can always safely abort the training prematurely using
 # Ctrl + C.

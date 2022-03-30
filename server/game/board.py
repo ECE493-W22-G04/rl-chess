@@ -48,7 +48,7 @@ class Board:
     def get_legal_actions(self) -> list[Move]:
         """Returns a subset of possible actions such that none of the actions result in a check"""
         return [ACTIONS[i] for i in self.get_legal_action_indices()]
-    
+
     def get_legal_action_indices(self) -> list[Move]:
         """Returns the indices of the subset of possible actions such that none of the actions result in a check"""
         legal_actions = []
