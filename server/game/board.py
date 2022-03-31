@@ -3,6 +3,7 @@ from .move import Move
 from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear
 from .actions import ACTIONS
 from copy import deepcopy
+import json
 
 
 class Board:
@@ -41,6 +42,9 @@ class Board:
             return chr(ord(pieces[abs(piece)]) + offset)
 
         return '\n\n'.join(['\t'.join([piece_to_str(piece) for piece in row]) for row in self.state])
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     def get_actions(self):
         return ACTIONS
