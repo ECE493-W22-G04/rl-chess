@@ -1,11 +1,14 @@
 from flask_socketio import SocketIO, join_room, leave_room, emit
 from api.routes.games import current_games
 from game.move import Move, Square
+from flask import current_app, request
 
 # TODO: set PLAYERS_PER_ROOM based on game type
 PLAYERS_PER_ROOM = 2
 
-user_rooms = {}
+user_rooms: dict[str, list[str]] = {}
+socket_id_to_user_map: dict[str, str] = {}
+user_to_room_map: dict[str, str] = {}
 
 
 def register_ws_events(socketio: SocketIO):
@@ -16,12 +19,27 @@ def register_ws_events(socketio: SocketIO):
 
     @socketio.on("disconnect")
     def disconnect():
-        pass
+        user = socket_id_to_user_map.get(request.sid)
+        if user == None:
+            return
+
+        socket_id_to_user_map.pop(request.sid)
+        game_id = user_to_room_map.get(user)
+        users_in_room = user_rooms.get(game_id)
+        if users_in_room == None:
+            return
+
+        if len(users_in_room) == 0:
+            user_rooms.pop(game_id)
+            current_games.pop(game_id)
+            return
 
     @socketio.on("join")
     def on_join(data):
         user = data["user"]
         game_id = data["gameId"]
+
+        socket_id_to_user_map[request.sid] = user
 
         # only let a player join a room a single time (fixes bug of 2 join calls for each connect)
         if (game_id in user_rooms.keys()) and (user in user_rooms[game_id]):
