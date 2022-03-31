@@ -29,6 +29,7 @@ def register_ws_events(socketio: SocketIO):
         if users_in_room == None:
             return
 
+        users_in_room.pop(user)
         if len(users_in_room) == 0:
             user_rooms.pop(game_id)
             current_games.pop(game_id)
