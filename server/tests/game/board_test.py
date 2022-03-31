@@ -2,6 +2,9 @@ from game.board import Board
 from game.piece import Piece
 from game.move import Move, Square
 from server.tests.game.pieces.helper import get_empty_board
+from copy import deepcopy
+
+from collections import Counter
 
 
 def test_board_init():
@@ -168,3 +171,177 @@ def test_checkmate3():
 
     assert board.is_check()
     assert board.is_checkmate()
+
+
+def test_draw_stalemate():
+    board = get_empty_board()
+    king = Square(3, 7)
+    queen = Square(7, 5)
+    bishop = Square(3, 4)
+
+    board.state[king.y][king.x] = Piece.KING
+    board.state[queen.y][queen.x] = -Piece.QUEEN
+    board.state[bishop.y][bishop.x] = -Piece.BISHOP
+
+    move1 = Move(king, Square(4, 7))
+    move2 = Move(queen, Square(3, 5))
+
+    assert board.register_move(move1)
+    assert board.register_move(move2)
+    assert board.is_stalemate()
+    assert board.is_draw()
+
+
+def test_draw_repetition():
+    board = get_empty_board()
+    king1 = Square(3, 7)
+    king2 = Square(4, 7)
+    queen1 = Square(3, 5)
+    queen2 = Square(4, 5)
+
+    board.state[king1.y][king1.x] = Piece.KING
+    board.state[queen1.y][queen1.x] = -Piece.QUEEN
+
+    board.board_states = [deepcopy(board.state)]
+
+    move1 = Move(king1, king2)
+    move2 = Move(queen1, queen2)
+    move3 = Move(king2, king1)
+    move4 = Move(queen2, queen1)
+
+    assert board.register_move(move1)
+    assert not board.is_draw()
+
+    assert board.register_move(move2)
+    assert not board.is_draw()
+
+    assert board.register_move(move3)
+    assert not board.is_draw()
+
+    assert board.register_move(move4)
+    assert not board.is_draw()
+
+    assert board.register_move(move1)
+    assert not board.is_draw()
+
+    assert board.register_move(move2)
+    assert not board.is_draw()
+
+    assert board.register_move(move3)
+    assert not board.is_draw()
+
+    assert board.register_move(move4)
+    assert board.is_draw()
+
+
+def test_fifty_move_rep():
+    board = get_empty_board()
+    king1 = Square(7, 7)
+    king2 = Square(0, 0)
+
+    board.state[king1.y][king1.x] = Piece.KING
+    board.state[king2.y][king2.x] = -Piece.KING
+
+    for _ in range(0, 7):
+        prev_king1 = deepcopy(king1)
+        king1 = Square(prev_king1.x - 1, prev_king1.y)
+        move1 = Move(prev_king1, king1)
+
+        prev_king2 = deepcopy(king2)
+        king2 = Square(prev_king2.x + 1, prev_king2.y)
+        move2 = Move(prev_king2, king2)
+
+        assert board.register_move(move1)
+        assert board.register_move(move2)
+        assert not board.is_draw()
+
+    for _ in range(0, 7):
+        prev_king1 = deepcopy(king1)
+        king1 = Square(prev_king1.x, prev_king1.y - 1)
+        move1 = Move(prev_king1, king1)
+
+        prev_king2 = deepcopy(king2)
+        king2 = Square(prev_king2.x, prev_king2.y + 1)
+        move2 = Move(prev_king2, king2)
+
+        assert board.register_move(move1)
+        assert board.register_move(move2)
+        assert not board.is_draw()
+
+    for _ in range(0, 7):
+        prev_king1 = deepcopy(king1)
+        king1 = Square(prev_king1.x + 1, prev_king1.y)
+        move1 = Move(prev_king1, king1)
+
+        prev_king2 = deepcopy(king2)
+        king2 = Square(prev_king2.x - 1, prev_king2.y)
+        move2 = Move(prev_king2, king2)
+
+        assert board.register_move(move1)
+        assert board.register_move(move2)
+        assert not board.is_draw()
+
+    for _ in range(0, 7):
+        prev_king1 = deepcopy(king1)
+        king1 = Square(prev_king1.x, prev_king1.y + 1)
+        move1 = Move(prev_king1, king1)
+
+        prev_king2 = deepcopy(king2)
+        king2 = Square(prev_king2.x, prev_king2.y - 1)
+        move2 = Move(prev_king2, king2)
+
+        assert board.register_move(move1)
+        assert board.register_move(move2)
+        assert not board.is_draw()
+
+    for _ in range(0, 7):
+        prev_king1 = deepcopy(king1)
+        king1 = Square(prev_king1.x - 1, prev_king1.y)
+        move1 = Move(prev_king1, king1)
+
+        prev_king2 = deepcopy(king2)
+        king2 = Square(prev_king2.x + 1, prev_king2.y)
+        move2 = Move(prev_king2, king2)
+
+        assert board.register_move(move1)
+        assert board.register_move(move2)
+        assert not board.is_draw()
+
+    for _ in range(0, 7):
+        prev_king1 = deepcopy(king1)
+        king1 = Square(prev_king1.x, prev_king1.y - 1)
+        move1 = Move(prev_king1, king1)
+
+        prev_king2 = deepcopy(king2)
+        king2 = Square(prev_king2.x, prev_king2.y + 1)
+        move2 = Move(prev_king2, king2)
+
+        assert board.register_move(move1)
+        assert board.register_move(move2)
+        assert not board.is_draw()
+
+    for _ in range(0, 7):
+        prev_king1 = deepcopy(king1)
+        king1 = Square(prev_king1.x + 1, prev_king1.y)
+        move1 = Move(prev_king1, king1)
+
+        prev_king2 = deepcopy(king2)
+        king2 = Square(prev_king2.x - 1, prev_king2.y)
+        move2 = Move(prev_king2, king2)
+
+        assert board.register_move(move1)
+        assert board.register_move(move2)
+        assert not board.is_draw()
+
+    prev_king1 = deepcopy(king1)
+    king1 = Square(prev_king1.x, prev_king1.y + 1)
+    move1 = Move(prev_king1, king1)
+
+    prev_king2 = deepcopy(king2)
+    king2 = Square(prev_king2.x, prev_king2.y - 1)
+    move2 = Move(prev_king2, king2)
+
+    assert board.register_move(move1)
+    assert not board.is_draw()
+    assert board.register_move(move2)
+    assert board.is_draw()

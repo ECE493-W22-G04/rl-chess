@@ -14,4 +14,5 @@ def get_empty_board() -> Board:
         [Piece.NONE] * 8,
         [Piece.NONE] * 8,
     ]
+    board.board_states = []
     return board

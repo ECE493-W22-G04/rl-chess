@@ -40,4 +40,9 @@ for promoted_to in [Piece.QUEEN, Piece.BISHOP, Piece.ROOK, Piece.KNIGHT]:
         for row in [1, 6]:
             ACTIONS.append(Move(Square(column, row), Square(column, row - 1 if row == 1 else row + 1), promotion=promoted_to))
 
+# Castling
+for move in [2, 6]:
+    ACTIONS.append(Move(Square(4, 0), Square(move, 0)))
+    ACTIONS.append(Move(Square(4, 7), Square(move, 7)))
+
 ACTIONS = list(set(ACTIONS))
