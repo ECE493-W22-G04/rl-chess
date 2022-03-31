@@ -1,4 +1,3 @@
-from xml.etree.ElementTree import PI
 from game.board import Board, Piece
 from server.game.move import Move, Square
 from server.tests.game.pieces.helper import get_empty_board

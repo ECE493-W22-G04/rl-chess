@@ -4,6 +4,7 @@ from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_
 from .actions import ACTIONS
 from copy import deepcopy
 from collections import Counter
+import json
 
 
 class Board:
@@ -45,6 +46,9 @@ class Board:
             return chr(ord(pieces[abs(piece)]) + offset)
 
         return '\n\n'.join(['\t'.join([piece_to_str(piece) for piece in row]) for row in self.state])
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     def get_actions(self):
         return ACTIONS
@@ -89,16 +93,12 @@ class Board:
         return False
 
     def is_stalemate(self) -> bool:
-        if len(self.get_legal_actions()) == 0:
-            return True
-        return False
+        return len(self.get_legal_actions()) == 0
 
     def is_threefold_repetition(self) -> bool:
         mapped_states = map(lambda x: str(x), self.board_states)
         counts = dict(Counter(mapped_states))
-        if len(list(filter(lambda x: x >= 3, counts.values()))) > 0:
-            return True
-        return False
+        return len(list(filter(lambda x: x >= 3, counts.values()))) > 0
 
     def is_fifty_move_rule(self) -> bool:
         if self.fifty_move_count >= 100:  # double because a move is a white and black move
@@ -305,15 +305,11 @@ class Board:
         last_piece_moved = self.state[self.last_move.to_square.y][self.last_move.to_square.x]
         x_diff = self.last_move.from_square.x - self.last_move.to_square.x
         y_diff = self.last_move.from_square.y - self.last_move.to_square.y
-        cur_piece = self.state[move.from_square.y][move.from_square.x]
-        if abs(cur_piece) != Piece.PAWN or abs(last_piece_moved) != Piece.PAWN or x_diff != 0 or abs(y_diff) != 2:
+        if abs(piece_to_move) != Piece.PAWN or abs(last_piece_moved) != Piece.PAWN or x_diff != 0 or abs(y_diff) != 2:
             return False
 
         # current move captures
-        if move.to_square.x == self.last_move.from_square.x and move.to_square.y != self.last_move.to_square.y:
-            return True
-
-        return False
+        return move.to_square.x == self.last_move.from_square.x and move.to_square.y != self.last_move.to_square.y
 
     def is_move_possible(self, move: Move):
         from_x = move.from_square.x
