@@ -21,7 +21,7 @@ class Player(db.Model):
 
 class Game:
 
-    def __init__(self, host_email: int, is_pvp: bool=False) -> None:
+    def __init__(self, host_email: int, is_pvp: bool = False) -> None:
         self.id = str(uuid4())
         if Player.query.filter_by(email=host_email).first() == None:
             raise PlayerDoesNotExist()

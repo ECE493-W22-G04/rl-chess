@@ -2,8 +2,8 @@ from flask_socketio import SocketIO, join_room, leave_room, emit
 from api.routes.games import current_games
 from game.move import Move, Square
 
-# TODO: set PLAYERS_PER_ROOM based on game type
-PLAYERS_PER_ROOM = 2
+PLAYERS_PER_PVP_ROOM = 2
+PLAYERS_PER_PVC_ROOM = 1
 
 user_rooms = {}
 
@@ -23,13 +23,27 @@ def register_ws_events(socketio: SocketIO):
         user = data["user"]
         game_id = data["gameId"]
 
+        if game_id not in current_games:
+            emit('error', 'Game no longer exists', broadcast=True, to=game_id)
+            return
+
+        game = current_games[game_id]
+        players_in_room = user_rooms[game_id]
+
         # only let a player join a room a single time (fixes bug of 2 join calls for each connect)
         if (game_id in user_rooms.keys()) and (user in user_rooms[game_id]):
             return
-        if game_id in user_rooms.keys():
-            # Don't allow others to join full room
-            if len(user_rooms[game_id]) == PLAYERS_PER_ROOM:
+
+        def is_room_full(is_pvp: bool, num_players_in_room: int):
+            if game.is_pvp:
+                return num_players_in_room == PLAYERS_PER_PVP_ROOM
+            return num_players_in_room == PLAYERS_PER_PVC_ROOM
+
+        if game_id in user_rooms:
+            if is_room_full(game.is_pvp, len(players_in_room)):
+                # Prevent users from joining full room
                 return
+
             user_rooms[game_id].append(user)
         else:
             user_rooms[game_id] = [user]
@@ -37,7 +51,7 @@ def register_ws_events(socketio: SocketIO):
         join_room(game_id)
         emit("message", user + " has joined the room", broadcast=True, to=game_id)
 
-        if (len(user_rooms[game_id]) == PLAYERS_PER_ROOM):
+        if is_room_full(game.is_pvp, len(players_in_room)):
             emit("room_full", broadcast=True, to=game_id)
 
     @socketio.on("pick_side")
