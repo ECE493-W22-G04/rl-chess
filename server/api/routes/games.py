@@ -18,7 +18,8 @@ def create_game():
     try:
         game = Game(host_email=current_user)
     except PlayerDoesNotExist:
-        return jsonify(game.toJSON()), 400
+        err_msg = {"err": "Player does not exist"}
+        return err_msg, 400
     current_games[game.id] = game
     return jsonify(game.toJSON()), 201
 

@@ -2,6 +2,9 @@ from flask_socketio import SocketIO, join_room, leave_room, emit
 from api.routes.games import current_games
 from game.move import Move, Square
 
+# TODO: set PLAYERS_PER_ROOM based on game type
+PLAYERS_PER_ROOM = 2
+
 user_rooms = {}
 
 
@@ -17,8 +20,6 @@ def register_ws_events(socketio: SocketIO):
 
     @socketio.on("join")
     def on_join(data):
-        # TODO: set expected players based on game type
-        expected_players = 2
         user = data["user"]
         game_id = data["gameId"]
 
@@ -26,17 +27,17 @@ def register_ws_events(socketio: SocketIO):
         if (game_id in user_rooms.keys()) and (user in user_rooms[game_id]):
             return
         if game_id in user_rooms.keys():
-            if len(user_rooms[game_id]) < expected_players:
-                user_rooms[game_id].append(user)
-            else:  # Don't allow others to join full room
+            # Don't allow others to join full room
+            if len(user_rooms[game_id]) == PLAYERS_PER_ROOM:
                 return
+            user_rooms[game_id].append(user)
         else:
             user_rooms[game_id] = [user]
 
         join_room(game_id)
         emit("message", user + " has joined the room", broadcast=True, to=game_id)
 
-        if (len(user_rooms[game_id]) == expected_players):
+        if (len(user_rooms[game_id]) == PLAYERS_PER_ROOM):
             emit("room_full", broadcast=True, to=game_id)
 
     @socketio.on("pick_side")
