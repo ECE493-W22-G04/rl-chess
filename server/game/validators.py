@@ -62,6 +62,16 @@ def is_rook_path_clear(board: list[list[Piece]], move: Move):
     return True
 
 
+def is_pawn_path_clear(board: list[list[Piece]], move: Move, is_white: bool):
+    offset = -1 if is_white else 1
+
+    for i in exclusive_range(move.from_square.y, move.to_square.y + offset):
+        if board[i][move.from_square.x] != Piece.NONE:
+            return False
+
+    return True
+
+
 def is_knight_move(move: Move):
     if abs(move.to_square.x - move.from_square.x) == 1:
         return abs(move.to_square.y - move.from_square.y) == 2

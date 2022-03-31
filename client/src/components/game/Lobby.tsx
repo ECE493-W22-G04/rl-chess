@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
-import socket from '../../services/socket';
+import React, { FC, useState, useEffect } from 'react';
 import { Player } from '../../types';
 import AuthService from '../../services/auth';
 import PickSide from './PickSide';
+import socket from '../../services/socket';
 
 type LobbyProps = {
     gameId: string;
@@ -10,11 +10,13 @@ type LobbyProps = {
 };
 
 const Lobby: FC<LobbyProps> = ({ gameId, host }: LobbyProps) => {
-    const broadcastGameStarted = () => {
-        socket.emit('start_game', {
-            gameId,
+    const [roomFull, setRoomFull] = useState<boolean>(false);
+
+    useEffect(() => {
+        socket.on('room_full', () => {
+            setRoomFull(true);
         });
-    };
+    }, []);
 
     if (AuthService.getCurrentUser() !== host) {
         return (
@@ -28,14 +30,8 @@ const Lobby: FC<LobbyProps> = ({ gameId, host }: LobbyProps) => {
     return (
         <div>
             <h1>Lobby</h1>
-            <button
-                onClick={() => {
-                    broadcastGameStarted();
-                }}
-            >
-                Start game
-            </button>
-            {AuthService.getCurrentUser() === host && <PickSide />}
+            {!roomFull && <div>Waiting for enough players to begin</div>}
+            {AuthService.getCurrentUser() === host && roomFull && <PickSide gameId={gameId} />}
             <div className="invite">Invite URL: {window.location.href}</div>
         </div>
     );

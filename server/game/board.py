@@ -1,8 +1,10 @@
 from .piece import Piece
 from .move import Move
-from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear
+from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear, is_pawn_path_clear
 from .actions import ACTIONS
 from copy import deepcopy
+from collections import Counter
+import json
 
 
 class Board:
@@ -23,6 +25,9 @@ class Board:
         ]
 
         self.is_white_turn = True
+        self.board_states = [deepcopy(self.state)]
+        self.last_move: Move = None
+        self.fifty_move_count = 0
 
     def __str__(self) -> str:
 
@@ -41,6 +46,9 @@ class Board:
             return chr(ord(pieces[abs(piece)]) + offset)
 
         return '\n\n'.join(['\t'.join([piece_to_str(piece) for piece in row]) for row in self.state])
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     def get_actions(self):
         return ACTIONS
@@ -72,6 +80,38 @@ class Board:
                 continue
             legal_actions.append(i)
         return legal_actions
+
+    def is_draw(self) -> bool:
+        # both players draw the game
+        # TODO: hook in connection
+        # stalemate
+        if self.is_stalemate():
+            print("is stalemate")
+            return True
+
+        # threefold repetition
+        if self.is_threefold_repetition():
+            print("is repitition")
+            return True
+
+        # fifty-move rule
+        if self.is_fifty_move_rule():
+            print("is fifty moves")
+            return True
+        return False
+
+    def is_stalemate(self) -> bool:
+        return len(self.get_legal_actions()) == 0
+
+    def is_threefold_repetition(self) -> bool:
+        mapped_states = map(lambda x: str(x), self.board_states)
+        counts = dict(Counter(mapped_states))
+        return len(list(filter(lambda x: x >= 3, counts.values()))) > 0
+
+    def is_fifty_move_rule(self) -> bool:
+        if self.fifty_move_count >= 100:  # double because a move is a white and black move
+            return True
+        return False
 
     def is_check(self) -> bool:
         """Returns true if the current player is being checked"""
@@ -108,10 +148,44 @@ class Board:
     def __register_move_unsafe(self, move: Move) -> bool:
         """Registers move without validation"""
         piece_to_move = self.state[move.from_square.y][move.from_square.x]
-        self.state[move.to_square.y][move.to_square.x] = piece_to_move
-        self.state[move.from_square.y][move.from_square.x] = Piece.NONE
+        piece_to_capture = self.state[move.to_square.y][move.to_square.x]
+
+        if abs(piece_to_move) == Piece.PAWN or piece_to_capture != Piece.NONE:
+            self.fifty_move_count = 0
+        else:
+            self.fifty_move_count += 1
+
+        # castling
+        if self.is_valid_castle(move):
+            # move the king
+            self.state[move.to_square.y][move.to_square.x] = piece_to_move
+            self.state[move.from_square.y][move.from_square.x] = Piece.NONE
+
+            # move the rook
+            if move.to_square.x == 2:
+                piece_to_move = self.state[move.from_square.y][0]
+                self.state[move.from_square.y][3] = piece_to_move
+                self.state[move.from_square.y][0] = Piece.NONE
+            else:
+                piece_to_move = self.state[move.from_square.y][7]
+                self.state[move.from_square.y][5] = piece_to_move
+                self.state[move.from_square.y][7] = Piece.NONE
+        elif self.is_en_passant(move):
+            # move the pawn
+            self.state[move.to_square.y][move.to_square.x] = piece_to_move
+            self.state[move.from_square.y][move.from_square.x] = Piece.NONE
+
+            # capture the other pawn
+            self.state[self.last_move.to_square.y][self.last_move.to_square.x] = Piece.NONE
+
+        else:
+            self.state[move.to_square.y][move.to_square.x] = piece_to_move
+            self.state[move.from_square.y][move.from_square.x] = Piece.NONE
 
         self.is_white_turn = not self.is_white_turn
+
+        self.board_states.append(deepcopy(self.state))
+        self.last_move = move
         return True
 
     def register_move(self, move: Move) -> bool:
@@ -119,6 +193,131 @@ class Board:
             return False
 
         return self.__register_move_unsafe(move)
+
+    def is_valid_castle(self, move: Move) -> bool:
+        from_x = move.from_square.x
+        from_y = move.from_square.y
+        to_x = move.to_square.x
+        to_y = move.to_square.y
+        from_piece = self.state[from_y][from_x]
+
+        # not a castling move
+        if (not (from_y == 0 or from_y == 7)) or from_y != to_y or from_x != 4 or (not (to_x == 2 or to_x == 6)) or abs(from_piece) != Piece.KING:
+            return False
+
+        # check if a piece is in the way
+        if from_y == 0:
+            if to_x == 2 and self.state[0][0] != -Piece.ROOK and self.state[0][1] != Piece.NONE and self.state[0][2] != Piece.NONE and self.state[0][3] != Piece.NONE and self.state[0][
+                    3] != -Piece.KING:
+                return False
+            if to_x == 6 and self.state[0][7] != -Piece.ROOK and self.state[0][6] != Piece.NONE and self.state[0][5] != Piece.NONE and self.state[0][4] != -Piece.KING:
+                return False
+        else:
+            if to_x == 2 and self.state[7][0] != Piece.ROOK and self.state[7][1] != Piece.NONE and self.state[7][2] != Piece.NONE and self.state[7][3] != Piece.NONE and self.state[7][3] != Piece.KING:
+                return False
+            if to_x == 6 and self.state[7][7] != Piece.ROOK and self.state[7][6] != Piece.NONE and self.state[7][5] != Piece.NONE and self.state[7][4] != Piece.KING:
+                return False
+
+        white_rook_0_moved = False
+        white_rook_7_moved = False
+        white_king_moved = False
+        black_rook_0_moved = False
+        black_rook_7_moved = False
+        black_king_moved = False
+
+        # check if previous boardstates moved the king/rook in question
+        for state in self.board_states:
+            if state[0][0] != -Piece.ROOK:
+                black_rook_0_moved = True
+            if state[0][4] != -Piece.KING:
+                black_king_moved = True
+            if state[0][7] != -Piece.ROOK:
+                black_rook_7_moved = True
+
+            if state[7][0] != Piece.ROOK:
+                white_rook_0_moved = True
+            if state[7][4] != Piece.KING:
+                white_king_moved = True
+            if state[7][7] != Piece.ROOK:
+                white_rook_7_moved = True
+
+        if from_y == 0:
+            if black_king_moved:
+                return False
+            if to_x == 2 and black_rook_0_moved:
+                return False
+            if to_x == 6 and black_rook_7_moved:
+                return False
+        else:
+            if white_king_moved:
+                return False
+            if to_x == 2 and white_rook_0_moved:
+                return False
+            if to_x == 6 and white_rook_7_moved:
+                return False
+
+        # simulate moves
+        test_board = deepcopy(self)
+        if from_y == 0:
+            if to_x == 2:
+                test_board.state[0][4] = Piece.NONE
+                test_board.state[0][3] = -Piece.KING
+                if test_board.is_check():
+                    return False
+                test_board.state[0][3] = Piece.NONE
+                test_board.state[0][2] = -Piece.KING
+                if test_board.is_check():
+                    return False
+            else:
+                test_board.state[0][4] = Piece.NONE
+                test_board.state[0][5] = -Piece.KING
+                if test_board.is_check():
+                    return False
+                test_board.state[0][5] = Piece.NONE
+                test_board.state[0][6] = -Piece.KING
+                if test_board.is_check():
+                    return False
+        else:
+            if to_x == 2:
+                test_board.state[7][4] = Piece.NONE
+                test_board.state[7][3] = Piece.KING
+                if test_board.is_check():
+                    return False
+                test_board.state[7][3] = Piece.NONE
+                test_board.state[7][2] = Piece.KING
+                if test_board.is_check():
+                    return False
+            else:
+                test_board.state[7][4] = Piece.NONE
+                test_board.state[7][5] = Piece.KING
+                if test_board.is_check():
+                    return False
+                test_board.state[7][5] = Piece.NONE
+                test_board.state[7][6] = Piece.KING
+                if test_board.is_check():
+                    return False
+
+        # cannot castle while in check
+        if self.is_check():
+            return False
+
+        return True
+
+    def is_en_passant(self, move: Move):
+        if self.last_move is None:
+            return False
+        piece_to_move = self.state[move.from_square.y][move.from_square.x]
+        if not is_diagonal_forward(move, piece_to_move > 0):
+            return False
+        # last move was a double move
+        last_piece_moved = self.state[self.last_move.to_square.y][self.last_move.to_square.x]
+        x_diff = self.last_move.from_square.x - self.last_move.to_square.x
+        y_diff = self.last_move.from_square.y - self.last_move.to_square.y
+        if abs(piece_to_move) != Piece.PAWN or abs(last_piece_moved) != Piece.PAWN or x_diff != 0 or abs(y_diff) != 2:
+            return False
+
+        # current move captures
+        return move.to_square.x == self.last_move.from_square.x and move.to_square.y != self.last_move.to_square.y
 
     def is_move_possible(self, move: Move):
         from_x = move.from_square.x
@@ -147,10 +346,10 @@ class Board:
 
         if abs(piece_to_move) == Piece.PAWN:
             if is_diagonal_forward(move, piece_to_move > 0):
-                return abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE
+                return self.is_en_passant(move) or (abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE)
             if is_pawns_first_move(move, piece_to_move > 0):
-                return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) <= 2
-            return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1
+                return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) <= 2 and is_pawn_path_clear(self.state, move, piece_to_move > 0)
+            return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1 and is_pawn_path_clear(self.state, move, piece_to_move > 0)
         if abs(piece_to_move) == Piece.BISHOP:
             return is_diagonal_move(move) and is_diagonal_path_clear(self.state, move)
         if abs(piece_to_move) == Piece.KNIGHT:
@@ -160,7 +359,7 @@ class Board:
         if abs(piece_to_move) == Piece.QUEEN:
             return (is_diagonal_move(move) and is_diagonal_path_clear(self.state, move)) or (is_rook_move(move) and is_rook_path_clear(self.state, move))
         if abs(piece_to_move) == Piece.KING:
-            return abs(to_x - from_x) <= 1 and abs(to_y - from_y) <= 1
+            return (abs(to_x - from_x) <= 1 and abs(to_y - from_y) <= 1) or self.is_valid_castle(move)
 
         return False
 
