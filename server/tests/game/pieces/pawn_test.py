@@ -112,3 +112,36 @@ def test_pawn_capture_backwards():
     pawn_capture_backwards = Move(Square(0, 3), Square(1, 4))
 
     assert not board.validate_move(pawn_capture_backwards)
+
+
+def test_pawn_en_passant():
+    board = Board()
+
+    move1 = Move(Square(5, 6), Square(5, 4))
+    move2 = Move(Square(4, 1), Square(4, 3))
+    move3 = Move(Square(5, 4), Square(5, 3))
+    move4 = Move(Square(6, 1), Square(6, 3))
+    move5 = Move(Square(5, 3), Square(6, 2))
+
+    assert board.register_move(move1)
+    assert board.register_move(move2)
+    assert board.register_move(move3)
+    assert board.register_move(move4)
+    assert board.register_move(move5)
+    assert board.state[3][6] == Piece.NONE
+
+
+def test_pawn_not_en_passant():
+    board = Board()
+
+    move1 = Move(Square(5, 6), Square(5, 4))
+    move2 = Move(Square(4, 1), Square(4, 3))
+    move3 = Move(Square(5, 4), Square(5, 3))
+    move4 = Move(Square(6, 1), Square(6, 3))
+    move5 = Move(Square(5, 3), Square(4, 2))
+
+    assert board.register_move(move1)
+    assert board.register_move(move2)
+    assert board.register_move(move3)
+    assert board.register_move(move4)
+    assert not board.register_move(move5)

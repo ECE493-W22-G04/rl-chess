@@ -24,6 +24,7 @@ class Board:
 
         self.is_white_turn = True
         self.board_states = [self.state]
+        self.last_move: Move = None
 
     def __str__(self) -> str:
 
@@ -116,6 +117,14 @@ class Board:
                 piece_to_move = self.state[move.from_square.y][7]
                 self.state[move.from_square.y][5] = piece_to_move
                 self.state[move.from_square.y][7] = Piece.NONE
+        elif self.is_en_passant(move):
+            # move the pawn
+            self.state[move.to_square.y][move.to_square.x] = piece_to_move
+            self.state[move.from_square.y][move.from_square.x] = Piece.NONE
+
+            # capture the other pawn
+            self.state[self.last_move.to_square.y][self.last_move.to_square.x] = Piece.NONE
+
         else:
             self.state[move.to_square.y][move.to_square.x] = piece_to_move
             self.state[move.from_square.y][move.from_square.x] = Piece.NONE
@@ -123,6 +132,7 @@ class Board:
         self.is_white_turn = not self.is_white_turn
 
         self.board_states.append(self.state)
+        self.last_move = move
         return True
 
     def register_move(self, move: Move) -> bool:
@@ -240,6 +250,23 @@ class Board:
 
         return True
 
+    def is_en_passant(self, move: Move):
+        if self.last_move is None:
+            return False
+        # last move was a double move
+        last_piece_moved = self.state[self.last_move.to_square.y][self.last_move.to_square.x]
+        x_diff = self.last_move.from_square.x - self.last_move.to_square.x
+        y_diff = self.last_move.from_square.y - self.last_move.to_square.y
+        cur_piece = self.state[move.from_square.y][move.from_square.x]
+        if abs(cur_piece) != Piece.PAWN or abs(last_piece_moved) != Piece.PAWN or x_diff != 0 or abs(y_diff) != 2:
+            return False
+
+        # current move captures
+        if move.to_square.x == self.last_move.from_square.x and move.to_square.y != self.last_move.to_square.y:
+            return True
+
+        return False
+
     def is_move_possible(self, move: Move):
         from_x = move.from_square.x
         from_y = move.from_square.y
@@ -267,7 +294,7 @@ class Board:
 
         if abs(piece_to_move) == Piece.PAWN:
             if is_diagonal_forward(move, piece_to_move > 0):
-                return abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE
+                return self.is_en_passant(move) or (abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE)
             if is_pawns_first_move(move, piece_to_move > 0):
                 return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) <= 2
             return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1
