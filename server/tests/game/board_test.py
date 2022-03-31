@@ -192,7 +192,7 @@ def test_draw_stalemate():
     assert board.is_draw()
 
 
-def test_draw_repition():
+def test_draw_repetition():
     board = get_empty_board()
     king1 = Square(3, 7)
     king2 = Square(4, 7)
