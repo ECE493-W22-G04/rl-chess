@@ -1,10 +1,11 @@
+import json
 import pytest
 from flask.testing import FlaskClient
 from flask_jwt_extended import create_access_token
 
-from server.api import create_app
-from server.api.models import Player, db
-from server.tests.constants import TEST_EMAIL, TEST_PASSWORD
+from ...api import create_app
+from ...api.models import Player, db
+from ..constants import TEST_EMAIL, TEST_PASSWORD
 
 
 @pytest.fixture(scope='module')
@@ -29,18 +30,26 @@ def access_token(player: Player) -> str:
 
 
 def test_create_game_unauthed(client: FlaskClient):
-    resp = client.post('/api/games/')
+    resp = client.post('/api/games/', json.dumps({'isPvP': False}))
     assert resp.status_code == 401
 
 
-def test_create_game(client: FlaskClient, access_token: str):
-    resp = client.post('/api/games/', headers={'Authorization': f'Bearer {access_token}'})
+def test_create_computer_game(client: FlaskClient, access_token: str):
+    resp = client.post('/api/games/', json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'})
     assert resp.status_code == 201
     assert 'id' in resp.json
+    assert not resp.json['is_pvp']
+
+
+def test_create_pvp_game(client: FlaskClient, access_token: str):
+    resp = client.post('/api/games/', json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_token}'})
+    assert resp.status_code == 201
+    assert 'id' in resp.json
+    assert resp.json['is_pvp']
 
 
 def test_get_game(client: FlaskClient, access_token: str):
-    resp = client.post('/api/games/', headers={'Authorization': f'Bearer {access_token}'})
+    resp = client.post('/api/games/', json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'})
     game_id = resp.json['id']
 
     resp = client.get(f'/api/games/{game_id}', headers={'Authorization': f'Bearer {access_token}'})
