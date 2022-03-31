@@ -3,6 +3,7 @@ from .move import Move
 from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear
 from .actions import ACTIONS
 from copy import deepcopy
+from collections import Counter
 
 
 class Board:
@@ -23,8 +24,9 @@ class Board:
         ]
 
         self.is_white_turn = True
-        self.board_states = [self.state]
+        self.board_states = [deepcopy(self.state)]
         self.last_move: Move = None
+        self.fifty_move_count = 0
 
     def __str__(self) -> str:
 
@@ -67,6 +69,42 @@ class Board:
             legal_actions.append(move)
         return legal_actions
 
+    def is_draw(self) -> bool:
+        # both players draw the game
+        # TODO: hook in connection
+        # stalemate
+        if self.is_stalemate():
+            print("is stalemate")
+            return True
+
+        # threefold repetition
+        if self.is_threefold_repetition():
+            print("is repitition")
+            return True
+
+        # fifty-move rule
+        if self.is_fifty_move_rule():
+            print("is fifty moves")
+            return True
+        return False
+
+    def is_stalemate(self) -> bool:
+        if len(self.get_legal_actions()) == 0:
+            return True
+        return False
+
+    def is_threefold_repetition(self) -> bool:
+        mapped_states = map(lambda x: str(x), self.board_states)
+        counts = dict(Counter(mapped_states))
+        if len(list(filter(lambda x: x >= 3, counts.values()))) > 0:
+            return True
+        return False
+
+    def is_fifty_move_rule(self) -> bool:
+        if self.fifty_move_count >= 100:  # double because a move is a white and black move
+            return True
+        return False
+
     def is_check(self) -> bool:
         """Returns true if the current player is being checked"""
         was_white_turn = self.is_white_turn
@@ -102,6 +140,13 @@ class Board:
     def __register_move_unsafe(self, move: Move) -> bool:
         """Registers move without validation"""
         piece_to_move = self.state[move.from_square.y][move.from_square.x]
+        piece_to_capture = self.state[move.to_square.y][move.to_square.x]
+
+        if abs(piece_to_move) == Piece.PAWN or piece_to_capture != Piece.NONE:
+            self.fifty_move_count = 0
+        else:
+            self.fifty_move_count += 1
+
         # castling
         if self.is_valid_castle(move):
             # move the king
@@ -131,7 +176,7 @@ class Board:
 
         self.is_white_turn = not self.is_white_turn
 
-        self.board_states.append(self.state)
+        self.board_states.append(deepcopy(self.state))
         self.last_move = move
         return True
 

@@ -1,5 +1,6 @@
 from server.game.board import Board
 from server.game.piece import Piece
+from copy import deepcopy
 
 
 def get_empty_board() -> Board:
@@ -14,4 +15,5 @@ def get_empty_board() -> Board:
         [Piece.NONE] * 8,
         [Piece.NONE] * 8,
     ]
+    board.board_states = []
     return board
