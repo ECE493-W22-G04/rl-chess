@@ -1,6 +1,6 @@
 from .piece import Piece
 from .move import Move
-from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear
+from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear, is_pawn_path_clear
 from .actions import ACTIONS
 from copy import deepcopy
 from collections import Counter
@@ -298,6 +298,9 @@ class Board:
     def is_en_passant(self, move: Move):
         if self.last_move is None:
             return False
+        piece_to_move = self.state[move.from_square.y][move.from_square.x]
+        if not is_diagonal_forward(move, piece_to_move > 0):
+            return False
         # last move was a double move
         last_piece_moved = self.state[self.last_move.to_square.y][self.last_move.to_square.x]
         x_diff = self.last_move.from_square.x - self.last_move.to_square.x
@@ -341,8 +344,8 @@ class Board:
             if is_diagonal_forward(move, piece_to_move > 0):
                 return self.is_en_passant(move) or (abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE)
             if is_pawns_first_move(move, piece_to_move > 0):
-                return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) <= 2
-            return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1
+                return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) <= 2 and is_pawn_path_clear(self.state, move, piece_to_move > 0)
+            return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1 and is_pawn_path_clear(self.state, move, piece_to_move > 0)
         if abs(piece_to_move) == Piece.BISHOP:
             return is_diagonal_move(move) and is_diagonal_path_clear(self.state, move)
         if abs(piece_to_move) == Piece.KNIGHT:

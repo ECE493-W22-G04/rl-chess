@@ -114,6 +114,18 @@ def test_pawn_capture_backwards():
     assert not board.validate_move(pawn_capture_backwards)
 
 
+def test_pawn_capture_forward():
+    board = Board()
+
+    move1 = Move(Square(4, 6), Square(4, 4))
+    move2 = Move(Square(4, 1), Square(4, 3))
+    move3 = Move(Square(4, 4), Square(4, 3))
+
+    assert board.register_move(move1)
+    assert board.register_move(move2)
+    assert not board.register_move(move3)
+
+
 def test_pawn_en_passant():
     board = Board()
 
