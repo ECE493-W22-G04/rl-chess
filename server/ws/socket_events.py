@@ -1,7 +1,7 @@
 from flask_socketio import SocketIO, join_room, leave_room, emit
 from api.routes.games import current_games
 from game.move import Move, Square
-from flask import current_app, request
+from flask import request
 
 # TODO: set PLAYERS_PER_ROOM based on game type
 PLAYERS_PER_ROOM = 2
@@ -29,7 +29,7 @@ def register_ws_events(socketio: SocketIO):
         if users_in_room == None:
             return
 
-        users_in_room.pop(user)
+        users_in_room.remove(user)
         if len(users_in_room) == 0:
             user_rooms.pop(game_id)
             current_games.pop(game_id)
