@@ -1,6 +1,9 @@
 from flask_socketio import SocketIO, join_room, leave_room, emit
-from api.routes.games import current_games
-from game.move import Move, Square
+from numpy import broadcast
+
+from ..game.move import Move, Square
+from ..api.routes.games import current_games
+from ..main import rl_agent
 
 PLAYERS_PER_PVP_ROOM = 2
 PLAYERS_PER_PVC_ROOM = 1
@@ -58,7 +61,7 @@ def register_ws_events(socketio: SocketIO):
         game_id = data["gameId"]
         color = data["color"]
         user = data["user"]
-        other_user = ""
+        other_user = None
 
         # check game exists
         if game_id not in current_games or game_id not in user_rooms:
@@ -80,6 +83,18 @@ def register_ws_events(socketio: SocketIO):
                 current_games[game_id].set_white_player(other_user)
         emit('start_game', current_games[game_id].toJSON(), broadcast=True, to=game_id)
 
+        # Make first move as computer
+        game = current_games[game_id]
+        if game.is_pvp:
+            return    
+        if game.white_player == user:
+            return
+        rl_move = rl_agent.predict(game.board)
+        game.board.register_move(rl_move)
+
+        emit('update', game.toJSON(), broadcast=True, to=game_id)
+        
+
     @socketio.on("make_move")
     def make_move(data):
         game_id = data["gameId"]
@@ -96,7 +111,15 @@ def register_ws_events(socketio: SocketIO):
         (from_x, from_y) = move_from.split(",")
         (to_x, to_y) = move_to.split(",")
         move = Move(Square(int(from_x), int(from_y)), Square(int(to_x), int(to_y)))
-        if current_games[game_id].board.register_move(move):
+        game = current_games[game_id]
+        if game.board.register_move(move):
             emit('update', current_games[game_id].toJSON(), broadcast=True, to=game_id)
         else:
             emit("message", "Invalid move " + move_str, to=game_id)
+
+        # Make computer move
+        if game.is_pvp:
+            return
+        rl_move = rl_agent.predict(game.board)
+        game.board.register_move(rl_move)
+        emit('update', game.toJSON(), broadcast=True, to=game_id)
