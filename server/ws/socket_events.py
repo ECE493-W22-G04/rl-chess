@@ -1,9 +1,8 @@
-from flask_socketio import SocketIO, join_room, leave_room, emit
-from numpy import broadcast
+from flask_socketio import SocketIO, join_room, emit
 
-from ..game.move import Move, Square
-from ..api.routes.games import current_games
-from ..main import rl_agent
+from server.rl_agent import rl_agent
+from server.game.move import Move, Square
+from server.api.routes.games import current_games
 
 PLAYERS_PER_PVP_ROOM = 2
 PLAYERS_PER_PVC_ROOM = 1
