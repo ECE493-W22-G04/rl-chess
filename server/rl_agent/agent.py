@@ -56,7 +56,7 @@ class RlAgent():
             random_action_index = np.random.choice(board.get_legal_action_indices())
             return board.get_actions()[random_action_index]
 
-        return board.get_actions()[random_action_index]
+        return board.get_actions()[predicted_move]
 
     def train(self, num_episodes: int = 50000):
         env = ChessEnv()
