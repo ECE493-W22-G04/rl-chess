@@ -28,7 +28,6 @@ def register_ws_events(socketio: SocketIO):
             return
 
         game = current_games[game_id]
-        players_in_room = user_rooms[game_id]
 
         # only let a player join a room a single time (fixes bug of 2 join calls for each connect)
         if (game_id in user_rooms.keys()) and (user in user_rooms[game_id]):
@@ -40,7 +39,7 @@ def register_ws_events(socketio: SocketIO):
             return num_players_in_room == PLAYERS_PER_PVC_ROOM
 
         if game_id in user_rooms:
-            if is_room_full(game.is_pvp, len(players_in_room)):
+            if is_room_full(game.is_pvp, len(user_rooms[game_id])):
                 # Prevent users from joining full room
                 return
 
@@ -51,7 +50,7 @@ def register_ws_events(socketio: SocketIO):
         join_room(game_id)
         emit("message", user + " has joined the room", broadcast=True, to=game_id)
 
-        if is_room_full(game.is_pvp, len(players_in_room)):
+        if is_room_full(game.is_pvp, len(user_rooms[game_id])):
             emit("room_full", broadcast=True, to=game_id)
 
     @socketio.on("pick_side")
