@@ -30,10 +30,10 @@ def register_ws_events(socketio: SocketIO):
             return
 
         users_in_room.remove(user)
+        leave_room(game_id)
         if len(users_in_room) == 0:
             user_rooms.pop(game_id)
             current_games.pop(game_id)
-            return
 
     @socketio.on("join")
     def on_join(data):
