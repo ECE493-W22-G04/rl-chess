@@ -48,15 +48,16 @@ class RlAgent():
             self.train(100)
 
     def predict(self, board: Board) -> Move:
-        random_action_index = self.__agent.forward(board.state)
-        predicted_move = board.get_actions()[random_action_index]
+        actions = board.get_actions()
+        predicted_move_index = self.__agent.forward(board.state)
+        predicted_move = actions[predicted_move_index]
 
         if not predicted_move in board.get_legal_actions():
             print(f'Agent provided illegal move {predicted_move}', file=stderr)
             random_action_index = np.random.choice(board.get_legal_action_indices())
-            return board.get_actions()[random_action_index]
+            return actions[random_action_index]
 
-        return board.get_actions()[random_action_index]
+        return predicted_move
 
     def train(self, num_episodes: int = 50000):
         env = ChessEnv()
