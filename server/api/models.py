@@ -19,7 +19,22 @@ class Player(db.Model):
         return f"<Player {self.email}>"
 
 
-class Game:
+# Not sure if this can work with the Game model defined, we store slightly different information, cleaner separate?
+class SavedGame(db.Model):
+    __tablename__ = "games"
+
+    id = db.Column(db.Integer, primary_key=True)
+    # null player means RL
+    black_player = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=True)
+    white_player = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=True)
+    winner = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=True)  # null winner means draw
+    game_history = db.Column(db.Text)
+
+    def __repr__(self):
+        return f"<Game {self.id}>"
+
+
+class Game():
 
     def __init__(self, host_email: int) -> None:
         self.id = str(uuid4())

@@ -2,6 +2,8 @@ from flask_socketio import SocketIO, join_room, leave_room, emit
 from api.routes.games import current_games
 from game.move import Move, Square
 
+from api.models import SavedGame, Player, db
+
 # TODO: set PLAYERS_PER_ROOM based on game type
 PLAYERS_PER_ROOM = 2
 
@@ -83,7 +85,24 @@ def register_ws_events(socketio: SocketIO):
         (from_x, from_y) = move_from.split(",")
         (to_x, to_y) = move_to.split(",")
         move = Move(Square(int(from_x), int(from_y)), Square(int(to_x), int(to_y)))
-        if current_games[game_id].board.register_move(move):
-            emit('update', current_games[game_id].toJSON(), broadcast=True, to=game_id)
+        current_game = current_games[game_id]
+        if current_game.board.register_move(move):
+            emit('update', current_game.toJSON(), broadcast=True, to=game_id)
+            if current_game.board.is_checkmate():
+                is_white_turn = not current_game.board.is_white_turn  # opposite because it registered move
+                winner = "White" if is_white_turn else "Black"
+                # TODO: handle this emit client side and close the game after
+                emit("game_over", "Winner is " + winner, broadcast=True, to=game_id)
+
+                # save game
+                black_player = Player.query.filter_by(email=current_game.black_player).first().id if current_game.black_player else None
+                white_player = Player.query.filter_by(email=current_game.white_player).first().id if current_game.white_player else None
+                winner = white_player if is_white_turn else black_player
+                # TODO: decide on a computer id value that won't actually be used or save only player games
+                saved_game = SavedGame(black_player=black_player, white_player=white_player, winner=winner, game_history=str(current_game.board.board_states))
+                db.session.add(saved_game)
+                db.session.commit()
+                # TODO: maybe get a better format of game_history so that we can easily read it in for training
+
         else:
             emit("message", "Invalid move " + move_str, to=game_id)
