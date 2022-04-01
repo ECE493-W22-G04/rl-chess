@@ -5,6 +5,6 @@ from server.game.board import Board
 def test_rl_can_predict_moves():
     rl_agent = RlAgent()
     board = Board()
-    for _ in range(10):
+    for i in range(5):
         action = rl_agent.predict(board)
         assert board.register_move(action)
