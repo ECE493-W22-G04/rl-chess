@@ -88,14 +88,13 @@ def register_ws_events(socketio: SocketIO):
         # Make first move as computer
         game = current_games[game_id]
         if game.is_pvp:
-            return    
+            return
         if game.white_player == user:
             return
         rl_move = rl_agent.predict(game.board)
         game.board.register_move(rl_move)
 
         emit('update', game.toJSON(), broadcast=True, to=game_id)
-        
 
     @socketio.on("make_move")
     def make_move(data):
