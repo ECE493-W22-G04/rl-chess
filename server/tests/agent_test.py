@@ -7,7 +7,6 @@ from ..rl_agent.agent import RlAgent
 from ..game.board import Board
 
 
-
 def test_rl_can_predict_moves():
     rl_agent = RlAgent()
     board = Board()
