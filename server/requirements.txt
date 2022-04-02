@@ -5,7 +5,7 @@ Flask_Migrate==3.1.0
 Flask_SocketIO==5.1.1
 Flask_SQLAlchemy==2.4.1
 gym==0.23.1
-keras_rl2==1.0.5
+git+https://github.com/armiantos/keras-rl2@master
 numpy==1.21.5
 Werkzeug==2.0
 pbu==0.7.5
