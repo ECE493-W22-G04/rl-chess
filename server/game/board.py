@@ -207,15 +207,14 @@ class Board:
 
         # check if a piece is in the way
         if from_y == 0:
-            if to_x == 2 and self.state[0][0] != -Piece.ROOK and self.state[0][1] != Piece.NONE and self.state[0][2] != Piece.NONE and self.state[0][3] != Piece.NONE and self.state[0][
-                    3] != -Piece.KING:
+            if to_x == 2 and (self.state[0][0] != -Piece.ROOK or self.state[0][1] != Piece.NONE or self.state[0][2] != Piece.NONE or self.state[0][3] != Piece.NONE or self.state[0][4] != -Piece.KING):
                 return False
-            if to_x == 6 and self.state[0][7] != -Piece.ROOK and self.state[0][6] != Piece.NONE and self.state[0][5] != Piece.NONE and self.state[0][4] != -Piece.KING:
+            if to_x == 6 and (self.state[0][7] != -Piece.ROOK or self.state[0][6] != Piece.NONE or self.state[0][5] != Piece.NONE or self.state[0][4] != -Piece.KING):
                 return False
         else:
-            if to_x == 2 and self.state[7][0] != Piece.ROOK and self.state[7][1] != Piece.NONE and self.state[7][2] != Piece.NONE and self.state[7][3] != Piece.NONE and self.state[7][3] != Piece.KING:
+            if to_x == 2 and (self.state[7][0] != Piece.ROOK or self.state[7][1] != Piece.NONE or self.state[7][2] != Piece.NONE or self.state[7][3] != Piece.NONE or self.state[7][4] != Piece.KING):
                 return False
-            if to_x == 6 and self.state[7][7] != Piece.ROOK and self.state[7][6] != Piece.NONE and self.state[7][5] != Piece.NONE and self.state[7][4] != Piece.KING:
+            if to_x == 6 and (self.state[7][7] != Piece.ROOK or self.state[7][6] != Piece.NONE or self.state[7][5] != Piece.NONE or self.state[7][4] != Piece.KING):
                 return False
 
         white_rook_0_moved = False
