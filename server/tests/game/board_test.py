@@ -346,6 +346,7 @@ def test_fifty_move_rep():
     assert board.register_move(move2)
     assert board.is_draw()
 
+
 def test_stores_moves():
     board = Board()
 
