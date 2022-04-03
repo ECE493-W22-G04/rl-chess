@@ -4,16 +4,17 @@ import Board from './Board';
 import Lobby from './Lobby';
 import { getGameDetails } from '../../services/game';
 import socket from '../../services/socket';
-import { Game } from '../../types';
+import { Game, GameOverMessage } from '../../types';
 import AuthService from '../../services/auth';
 import PickSide from './PickSide';
+import WinnerModal from './WinnerModal';
 
 const Room: FC = () => {
     const { gameId } = useParams();
     const [game, setGame] = useState<Game | null>(null);
     const [isGameReady, setIsGameReady] = useState<boolean>(false);
-    const [hasGameStarted, setHasGameStarted] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [winner, setWinner] = useState<string | null>(null);
 
     useEffect(() => {
         if (gameId == null) {
@@ -39,6 +40,11 @@ const Room: FC = () => {
         socket.on('message', (data) => {
             console.log(data);
         });
+
+        socket.on('game-over', (data) => {
+            const msg: GameOverMessage = JSON.parse(data);
+            setWinner(msg.winner);
+        });
     }, []);
 
     useEffect(() => {
@@ -50,6 +56,7 @@ const Room: FC = () => {
     }
 
     if (game == null) {
+        console.error(`Could not find game with id ${gameId}`);
         return <Navigate to="/" />;
     }
 
@@ -62,7 +69,12 @@ const Room: FC = () => {
         }
     }
 
-    return <Board game={game} />;
+    return (
+        <>
+            <WinnerModal winner={winner} />
+            <Board game={game} />
+        </>
+    );
 };
 
 export default Room;
