@@ -74,19 +74,18 @@ def register_ws_events(socketio: SocketIO):
 
         game = current_games[game_id]
         # check if player in room and is host of current game
-        if user in user_rooms[game_id] and user == current_games[game_id].host:
+        if user in user_rooms[game_id] and user == game.host:
             if color == "white":
-                current_games[game_id].set_white_player(user)
+                game.set_white_player(user)
                 if game.is_pvp:
-                    current_games[game_id].set_black_player(other_user)
+                    game.set_black_player(other_user)
             elif color == "black":
-                current_games[game_id].set_black_player(user)
+                game.set_black_player(user)
                 if game.is_pvp:
-                    current_games[game_id].set_white_player(other_user)
-        emit('start_game', current_games[game_id].toJSON(), broadcast=True, to=game_id)
+                    game.set_white_player(other_user)
+        emit('start_game', game.toJSON(), broadcast=True, to=game_id)
 
         # Make first move as computer
-        game = current_games[game_id]
         if game.is_pvp:
             return
         if game.white_player == user:
