@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import Button from 'react-bootstrap/Button';
 
 import AuthService from '../services/auth';
 
@@ -43,7 +44,7 @@ const Register: React.FunctionComponent = () => {
         <div className="col-md-12">
             <div className="card card-container">
                 <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleRegister}>
-                    <Form>
+                    <Form style={{ margin: '1em' }}>
                         {!successful && (
                             <div>
                                 <div className="form-group">
@@ -59,9 +60,7 @@ const Register: React.FunctionComponent = () => {
                                 </div>
 
                                 <div className="form-group">
-                                    <button type="submit" className="btn btn-primary btn-block">
-                                        Sign Up
-                                    </button>
+                                    <Button type="submit">Sign Up</Button>
                                 </div>
                             </div>
                         )}

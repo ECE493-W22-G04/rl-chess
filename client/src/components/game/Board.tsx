@@ -3,6 +3,8 @@ import { Game } from '../../types';
 import BoardTile from './BoardTile';
 import socket from '../../services/socket';
 import AuthService from '../../services/auth';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 
 type BoardProps = {
     game: Game;
@@ -81,19 +83,19 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
                     </div>
                 ))}
             </div>
-            <div style={{ borderStyle: 'solid', display: 'flex', flexFlow: 'column wrap', justifyContent: 'space-evenly', alignItems: 'center', padding: '2em' }}>
+            <Card style={{ display: 'flex', flexFlow: 'column wrap', justifyContent: 'space-evenly', alignItems: 'center', padding: '2em' }}>
                 <div className="player-color">
                     <h2>You are playing {playerColor}</h2>
                 </div>
                 <div className="current-turn">
                     <h2>Current turn {currentTurn()}</h2>
                 </div>
-                <div className="offer-draw">{game.black_player != null && game.white_player != null && <button onClick={offerDraw}>Offer Draw</button>}</div>
+                <div className="offer-draw">{game.black_player != null && game.white_player != null && <Button onClick={offerDraw}>Offer Draw</Button>}</div>
                 <div className="concede">
-                    <button onClick={concede}>Concede</button>
+                    <Button onClick={concede}>Concede</Button>
                 </div>
                 <div className="display-message">{displayMessage && <div className="alert alert-warning">{displayMessage}</div>}</div>
-            </div>
+            </Card>
         </div>
     );
 };

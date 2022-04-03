@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { createGame } from '../services/game';
+import Button from 'react-bootstrap/Button';
 
 const MainMenu: FC = () => {
     const navigate = useNavigate();
@@ -17,14 +18,14 @@ const MainMenu: FC = () => {
 
     return (
         <div>
-            <h1>Main menu</h1>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <button id={'pvc'} onClick={handlePlayAgainstComputer}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1em', alignItems: 'center' }}>
+                <h1>Main menu</h1>
+                <Button id={'pvc'} onClick={handlePlayAgainstComputer}>
                     Play against computer
-                </button>
-                <button id={'pvp'} onClick={handlePlayAgainstPlayer}>
+                </Button>
+                <Button id={'pvp'} onClick={handlePlayAgainstPlayer}>
                     Play against player
-                </button>
+                </Button>
             </div>
         </div>
     );
