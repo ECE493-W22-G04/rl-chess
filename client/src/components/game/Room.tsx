@@ -8,6 +8,7 @@ import { Game, GameOverMessage } from '../../types';
 import AuthService from '../../services/auth';
 import PickSide from './PickSide';
 import WinnerModal from './WinnerModal';
+import OfferDrawModal from './OfferDrawModal';
 
 const Room: FC = () => {
     const { gameId } = useParams();
@@ -70,6 +71,7 @@ const Room: FC = () => {
     return (
         <>
             <WinnerModal winner={winner} />
+            <OfferDrawModal gameId={game.id} />
             <Board game={game} />
         </>
     );

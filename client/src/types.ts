@@ -27,3 +27,7 @@ export interface Jwt {
 export type GameOverMessage = {
     winner: string;
 };
+
+export type OfferDrawMessage = {
+    offer_draw_to: string;
+};
