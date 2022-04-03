@@ -173,6 +173,7 @@ def get_other_player(game_id, user):
             return user_in_room
     return ""
 
+
 def handle_game_over(game: Game):
     winner = game.white_player
     if game.board.is_white_turn:
