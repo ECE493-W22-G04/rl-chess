@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import UserService from '../services/user';
-import { Socket } from '../Socket';
 
 const Home: React.FunctionComponent = () => {
     const [content, setContent] = useState<string | undefined>(undefined);
@@ -30,7 +29,6 @@ const Home: React.FunctionComponent = () => {
         <div className="container">
             <header className="jumbotron">
                 <h3>{content}</h3>
-                <Socket />
             </header>
         </div>
     );

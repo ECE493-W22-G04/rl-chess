@@ -11,6 +11,7 @@ export type Game = {
     white_player: Player | null;
     black_player: Player | null;
     host: Player;
+    has_started: boolean;
 };
 
 export interface Jwt {
@@ -22,3 +23,7 @@ export interface Jwt {
     nbf: number;
     exp: number;
 }
+
+export type GameOverMessage = {
+    winner: string;
+};

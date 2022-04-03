@@ -21,7 +21,7 @@ describe('createGame', () => {
         mockAxios.post = mockPost;
 
         mockPost.mockResolvedValue({
-            data: mockGame,
+            data: JSON.stringify(mockGame),
         });
     });
 
@@ -40,7 +40,7 @@ describe('getGameDetails', () => {
     beforeEach(() => {
         mockAxios.get = mockGet;
         mockGet.mockResolvedValue({
-            data: mockGame,
+            data: JSON.stringify(mockGame),
         });
     });
 
