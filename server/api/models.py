@@ -21,7 +21,7 @@ class Player(db.Model):
 
 class Game:
 
-    def __init__(self, host_email: int) -> None:
+    def __init__(self, host_email: int, is_pvp: bool = False) -> None:
         self.id = str(uuid4())
         if Player.query.filter_by(email=host_email).first() == None:
             raise PlayerDoesNotExist()
@@ -29,6 +29,7 @@ class Game:
         self.black_player = None
         self.white_player = None
         self.board = Board()
+        self.is_pvp = is_pvp
 
     def toJSON(self) -> dict:
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)

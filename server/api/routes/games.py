@@ -15,8 +15,9 @@ current_games: dict[str, Game] = {}
 @jwt_required()
 def create_game():
     current_user = get_jwt_identity()
+    is_pvp = request.json['isPvP']
     try:
-        game = Game(host_email=current_user)
+        game = Game(host_email=current_user, is_pvp=is_pvp)
     except PlayerDoesNotExist:
         err_msg = {"err": "Player does not exist"}
         return err_msg, 400
