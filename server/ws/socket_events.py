@@ -13,20 +13,6 @@ PLAYERS_PER_PVC_ROOM = 1
 user_rooms = {}
 
 
-def save_game(game: Game, is_draw: bool):
-    is_white_turn = not game.board.is_white_turn  # opposite because it registered move
-
-    black_player = Player.query.filter_by(email=game.black_player).first().id if game.black_player else None
-    white_player = Player.query.filter_by(email=game.white_player).first().id if game.white_player else None
-    if is_draw:
-        winner = None
-    else:
-        winner = white_player if is_white_turn else black_player
-    saved_game = SavedGame(black_player=black_player, white_player=white_player, winner=winner, game_history=json.dumps(game.board.moves), is_pvp=game.is_pvp)
-    db.session.add(saved_game)
-    db.session.commit()
-
-
 def register_ws_events(socketio: SocketIO):
 
     @socketio.on("connect")
@@ -167,3 +153,17 @@ def handle_game_over(game: Game):
     payload = {'winner': winner}
     emit('game-over', json.dumps(payload), broadcast=True, to=game.id)
     save_game(game, False)
+
+
+def save_game(game: Game, is_draw: bool):
+    is_white_turn = not game.board.is_white_turn  # opposite because it registered move
+
+    black_player = Player.query.filter_by(email=game.black_player).first().id if game.black_player else None
+    white_player = Player.query.filter_by(email=game.white_player).first().id if game.white_player else None
+    if is_draw:
+        winner = None
+    else:
+        winner = white_player if is_white_turn else black_player
+    saved_game = SavedGame(black_player=black_player, white_player=white_player, winner=winner, game_history=json.dumps(game.board.moves), is_pvp=game.is_pvp)
+    db.session.add(saved_game)
+    db.session.commit()
