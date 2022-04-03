@@ -36,7 +36,8 @@ class RlAgent():
 
         memory = SequentialMemory(limit=50000, window_length=1)
         policy = BoltzmannQPolicy()
-        dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=50, target_model_update=1e-2, policy=policy)
+        dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory,
+                       nb_steps_warmup=50, target_model_update=1e-2, policy=policy)
         dqn.compile(Adam(learning_rate=1e-1), metrics=['mae'])
         return dqn
 
@@ -54,12 +55,14 @@ class RlAgent():
 
         if not predicted_move in board.get_legal_actions():
             print(f'Agent provided illegal move {predicted_move}', file=stderr)
-            random_action_index = np.random.choice(board.get_legal_action_indices())
+            random_action_index = np.random.choice(
+                board.get_legal_action_indices())
             return actions[random_action_index]
 
         return predicted_move
 
     def train(self, num_episodes: int = 50000):
         env = ChessEnv()
-        self.__agent.fit(env, nb_steps=num_episodes, visualize=False, verbose=1)
+        self.__agent.fit(env, nb_steps=num_episodes,
+                         visualize=False, verbose=1)
         self.__agent.save_weights(self.WEIGHTS_FILE, overwrite=True)

@@ -10,6 +10,7 @@ leaderboard = Blueprint("leaderboard", __name__, url_prefix="/leaderboard")
 
 @leaderboard.route("/", methods=["GET"])
 def get_leaderboard():
-    data = db.session.query(SavedGame.winner, func.count(SavedGame.winner)).group_by(SavedGame.winner).all()
+    data = db.session.query(SavedGame.winner, func.count(
+        SavedGame.winner)).group_by(SavedGame.winner).all()
     print(data)
     return jsonify({}), 201

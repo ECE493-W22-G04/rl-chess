@@ -10,7 +10,8 @@ import json
 class Board:
 
     def __init__(self) -> None:
-        back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+        back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
+                    Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
         front_row = [Piece.PAWN] * 8
 
         self.state = [

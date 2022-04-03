@@ -11,7 +11,8 @@ def test_queen_diagonal():
 
     queen_diagonal = Move(Square(3, 7), Square(0, 4))
 
-    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
+                Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
     front_row = [Piece.PAWN] * 8
     expected_state = [
         [piece * -1 for piece in back_row],
@@ -21,7 +22,8 @@ def test_queen_diagonal():
         [Piece.QUEEN, *[Piece.NONE] * 7],
         [Piece.NONE] * 8,
         [Piece.PAWN, Piece.PAWN, Piece.NONE, *[Piece.PAWN] * 5],
-        [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.NONE, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
+        [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.NONE,
+            Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
     ]
 
     assert board.validate_move(queen_diagonal)
@@ -36,16 +38,19 @@ def test_queen_vertical():
     pawn = Square(3, 6)
     board.state[pawn.y][pawn.x] = Piece.NONE
 
-    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
+                Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
     expected_state = [
         [piece * -1 for piece in back_row],
-        [*[piece * -1 for piece in [Piece.PAWN] * 3], Piece.QUEEN, *[piece * -1 for piece in [Piece.PAWN] * 4]],
+        [*[piece * -1 for piece in [Piece.PAWN] * 3], Piece.QUEEN,
+            *[piece * -1 for piece in [Piece.PAWN] * 4]],
         [Piece.NONE] * 8,
         [Piece.NONE] * 8,
         [Piece.NONE] * 8,
         [Piece.NONE] * 8,
         [*[Piece.PAWN] * 3, Piece.NONE, *[Piece.PAWN] * 4],
-        [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.NONE, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
+        [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.NONE,
+            Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
     ]
 
     queen_vertical = Move(Square(3, 7), Square(3, 1))
@@ -61,7 +66,8 @@ def test_queen_horizontal():
     bishop = Square(2, 7)
     board.state[bishop.y][bishop.x] = Piece.NONE
 
-    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
+                Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
     front_row = [Piece.PAWN for _ in range(8)]
     expected_state = [
         [piece * -1 for piece in back_row],
@@ -71,7 +77,8 @@ def test_queen_horizontal():
         [Piece.NONE] * 8,
         [Piece.NONE] * 8,
         [Piece.PAWN] * 8,
-        [Piece.ROOK, Piece.KNIGHT, Piece.QUEEN, Piece.NONE, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
+        [Piece.ROOK, Piece.KNIGHT, Piece.QUEEN, Piece.NONE,
+            Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
     ]
 
     queen_horizontal = Move(Square(3, 7), Square(2, 7))

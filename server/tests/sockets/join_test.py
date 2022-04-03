@@ -33,7 +33,8 @@ def test_join_pvc(socketio_client: SocketIOTestClient, game: Game):
     with patch('flask_socketio.join_room'):
         with patch.dict('server.api.routes.games.current_games', {TEST_GAME_ID: game}):
             try:
-                socketio_client.emit('join', {'user': TEST_EMAIL, 'gameId': TEST_GAME_ID})
+                socketio_client.emit(
+                    'join', {'user': TEST_EMAIL, 'gameId': TEST_GAME_ID})
             except ValueError as err:
                 # TODO: Figure out if we can mock join_room
                 # join_room will raise this error because SocketIOTestClient does not support joining rooms

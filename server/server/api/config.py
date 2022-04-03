@@ -1,7 +1,8 @@
 import os
 from dotenv import load_dotenv
 
-DEFAULTS = {"JWT_SECRET_KEY": "", "LOG_FOLDER": "_logs", "IS_DEBUG": False, "DATABASE_URL": "postgresql://postgres:postgres@localhost:5432/postgres"}
+DEFAULTS = {"JWT_SECRET_KEY": "", "LOG_FOLDER": "_logs", "IS_DEBUG": False,
+            "DATABASE_URL": "postgresql://postgres:postgres@localhost:5432/postgres"}
 
 
 def load_config():

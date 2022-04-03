@@ -9,7 +9,8 @@ def test_rook_vertical():
     pawn = Square(0, 6)
     board.state[pawn.y][pawn.x] = Piece.NONE
 
-    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
+                Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
     expected_state = [
         [piece * -1 for piece in back_row],
         [Piece.ROOK, *[piece * -1 for piece in [Piece.PAWN] * 7]],
@@ -18,7 +19,8 @@ def test_rook_vertical():
         [Piece.NONE] * 8,
         [Piece.NONE] * 8,
         [Piece.NONE, *[Piece.PAWN] * 7],
-        [Piece.NONE, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
+        [Piece.NONE, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
+            Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
     ]
 
     rook_vertical = Move(Square(0, 7), Square(0, 1))
@@ -34,7 +36,8 @@ def test_rook_horizontal():
     knight = Square(1, 7)
     board.state[knight.y][knight.x] = Piece.NONE
 
-    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
+                Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
     front_row = [Piece.PAWN] * 8
     expected_state = [
         [piece * -1 for piece in back_row],
@@ -44,7 +47,8 @@ def test_rook_horizontal():
         [Piece.NONE] * 8,
         [Piece.NONE] * 8,
         [Piece.PAWN] * 8,
-        [Piece.NONE, Piece.ROOK, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
+        [Piece.NONE, Piece.ROOK, Piece.BISHOP, Piece.QUEEN,
+            Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
     ]
 
     rook_horizontal = Move(Square(0, 7), Square(1, 7))

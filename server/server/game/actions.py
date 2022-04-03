@@ -38,7 +38,8 @@ for (from_x, from_y) in itertools.product(range(8), repeat=2):
 for promoted_to in [Piece.QUEEN, Piece.BISHOP, Piece.ROOK, Piece.KNIGHT]:
     for column in range(8):
         for row in [1, 6]:
-            ACTIONS.append(Move(Square(column, row), Square(column, row - 1 if row == 1 else row + 1), promotion=promoted_to))
+            ACTIONS.append(Move(Square(column, row), Square(
+                column, row - 1 if row == 1 else row + 1), promotion=promoted_to))
 
 # Castling
 for move in [2, 6]:

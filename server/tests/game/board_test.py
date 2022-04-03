@@ -8,7 +8,8 @@ from .pieces.helper import get_empty_board
 
 def test_board_init():
     board = Board()
-    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
+                Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
     front_row = [Piece.PAWN] * 8
 
     expected = [
@@ -30,7 +31,8 @@ def test_actions():
     pieces_to_target_to = 8 * 8
     pieces_to_promote = 8 * 2
     pieces_to_promote_to = 4
-    assert len(board.get_actions()) < pieces_to_choose_from * pieces_to_target_to + pieces_to_promote * pieces_to_promote_to
+    assert len(board.get_actions()) < pieces_to_choose_from * \
+        pieces_to_target_to + pieces_to_promote * pieces_to_promote_to
 
 
 def test_no_duplicate_actions():

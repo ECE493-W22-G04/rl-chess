@@ -9,7 +9,8 @@ from .helper import get_empty_board
 def test_king_forward():
     board = Board()
 
-    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
+                Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
     expected_state = [
         [piece * -1 for piece in back_row],
         [Piece.NONE, *[piece * -1 for piece in [Piece.PAWN] * 7]],
@@ -18,7 +19,8 @@ def test_king_forward():
         [*[Piece.NONE] * 4, Piece.PAWN, *[Piece.NONE] * 3],
         [Piece.NONE] * 8,
         [*[Piece.PAWN] * 4, Piece.KING, *[Piece.PAWN] * 3],
-        [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.NONE, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
+        [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
+            Piece.NONE, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
     ]
 
     pawn_forward = Move(Square(4, 6), Square(4, 4))
