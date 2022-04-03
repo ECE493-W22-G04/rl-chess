@@ -83,7 +83,7 @@ def register_ws_events(socketio: SocketIO):
                 game.set_black_player(user)
                 if game.is_pvp:
                     game.set_white_player(other_user)
-        emit('start_game', game.toJSON(), broadcast=True, to=game_id)
+        emit('update', game.toJSON(), broadcast=True, to=game_id)
 
         # Make first move as computer
         if game.is_pvp:
