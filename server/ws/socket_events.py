@@ -1,8 +1,10 @@
+import json
 from flask_socketio import SocketIO, join_room, emit
 
 from rl_agent import rl_agent
 from game.move import Move, Square
 from api.routes.games import current_games
+from api.models import Game
 
 PLAYERS_PER_PVP_ROOM = 2
 PLAYERS_PER_PVC_ROOM = 1
@@ -115,11 +117,26 @@ def register_ws_events(socketio: SocketIO):
         if not game.board.register_move(move):
             emit("message", "Invalid move " + move_str, to=game_id)
             return
-        emit('update', current_games[game_id].toJSON(), broadcast=True, to=game_id)
+
+        if game.board.is_checkmate():
+            handle_game_over(game)
 
         # Make computer move
         if game.is_pvp:
             return
         rl_move = rl_agent.predict(game.board)
         game.board.register_move(rl_move)
-        emit('update', game.toJSON(), broadcast=True, to=game_id)
+
+        if game.board.is_checkmate():
+            handle_game_over(game)
+
+        
+def handle_game_over(self, game: Game):
+    winner = game.white_player
+    if game.board.is_white_turn:
+        # Black player made the last move and was a checkmate
+        winner = game.black_player
+    payload = {
+        'winner': winner
+    }
+    emit('game-over', json.dumps(winner), broadcast=True, to=game.id)
