@@ -66,8 +66,7 @@ def register_ws_events(socketio: SocketIO):
 
         # check game exists
         if game_id not in current_games or game_id not in user_rooms:
-            emit("message", "Attempted to pick color with invalid game id " +
-                 game_id, broadcast=True, to=game_id)
+            emit("message", "Attempted to pick color with invalid game id " + game_id, broadcast=True, to=game_id)
             return
 
         for user_in_room in user_rooms[game_id]:
@@ -108,16 +107,14 @@ def register_ws_events(socketio: SocketIO):
 
         # check game exists
         if game_id not in current_games:
-            emit("message", "Attempted to make move with invalid game id " +
-                 game_id, broadcast=True, to=game_id)
+            emit("message", "Attempted to make move with invalid game id " + game_id, broadcast=True, to=game_id)
             return
 
         # check if move is valid
         (move_from, move_to) = move_str.split("->")
         (from_x, from_y) = move_from.split(",")
         (to_x, to_y) = move_to.split(",")
-        move = Move(Square(int(from_x), int(from_y)),
-                    Square(int(to_x), int(to_y)))
+        move = Move(Square(int(from_x), int(from_y)), Square(int(to_x), int(to_y)))
         game = current_games[game_id]
         if not game.board.register_move(move):
             emit("message", "Invalid move " + move_str, to=game_id)
@@ -161,15 +158,12 @@ def save_game(game: Game, is_draw: bool):
     # opposite because it registered move
     is_white_turn = not game.board.is_white_turn
 
-    black_player = Player.query.filter_by(
-        email=game.black_player).first().id if game.black_player else None
-    white_player = Player.query.filter_by(
-        email=game.white_player).first().id if game.white_player else None
+    black_player = Player.query.filter_by(email=game.black_player).first().id if game.black_player else None
+    white_player = Player.query.filter_by(email=game.white_player).first().id if game.white_player else None
     if is_draw:
         winner = None
     else:
         winner = white_player if is_white_turn else black_player
-    saved_game = SavedGame(black_player=black_player, white_player=white_player,
-                           winner=winner, game_history=json.dumps(game.board.moves), is_pvp=game.is_pvp)
+    saved_game = SavedGame(black_player=black_player, white_player=white_player, winner=winner, game_history=json.dumps(game.board.moves), is_pvp=game.is_pvp)
     db.session.add(saved_game)
     db.session.commit()

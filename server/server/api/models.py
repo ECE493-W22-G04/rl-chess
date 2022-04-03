@@ -25,12 +25,9 @@ class SavedGame(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     # null player means RL
-    black_player = db.Column(
-        db.Integer, db.ForeignKey("players.id"), nullable=True)
-    white_player = db.Column(
-        db.Integer, db.ForeignKey("players.id"), nullable=True)
-    winner = db.Column(db.Integer, db.ForeignKey("players.id"),
-                       nullable=True)  # null winner means draw
+    black_player = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=True)
+    white_player = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=True)
+    winner = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=True)  # null winner means draw
     game_history = db.Column(db.Text)
     is_pvp = db.Column(db.Boolean, nullable=False)
 

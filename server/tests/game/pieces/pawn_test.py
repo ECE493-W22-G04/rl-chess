@@ -28,8 +28,7 @@ def test_pawn_forward():
 
     forward_move = Move(Square(0, 6), Square(0, 5))
 
-    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
-                Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
     front_row = [Piece.PAWN] * 8
     expected_state = [
         [piece * -1 for piece in back_row],
@@ -53,8 +52,7 @@ def test_pawn_advance():
 
     advance_move = Move(Square(0, 6), Square(0, 4))
 
-    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
-                Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
     front_row = [Piece.PAWN for _ in range(8)]
     expected_state = [
         [piece * -1 for piece in back_row],
@@ -79,8 +77,7 @@ def test_pawn_capture():
     move_black_left_1 = Move(Square(1, 1), Square(1, 3))
     move_white_left_2 = Move(Square(0, 4), Square(1, 3))
 
-    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
-                Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
     expected_state = [
         [piece * -1 for piece in back_row],
         [Piece.PAWN * -1, Piece.NONE, *[Piece.PAWN * -1] * 6],

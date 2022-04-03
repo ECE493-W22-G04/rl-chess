@@ -8,8 +8,7 @@ def test_knight():
 
     knight_forward = Move(Square(1, 7), Square(0, 5))
 
-    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
-                Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
     first_expected_state = [
         [piece * -1 for piece in back_row],
         [Piece.NONE, *[piece * -1 for piece in [Piece.PAWN] * 7]],
@@ -18,8 +17,7 @@ def test_knight():
         [Piece.NONE] * 8,
         [Piece.KNIGHT, *[Piece.NONE] * 7],
         [Piece.PAWN] * 8,
-        [Piece.ROOK, Piece.NONE, Piece.BISHOP, Piece.QUEEN,
-            Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
+        [Piece.ROOK, Piece.NONE, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK],
     ]
 
     assert board.validate_move(knight_forward)

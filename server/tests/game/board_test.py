@@ -8,8 +8,7 @@ from .pieces.helper import get_empty_board
 
 def test_board_init():
     board = Board()
-    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN,
-                Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
+    back_row = [Piece.ROOK, Piece.KNIGHT, Piece.BISHOP, Piece.QUEEN, Piece.KING, Piece.BISHOP, Piece.KNIGHT, Piece.ROOK]
     front_row = [Piece.PAWN] * 8
 
     expected = [
