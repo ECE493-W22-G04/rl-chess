@@ -18,4 +18,5 @@ export const mockGame: Game = {
         ],
         is_white_turn: true,
     },
+    has_started: true,
 };

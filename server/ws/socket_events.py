@@ -1,4 +1,4 @@
-from xmlrpc.client import Boolean
+import json
 from flask_socketio import SocketIO, join_room, emit
 
 from rl_agent import rl_agent
@@ -13,7 +13,7 @@ PLAYERS_PER_PVC_ROOM = 1
 user_rooms = {}
 
 
-def save_game(game: Game, is_draw: Boolean):
+def save_game(game: Game, is_draw: bool):
     is_white_turn = not game.board.is_white_turn  # opposite because it registered move
 
     black_player = Player.query.filter_by(email=game.black_player).first().id if game.black_player else None
@@ -100,7 +100,9 @@ def register_ws_events(socketio: SocketIO):
                 game.set_black_player(user)
                 if game.is_pvp:
                     game.set_white_player(other_user)
-        emit('start_game', game.toJSON(), broadcast=True, to=game_id)
+
+        game.start_game()
+        emit('update', game.toJSON(), broadcast=True, to=game_id)
 
         # Make first move as computer
         if game.is_pvp:
@@ -132,20 +134,16 @@ def register_ws_events(socketio: SocketIO):
         if not game.board.register_move(move):
             emit("message", "Invalid move " + move_str, to=game_id)
             return
-        emit('update', current_games[game_id].toJSON(), broadcast=True, to=game_id)
+        emit('update', game.toJSON(), broadcast=True, to=game_id)
 
         if game.board.is_checkmate():
-            is_white_turn = not game.board.is_white_turn  # opposite because it registered move
-            winner = "White" if is_white_turn else "Black"
-            # TODO: handle this emit client side and close the game after
-            emit("game_over", "Winner is " + winner, broadcast=True, to=game_id)
-            save_game(game, False)
-            # TODO: remove game from current_games
+            handle_game_over(game)
             return
 
         if game.board.is_draw():
             # TODO: handle this emit client side and close the game after
-            emit("game_over", "Draw", broadcast=True, to=game_id)
+            payload = {'winner': None}
+            emit("game-over", json.dumps(payload), broadcast=True, to=game_id)
             save_game(game, True)
             # TODO: remove game from current_games
             return
@@ -156,3 +154,16 @@ def register_ws_events(socketio: SocketIO):
         rl_move = rl_agent.predict(game.board)
         game.board.register_move(rl_move)
         emit('update', game.toJSON(), broadcast=True, to=game_id)
+
+        if game.board.is_checkmate():
+            handle_game_over(game)
+
+
+def handle_game_over(game: Game):
+    winner = game.white_player
+    if game.board.is_white_turn:
+        # Black player made the last move and was a checkmate
+        winner = game.black_player
+    payload = {'winner': winner}
+    emit('game-over', json.dumps(payload), broadcast=True, to=game.id)
+    save_game(game, False)
