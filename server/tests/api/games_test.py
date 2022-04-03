@@ -28,23 +28,29 @@ def test_create_game_unauthed(client: FlaskClient):
     assert resp.status_code == 401
 
 
-# TODO: Fix these tests
-# def test_create_computer_game(client: FlaskClient, access_token: str):
-#     resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'})
-#     assert resp.status_code == 201
-#     assert 'id' in resp.json
-#     assert not resp.json['is_pvp']
+def test_create_computer_game(client: FlaskClient, access_token: str):
+    resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
+    assert resp.status_code == 201
+    resp_json = json.loads(resp.json)
+    assert 'id' in resp_json
+    assert not resp_json['is_pvp']
 
-# def test_create_pvp_game(client: FlaskClient, access_token: str):
-#     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_token}'})
-#     assert resp.status_code == 201
-#     assert 'id' in resp.json
-#     assert resp.json['is_pvp']
 
-# def test_get_game(client: FlaskClient, access_token: str):
-#     resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'})
-#     game_id = resp.json['id']
+def test_create_pvp_game(client: FlaskClient, access_token: str):
+    resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
+    assert resp.status_code == 201
+    resp_json = json.loads(resp.json)
+    assert 'id' in resp_json
+    assert resp_json['is_pvp']
 
-#     resp = client.get(f'/api/games/{game_id}', headers={'Authorization': f'Bearer {access_token}'})
-#     assert resp.status_code == 200
-#     assert resp.json['id'] == game_id
+
+def test_get_game(client: FlaskClient, access_token: str):
+    post_resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
+    post_resp_json = json.loads(post_resp.json)
+    game_id = post_resp_json['id']
+
+    get_resp = client.get(f'/api/games/{game_id}', headers={'Authorization': f'Bearer {access_token}'})
+    assert get_resp.status_code == 200
+
+    get_resp_json = json.loads(get_resp.json)
+    assert get_resp_json['id'] == game_id
