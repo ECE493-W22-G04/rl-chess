@@ -88,9 +88,7 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
                 <div className="current-turn">
                     <h2>Current turn {currentTurn()}</h2>
                 </div>
-                <div className="offer-draw">
-                    <button onClick={offerDraw}>Offer Draw</button>
-                </div>
+                <div className="offer-draw">{game.black_player != null && game.white_player != null && <button onClick={offerDraw}>Offer Draw</button>}</div>
                 <div className="concede">
                     <button onClick={concede}>Concede</button>
                 </div>
