@@ -113,11 +113,11 @@ def register_ws_events(socketio: SocketIO):
         (to_x, to_y) = move_to.split(",")
         move = Move(Square(int(from_x), int(from_y)), Square(int(to_x), int(to_y)))
         game = current_games[game_id]
-        if game.board.register_move(move):
-            emit('update', current_games[game_id].toJSON(), broadcast=True, to=game_id)
-        else:
+        if not game.board.register_move(move):
             emit("message", "Invalid move " + move_str, to=game_id)
-
+            return
+        emit('update', current_games[game_id].toJSON(), broadcast=True, to=game_id)
+        
         # Make computer move
         if game.is_pvp:
             return
