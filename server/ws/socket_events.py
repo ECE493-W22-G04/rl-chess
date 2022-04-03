@@ -4,7 +4,8 @@ from flask_socketio import SocketIO, join_room, emit
 from rl_agent import rl_agent
 from game.move import Move, Square
 from api.routes.games import current_games
-from api.models import Game
+from api.models import SavedGame, Player, Game, db
+import json
 
 PLAYERS_PER_PVP_ROOM = 2
 PLAYERS_PER_PVC_ROOM = 1
@@ -123,6 +124,15 @@ def register_ws_events(socketio: SocketIO):
 
         if game.board.is_checkmate():
             handle_game_over(game)
+            return
+
+        if game.board.is_draw():
+            # TODO: handle this emit client side and close the game after
+            payload = {'winner': None}
+            emit("game-over", json.dumps(payload), broadcast=True, to=game_id)
+            save_game(game, True)
+            # TODO: remove game from current_games
+            return
 
         # Make computer move
         if game.is_pvp:
@@ -142,3 +152,18 @@ def handle_game_over(game: Game):
         winner = game.black_player
     payload = {'winner': winner}
     emit('game-over', json.dumps(payload), broadcast=True, to=game.id)
+    save_game(game, False)
+
+
+def save_game(game: Game, is_draw: bool):
+    is_white_turn = not game.board.is_white_turn  # opposite because it registered move
+
+    black_player = Player.query.filter_by(email=game.black_player).first().id if game.black_player else None
+    white_player = Player.query.filter_by(email=game.white_player).first().id if game.white_player else None
+    if is_draw:
+        winner = None
+    else:
+        winner = white_player if is_white_turn else black_player
+    saved_game = SavedGame(black_player=black_player, white_player=white_player, winner=winner, game_history=json.dumps(game.board.moves), is_pvp=game.is_pvp)
+    db.session.add(saved_game)
+    db.session.commit()
