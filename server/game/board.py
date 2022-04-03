@@ -25,6 +25,7 @@ class Board:
         ]
 
         self.is_white_turn = True
+        self.moves: list[Move] = []
         self.board_states = [deepcopy(self.state)]
         self.last_move: Move = None
         self.fifty_move_count = 0
@@ -186,6 +187,8 @@ class Board:
 
         self.board_states.append(deepcopy(self.state))
         self.last_move = move
+        self.moves.append(move)
+
         return True
 
     def register_move(self, move: Move) -> bool:
