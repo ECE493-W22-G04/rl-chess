@@ -1,10 +1,9 @@
-from game.board import Board
-from game.piece import Piece
-from game.move import Move, Square
-from server.tests.game.pieces.helper import get_empty_board
 from copy import deepcopy
 
-from collections import Counter
+from server.game.board import Board
+from server.game.piece import Piece
+from server.game.move import Move, Square
+from .pieces.helper import get_empty_board
 
 
 def test_board_init():

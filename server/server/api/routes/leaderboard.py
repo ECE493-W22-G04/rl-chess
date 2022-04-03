@@ -3,7 +3,7 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from sqlalchemy.sql import func
 
-from api.models import SavedGame, db
+from ..models import SavedGame, db
 
 leaderboard = Blueprint("leaderboard", __name__, url_prefix="/leaderboard")
 

@@ -2,8 +2,8 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 
-from api.models import Game
-from api.exceptions import PlayerDoesNotExist
+from ..models import Game
+from ..exceptions import PlayerDoesNotExist
 
 game = Blueprint("games", __name__, url_prefix="/games")
 

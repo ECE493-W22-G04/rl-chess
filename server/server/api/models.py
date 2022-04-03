@@ -1,9 +1,9 @@
+import json
 from uuid import uuid4
 from flask_sqlalchemy import SQLAlchemy
 
 from .exceptions import PlayerDoesNotExist
-from game.board import Board
-import json
+from ..game.board import Board
 
 db = SQLAlchemy()
 
