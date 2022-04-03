@@ -1,4 +1,3 @@
-from uuid import UUID
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
