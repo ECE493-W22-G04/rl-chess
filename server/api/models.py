@@ -30,6 +30,10 @@ class Game:
         self.white_player = None
         self.board = Board()
         self.is_pvp = is_pvp
+        self.has_started = False
+
+    def start_game(self) -> None:
+        self.has_started = True
 
     def toJSON(self) -> dict:
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
