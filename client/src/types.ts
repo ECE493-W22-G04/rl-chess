@@ -23,3 +23,7 @@ export interface Jwt {
     nbf: number;
     exp: number;
 }
+
+export type GameOverMessage = {
+    winner: string;
+};
