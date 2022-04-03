@@ -6,10 +6,12 @@ import { getGameDetails } from '../../services/game';
 import socket from '../../services/socket';
 import { Game } from '../../types';
 import AuthService from '../../services/auth';
+import PickSide from './PickSide';
 
 const Room: FC = () => {
     const { gameId } = useParams();
     const [game, setGame] = useState<Game | null>(null);
+    const [isGameReady, setIsGameReady] = useState<boolean>(false);
     const [hasGameStarted, setHasGameStarted] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -36,6 +38,10 @@ const Room: FC = () => {
     }, [game]);
 
     useEffect(() => {
+        socket.on('room_full', () => {
+            setIsGameReady(true);
+        });
+
         socket.on('update', (data) => {
             const new_game: Game = JSON.parse(data);
             setGame(new_game);
@@ -59,7 +65,12 @@ const Room: FC = () => {
     }
 
     if (!hasGameStarted) {
-        return <Lobby gameId={game.id} host={game.host} />;
+        if (!isGameReady) {
+            return <Lobby host={game.host} />;
+        }
+        if (game.host == AuthService.getCurrentUser()) {
+            return <PickSide gameId={game.id} />;
+        }
     }
 
     return <Board game={game} />;

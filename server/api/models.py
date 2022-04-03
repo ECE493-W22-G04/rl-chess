@@ -29,6 +29,7 @@ class SavedGame(db.Model):
     white_player = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=True)
     winner = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=True)  # null winner means draw
     game_history = db.Column(db.Text)
+    is_pvp = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
         return f"<Game {self.id}>"
@@ -36,7 +37,7 @@ class SavedGame(db.Model):
 
 class Game():
 
-    def __init__(self, host_email: int) -> None:
+    def __init__(self, host_email: int, is_pvp: bool = False) -> None:
         self.id = str(uuid4())
         if Player.query.filter_by(email=host_email).first() == None:
             raise PlayerDoesNotExist()
@@ -44,6 +45,7 @@ class Game():
         self.black_player = None
         self.white_player = None
         self.board = Board()
+        self.is_pvp = is_pvp
 
     def toJSON(self) -> dict:
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)

@@ -345,3 +345,15 @@ def test_fifty_move_rep():
     assert not board.is_draw()
     assert board.register_move(move2)
     assert board.is_draw()
+
+
+def test_stores_moves():
+    board = Board()
+
+    assert len(board.moves) == 0
+
+    first_move = Move(Square(0, 6), Square(0, 4))
+
+    assert board.register_move(first_move)
+    assert len(board.moves) == 1
+    assert board.moves[0] == first_move

@@ -29,6 +29,7 @@ build-reqs:
 	echo yapf==0.32.0 >> requirements.txt
 	echo psycopg2-binary==2.9.3 >> requirements.txt
 	echo toml==0.10.2 >> requirements.txt
+	sed -i 's/rl==3.0/keras-rl2==1.0.5/g' ./requirements.txt
 	sed -i 's/python_bcrypt==0.3.2/bcrypt==3.2.0/g' ./requirements.txt
 	sed -i '/server==0.0.0/d' ./requirements.txt
 

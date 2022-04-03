@@ -61,7 +61,7 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
     return (
         <div style={{ display: 'grid', gridTemplateColumns: '100%' }}>
             <div className="board">
-                {game.board.state.reverse().map((row, rowIndex) => (
+                {game.board.state.map((row, rowIndex) => (
                     <div key={`${rowIndex}`} style={{ display: 'flex', flexDirection: 'row' }}>
                         {row.map((piece, colIndex) => {
                             // Use position as a unique key for the boardtile
