@@ -83,21 +83,13 @@ class Board:
         return legal_actions
 
     def is_draw(self) -> bool:
-        # both players draw the game
-        # TODO: hook in connection
-        # stalemate
         if self.is_stalemate():
-            print("is stalemate")
             return True
 
-        # threefold repetition
         if self.is_threefold_repetition():
-            print("is repitition")
             return True
 
-        # fifty-move rule
         if self.is_fifty_move_rule():
-            print("is fifty moves")
             return True
         return False
 
