@@ -61,12 +61,10 @@ const Room: FC = () => {
     }
 
     if (!game.has_started) {
-        if (!isGameReady) {
-            return <Lobby host={game.host} />;
-        }
-        if (game.host == AuthService.getCurrentUser()) {
+        if (isGameReady && game.host == AuthService.getCurrentUser()) {
             return <PickSide gameId={game.id} />;
         }
+        return <Lobby host={game.host} />;
     }
 
     return (
