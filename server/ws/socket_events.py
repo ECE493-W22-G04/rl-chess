@@ -135,7 +135,7 @@ def register_ws_events(socketio: SocketIO):
             handle_game_over(game)
 
 
-def handle_game_over(self, game: Game):
+def handle_game_over(game: Game):
     winner = game.white_player
     if game.board.is_white_turn:
         # Black player made the last move and was a checkmate
