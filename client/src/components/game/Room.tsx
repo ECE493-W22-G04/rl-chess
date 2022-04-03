@@ -27,17 +27,6 @@ const Room: FC = () => {
     }, []);
 
     useEffect(() => {
-        if (game != null) {
-            socket.on('start_game', (data) => {
-                const new_game: Game = JSON.parse(data);
-                setGame(new_game);
-                setHasGameStarted(true);
-                return;
-            });
-        }
-    }, [game]);
-
-    useEffect(() => {
         socket.on('room_full', () => {
             setIsGameReady(true);
         });
@@ -64,7 +53,7 @@ const Room: FC = () => {
         return <Navigate to="/" />;
     }
 
-    if (!hasGameStarted) {
+    if (!game.has_started) {
         if (!isGameReady) {
             return <Lobby host={game.host} />;
         }
