@@ -58,8 +58,16 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
         }
     };
 
+    const offerDraw = () => {
+        socket.emit('offer_draw', { gameId: game.id, currentPlayer: AuthService.getCurrentUser() });
+    };
+
+    const concede = () => {
+        socket.emit('concede', { gameId: game.id, currentPlayer: AuthService.getCurrentUser() });
+    };
+
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: '100%' }}>
+        <div style={{ display: 'flex', flexFlow: 'row wrap', gap: '2em', justifyContent: 'center' }}>
             <div className="board">
                 {game.board.state.map((row, rowIndex) => (
                     <div key={`${rowIndex}`} style={{ display: 'flex', flexDirection: 'row' }}>
@@ -73,13 +81,21 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
                     </div>
                 ))}
             </div>
-            <div className="player-color">
-                <h2>You are playing {playerColor}</h2>
+            <div style={{ borderStyle: 'solid', display: 'flex', flexFlow: 'column wrap', justifyContent: 'space-evenly', alignItems: 'center', padding: '2em' }}>
+                <div className="player-color">
+                    <h2>You are playing {playerColor}</h2>
+                </div>
+                <div className="current-turn">
+                    <h2>Current turn {currentTurn()}</h2>
+                </div>
+                <div className="offer-draw">
+                    <button onClick={offerDraw}>Offer Draw</button>
+                </div>
+                <div className="concede">
+                    <button onClick={concede}>Concede</button>
+                </div>
+                <div className="display-message">{displayMessage && <div className="alert alert-warning">{displayMessage}</div>}</div>
             </div>
-            <div className="current-turn">
-                <h2>Current turn {currentTurn()}</h2>
-            </div>
-            <div className="display-message">{displayMessage && <div className="alert alert-warning">{displayMessage}</div>}</div>
         </div>
     );
 };
