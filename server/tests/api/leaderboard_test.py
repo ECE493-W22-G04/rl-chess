@@ -44,6 +44,8 @@ def test_leaderboard_excludes_players_with_less_than_4_wins(client: FlaskClient,
 
         expected_payload = [{
             'email': player1.email,
+            'numGamesWon': num_player_1_wins,
+            'numGamesPlayed': num_player_1_wins + num_player_1_losses,
             'winRate': num_player_1_wins / (num_player_1_wins + num_player_1_losses),
         }]
 

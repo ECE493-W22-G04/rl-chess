@@ -12,7 +12,11 @@ MIN_GAMES_UNTIL_LEADERBOARD = 10
 @leaderboard.route("/", methods=["GET"])
 @jwt_required()
 def create_game():
-    res = db.session.query(Player.id, cast(func.count(SavedGame.winner == Player.id), Float) / cast(func.count(SavedGame.id), Float)) \
+    res = db.session.query(Player.id,
+            func.count(SavedGame.winner == Player.id),
+            func.count(SavedGame.id),
+            cast(func.count(SavedGame.winner == Player.id), Float) / cast(func.count(SavedGame.id), Float),
+        ) \
         .filter(SavedGame.is_pvp==False) \
         .group_by(Player.id) \
         .join(Player, (SavedGame.black_player == Player.id) | (SavedGame.white_player == Player.id)) \
@@ -22,6 +26,9 @@ def create_game():
         .order_by((cast(func.count(SavedGame.winner == Player.id), Float) / cast(func.count(SavedGame.id), Float)).desc())
     payload = [{
         'email': email,
-        'winRate': winRate,
-    } for [_id, winRate, email] in res.all()]
+        'numGamesWon': num_games_won,
+        'numGamesPlayed': num_games_played,
+        'email': email,
+        'winRate': win_rate,
+    } for [_id, num_games_won, num_games_played, win_rate, email] in res.all()]
     return jsonify(payload), 200
