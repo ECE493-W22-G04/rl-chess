@@ -101,6 +101,8 @@ def register_ws_events(socketio: SocketIO):
         game_id = data["gameId"]
         # move_str looks like 'x,y->x,y'
         move_str = data["moveStr"]
+        # if no promotion, expects this to be 0
+        promotion = data["promotion"]
 
         # check game exists
         if game_id not in current_games:
@@ -111,7 +113,10 @@ def register_ws_events(socketio: SocketIO):
         (move_from, move_to) = move_str.split("->")
         (from_x, from_y) = move_from.split(",")
         (to_x, to_y) = move_to.split(",")
-        move = Move(Square(int(from_x), int(from_y)), Square(int(to_x), int(to_y)))
+        if int(promotion) != 0:
+            move = Move(Square(int(from_x), int(from_y)), Square(int(to_x), int(to_y)), int(promotion))
+        else:
+            move = Move(Square(int(from_x), int(from_y)), Square(int(to_x), int(to_y)))
         game = current_games[game_id]
         if not game.board.register_move(move):
             emit("message", "Invalid move " + move_str, to=game_id)

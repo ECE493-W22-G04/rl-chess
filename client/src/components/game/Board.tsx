@@ -5,6 +5,7 @@ import socket from '../../services/socket';
 import AuthService from '../../services/auth';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import PromotionModal from './PromotionModal';
 
 type BoardProps = {
     game: Game;
@@ -17,6 +18,7 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
     const [tile2, setTile2] = useState<Tile | null>(null);
     const [displayMessage, setDisplayMessage] = useState<string>('');
     const [playerColor, setPlayerColor] = useState<string>('');
+    const [isPromotion, setIsPromotion] = useState<boolean>(false);
 
     useEffect(() => {
         socket.on('message', (data) => {
@@ -31,13 +33,39 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
         }
     }, []);
 
-    useEffect(() => {
-        if (tile1 && tile2) {
-            socket.emit('make_move', { gameId: game.id, moveStr: `${tile1}->${tile2}` });
+    const makeMove = (promotion: number) => {
+        if (tile1 != null && tile2 != null) {
+            console.log('sending move');
+            socket.emit('make_move', { gameId: game.id, moveStr: `${tile1}->${tile2}`, promotion: promotion });
             setTile1(null);
             setTile2(null);
+        } else {
+            console.log('unable to make move ' + tile1 + tile2 + promotion);
         }
+    };
+
+    useEffect(() => {
+        checkForPromotion();
     }, [tile2]);
+
+    const checkForPromotion = () => {
+        if (tile1 != null && tile2 != null) {
+            const tile1Piece = game.board.state[tile1[1]][tile1[0]];
+            // Check piece is a pawn and check if tile2 is end of board
+            console.log('Piece1 ' + Math.abs(tile1Piece));
+            if (Math.abs(tile1Piece) == 1 && (tile2[1] == 0 || tile2[1] == 7)) {
+                setIsPromotion(true);
+            } else {
+                // make move with no promotion
+                makeMove(0);
+            }
+        }
+    };
+
+    const selectPromotion = (prom: number) => {
+        setIsPromotion(false);
+        makeMove(prom);
+    };
 
     const currentTurn = () => {
         return game.board.is_white_turn ? 'white' : 'black';
@@ -70,6 +98,7 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
 
     return (
         <div style={{ display: 'flex', flexFlow: 'row wrap', gap: '2em', justifyContent: 'center' }}>
+            {isPromotion && <PromotionModal isWhiteTurn={game.board.is_white_turn} onTileClick={(promotion: number) => selectPromotion(promotion)} />}
             <div className="board">
                 {game.board.state.map((row, rowIndex) => (
                     <div key={`${rowIndex}`} style={{ display: 'flex', flexDirection: 'row' }}>
