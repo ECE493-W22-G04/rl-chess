@@ -217,3 +217,14 @@ def test_pawn_promotion_diag():
 
     assert board.register_move(move)
     assert board.state[7][5] == -Piece.QUEEN
+
+
+def test_illegal_pawn_move():
+    board = get_empty_board()
+
+    pawn = Square(4, 1)
+    board.state[pawn.y][pawn.x] = Piece.PAWN
+
+    move = Move(pawn, Square(4, 0))
+
+    assert not board.register_move(move)
