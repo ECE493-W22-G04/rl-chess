@@ -358,6 +358,7 @@ def test_stores_moves():
     assert len(board.moves) == 1
     assert board.moves[0] == first_move
 
+
 def test_promotion_non_pawn():
     board = get_empty_board()
 
