@@ -46,7 +46,7 @@ export type OfferDrawMessage = {
 
 export type LeaderboardEntry = {
     email: string;
-    numWins: number;
+    winRate: number;
 };
 
 export type Leaderboard = LeaderboardEntry[];

@@ -26,7 +26,7 @@ const Leaderboard: React.FC = () => {
                     <tr>
                         <th>Rank</th>
                         <th>Email</th>
-                        <th>Number of wins</th>
+                        <th>Win rate against computer</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,7 +34,7 @@ const Leaderboard: React.FC = () => {
                         <tr key={i}>
                             <td>{i + 1}</td>
                             <td>{entry.email}</td>
-                            <td>{entry.numWins}</td>
+                            <td>{(entry.winRate * 100).toFixed(1)}%</td>
                         </tr>
                     ))}
                 </tbody>
