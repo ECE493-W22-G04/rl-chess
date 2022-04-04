@@ -80,3 +80,26 @@ def test_leaderboard_ordering(client: FlaskClient, app: Flask):
         }]
         assert resp.status_code == 200
         assert json_response == expected_payload
+
+
+def test_leaderboard_excludes_pvp_games(client: FlaskClient, app: Flask):
+    with app.app_context():
+        player1 = Player(email=TEST_EMAIL, password=TEST_PASSWORD)
+        player2 = Player(email='asdf@mail.com', password=TEST_PASSWORD)
+        for player in [player1, player2]:
+            db.session.add(player)
+            db.session.commit()
+
+        player1_access_token = create_access_token(identity=player.email)
+
+        pvp_game = Game(host_email=player.email, is_pvp=True)
+        saved_game = SavedGame(black_player=player1.id, white_player=player2.id, winner=player1.id, game_history=json.dumps(pvp_game.board.moves), is_pvp=pvp_game.is_pvp)
+        db.session.add(saved_game)
+        db.session.commit()
+
+        resp = client.get('/api/leaderboard/', headers={'Authorization': f'Bearer {player1_access_token}'})
+        json_response = resp.json
+
+        expected_payload = []
+        assert resp.status_code == 200
+        assert json_response == expected_payload

@@ -12,6 +12,7 @@ leaderboard = Blueprint("leaderboard", __name__, url_prefix="/leaderboard")
 @jwt_required()
 def create_game():
     res = db.session.query(SavedGame.winner, func.count(SavedGame.winner)) \
+        .filter(SavedGame.is_pvp==False) \
         .group_by(SavedGame.winner) \
         .join(Player, SavedGame.winner == Player.id) \
         .add_columns(Player.email) \
