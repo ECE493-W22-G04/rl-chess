@@ -188,7 +188,7 @@ def test_pawn_promotion1():
     move = Move(pawn, Square(4, 0), Piece.QUEEN)
 
     assert board.register_move(move)
-    assert board[0][4] == Piece.QUEEN
+    assert board.state[0][4] == Piece.QUEEN
 
 
 def test_pawn_promotion2():
@@ -201,7 +201,7 @@ def test_pawn_promotion2():
     move = Move(pawn, Square(4, 7), Piece.QUEEN)
 
     assert board.register_move(move)
-    assert board[7][4] == -Piece.QUEEN
+    assert board.state[7][4] == -Piece.QUEEN
 
 
 def test_pawn_promotion_diag():
@@ -216,4 +216,4 @@ def test_pawn_promotion_diag():
     move = Move(pawn, Square(5, 7), Piece.QUEEN)
 
     assert board.register_move(move)
-    assert board[7][5] == -Piece.QUEEN
+    assert board.state[7][5] == -Piece.QUEEN

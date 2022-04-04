@@ -1,6 +1,6 @@
 from .piece import Piece
 from .move import Move
-from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear, is_pawn_path_clear
+from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear, is_pawn_path_clear, is_pawn_end_row_valid
 from .actions import ACTIONS
 from copy import deepcopy
 from collections import Counter
@@ -170,6 +170,12 @@ class Board:
 
             # capture the other pawn
             self.state[self.last_move.to_square.y][self.last_move.to_square.x] = Piece.NONE
+
+        # promotion
+        elif move.promotion != None:
+            multiplier = 1 if self.is_white_turn else -1
+            self.state[move.to_square.y][move.to_square.x] = move.promotion * multiplier
+            self.state[move.from_square.y][move.from_square.x] = Piece.NONE
 
         else:
             self.state[move.to_square.y][move.to_square.x] = piece_to_move
@@ -347,10 +353,10 @@ class Board:
 
         if abs(piece_to_move) == Piece.PAWN:
             if is_diagonal_forward(move, piece_to_move > 0):
-                return self.is_en_passant(move) or (abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE)
+                return self.is_en_passant(move) or (abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE and is_pawn_end_row_valid(move, piece_to_move > 0))
             if is_pawns_first_move(move, piece_to_move > 0):
                 return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) <= 2 and is_pawn_path_clear(self.state, move, piece_to_move > 0)
-            return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1 and is_pawn_path_clear(self.state, move, piece_to_move > 0)
+            return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1 and is_pawn_path_clear(self.state, move, piece_to_move > 0) and is_pawn_end_row_valid(move, piece_to_move > 0)
         if abs(piece_to_move) == Piece.BISHOP:
             return is_diagonal_move(move) and is_diagonal_path_clear(self.state, move)
         if abs(piece_to_move) == Piece.KNIGHT:
