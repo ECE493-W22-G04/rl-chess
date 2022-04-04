@@ -10,11 +10,7 @@ type PromotionModalProps = {
 const PromotionModal: React.FC<PromotionModalProps> = ({ isWhiteTurn, onTileClick }: PromotionModalProps) => {
     const handleClose = () => {
         // Default promote to queen
-        if (isWhiteTurn) {
-            onTileClick(6);
-        } else {
-            onTileClick(-6);
-        }
+        onTileClick(6);
     };
 
     const selectTile = (piece: number) => {
@@ -28,7 +24,7 @@ const PromotionModal: React.FC<PromotionModalProps> = ({ isWhiteTurn, onTileClic
             <Modal.Header closeButton>
                 <Modal.Title>Pawn Promotion</Modal.Title>
             </Modal.Header>
-            <Modal.Body style={{ display: 'flex', flexFlow: 'row', gap: '1em' }}>
+            <Modal.Body style={{ display: 'flex', gap: '1em' }}>
                 {pieceOptions.map((piece) => {
                     // Use position as a unique key for the boardtile
                     const coloredPiece: number = isWhiteTurn ? piece : -piece;

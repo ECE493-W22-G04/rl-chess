@@ -35,12 +35,9 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
 
     const makeMove = (promotion: number) => {
         if (tile1 != null && tile2 != null) {
-            console.log('sending move');
             socket.emit('make_move', { gameId: game.id, moveStr: `${tile1}->${tile2}`, promotion: promotion });
             setTile1(null);
             setTile2(null);
-        } else {
-            console.log('unable to make move ' + tile1 + tile2 + promotion);
         }
     };
 
@@ -52,7 +49,6 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
         if (tile1 != null && tile2 != null) {
             const tile1Piece = game.board.state[tile1[1]][tile1[0]];
             // Check piece is a pawn and check if tile2 is end of board
-            console.log('Piece1 ' + Math.abs(tile1Piece));
             if (Math.abs(tile1Piece) == 1 && (tile2[1] == 0 || tile2[1] == 7)) {
                 setIsPromotion(true);
             } else {
