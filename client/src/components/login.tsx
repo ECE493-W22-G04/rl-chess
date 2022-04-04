@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
 import AuthService from '../services/auth';
 
@@ -42,10 +44,10 @@ const Login: React.FunctionComponent = () => {
     };
 
     return (
-        <div className="col-md-12">
-            <div className="card card-container">
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Card style={{ width: '30em' }}>
                 <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleLogin}>
-                    <Form>
+                    <Form style={{ margin: '1em' }}>
                         <div className="form-group">
                             <label htmlFor="email">Email</label>
                             <Field name="email" type="text" className="form-control" />
@@ -59,10 +61,10 @@ const Login: React.FunctionComponent = () => {
                         </div>
 
                         <div className="form-group">
-                            <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+                            <Button type="submit" disabled={loading}>
                                 {loading && <span className="spinner-border spinner-border-sm"></span>}
                                 <span>Login</span>
-                            </button>
+                            </Button>
                         </div>
 
                         {message && (
@@ -74,7 +76,7 @@ const Login: React.FunctionComponent = () => {
                         )}
                     </Form>
                 </Formik>
-            </div>
+            </Card>
         </div>
     );
 };

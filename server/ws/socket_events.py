@@ -70,10 +70,7 @@ def register_ws_events(socketio: SocketIO):
             emit("message", "Attempted to pick color with invalid game id " + game_id, broadcast=True, to=game_id)
             return
 
-        for user_in_room in user_rooms[game_id]:
-            if user_in_room != user:
-                other_user = user_in_room
-                break
+        other_user = get_other_player(game_id, user)
 
         game = current_games[game_id]
         # check if player in room and is host of current game
@@ -143,6 +140,38 @@ def register_ws_events(socketio: SocketIO):
 
         if game.board.is_checkmate():
             handle_game_over(game)
+
+    @socketio.on("offer_draw")
+    def offer_draw(data):
+        game_id = data["gameId"]
+        current_player = data["currentPlayer"]
+        other_player = get_other_player(game_id, current_player)
+
+        data = {'offer_draw_to': other_player}
+        emit('offer_draw', json.dumps(data), broadcast=True, to=game_id)
+
+    @socketio.on("accept_draw")
+    def accept_draw(data):
+        game_id = data["gameId"]
+        payload = {'winner': 'Nobody'}
+        emit('game-over', json.dumps(payload), broadcast=True, to=game_id)
+        save_game(current_games[game_id], True)
+
+    @socketio.on("concede")
+    def concede(data):
+        game_id = data["gameId"]
+        current_player = data["currentPlayer"]
+        other_player = get_other_player(game_id, current_player)
+        payload = {'winner': other_player}
+        emit('game-over', json.dumps(payload), broadcast=True, to=game_id)
+        save_game(current_games[game_id], False)
+
+
+def get_other_player(game_id, user):
+    for user_in_room in user_rooms[game_id]:
+        if user_in_room != user:
+            return user_in_room
+    return ""
 
 
 def handle_game_over(game: Game):

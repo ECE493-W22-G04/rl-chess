@@ -15,6 +15,9 @@ export async function createGame(isPvP: boolean) {
         return JSON.parse(resp.data);
     } catch (err) {
         console.error(err);
+        // Many errors are caused by bad token so clear it and refresh
+        localStorage.clear();
+        window.location.reload();
         return null;
     }
 }
@@ -27,6 +30,9 @@ export async function getGameDetails(gameId: string) {
         return JSON.parse(resp.data);
     } catch (err) {
         console.error(err);
+        // Many errors are caused by bad token so clear it and refresh
+        localStorage.clear();
+        window.location.reload();
         return null;
     }
 }
