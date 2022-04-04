@@ -177,3 +177,43 @@ def test_pawn_invalid_capture():
 
     assert board.register_move(move1)
     assert not board.register_move(move2)
+
+
+def test_pawn_promotion1():
+    board = get_empty_board()
+
+    pawn = Square(4, 1)
+    board.state[pawn.y][pawn.x] = Piece.PAWN
+
+    move = Move(pawn, Square(4, 0), Piece.QUEEN)
+
+    assert board.register_move(move)
+    assert board[0][4] == Piece.QUEEN
+
+
+def test_pawn_promotion2():
+    board = get_empty_board()
+
+    pawn = Square(4, 6)
+    board.state[pawn.y][pawn.x] = -Piece.PAWN
+    board.is_white_turn = False
+
+    move = Move(pawn, Square(4, 7), Piece.QUEEN)
+
+    assert board.register_move(move)
+    assert board[7][4] == -Piece.QUEEN
+
+
+def test_pawn_promotion_diag():
+    board = get_empty_board()
+
+    pawn = Square(4, 6)
+    queen = Square(5, 7)
+    board.state[pawn.y][pawn.x] = -Piece.PAWN
+    board.state[queen.y][queen.x] = Piece.QUEEN
+    board.is_white_turn = False
+
+    move = Move(pawn, Square(5, 7), Piece.QUEEN)
+
+    assert board.register_move(move)
+    assert board[7][5] == -Piece.QUEEN
