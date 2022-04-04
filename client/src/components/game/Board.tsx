@@ -3,6 +3,8 @@ import { Game } from '../../types';
 import BoardTile from './BoardTile';
 import socket from '../../services/socket';
 import AuthService from '../../services/auth';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 
 type BoardProps = {
     game: Game;
@@ -58,8 +60,16 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
         }
     };
 
+    const offerDraw = () => {
+        socket.emit('offer_draw', { gameId: game.id, currentPlayer: AuthService.getCurrentUser() });
+    };
+
+    const concede = () => {
+        socket.emit('concede', { gameId: game.id, currentPlayer: AuthService.getCurrentUser() });
+    };
+
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: '100%' }}>
+        <div style={{ display: 'flex', flexFlow: 'row wrap', gap: '2em', justifyContent: 'center' }}>
             <div className="board">
                 {game.board.state.map((row, rowIndex) => (
                     <div key={`${rowIndex}`} style={{ display: 'flex', flexDirection: 'row' }}>
@@ -73,13 +83,19 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
                     </div>
                 ))}
             </div>
-            <div className="player-color">
-                <h2>You are playing {playerColor}</h2>
-            </div>
-            <div className="current-turn">
-                <h2>Current turn {currentTurn()}</h2>
-            </div>
-            <div className="display-message">{displayMessage && <div className="alert alert-warning">{displayMessage}</div>}</div>
+            <Card style={{ display: 'flex', flexFlow: 'column wrap', justifyContent: 'space-evenly', alignItems: 'center', padding: '2em' }}>
+                <div className="player-color">
+                    <h2>You are playing {playerColor}</h2>
+                </div>
+                <div className="current-turn">
+                    <h2>Current turn {currentTurn()}</h2>
+                </div>
+                <div className="offer-draw">{game.black_player != null && game.white_player != null && <Button onClick={offerDraw}>Offer Draw</Button>}</div>
+                <div className="concede">
+                    <Button onClick={concede}>Concede</Button>
+                </div>
+                <div className="display-message">{displayMessage && <div className="alert alert-warning">{displayMessage}</div>}</div>
+            </Card>
         </div>
     );
 };
