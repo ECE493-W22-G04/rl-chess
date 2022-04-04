@@ -27,10 +27,14 @@ export const mockGame: Game = {
 export const mockLeaderboard: Leaderboard = [
     {
         email: mockCurrentUser,
-        winRate: 0.9876,
+        numGamesWon: 10,
+        numGamesPlayed: 12,
+        winRate: 0.8333333333333334,
     },
     {
         email: 'alice@gmail.com',
-        winRate: 0.85,
+        numGamesWon: 9,
+        numGamesPlayed: 13,
+        winRate: 0.6923076923076923,
     },
 ];
