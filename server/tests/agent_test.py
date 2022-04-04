@@ -1,7 +1,8 @@
-from server.game.board import Board
-from rl_agent.agent import RlAgent
 import sys
 import os
+
+from server.game.board import Board
+from rl_agent.agent import RlAgent
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 

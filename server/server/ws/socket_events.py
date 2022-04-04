@@ -155,8 +155,7 @@ def handle_game_over(game: Game):
 
 
 def save_game(game: Game, is_draw: bool):
-    # opposite because it registered move
-    is_white_turn = not game.board.is_white_turn
+    is_white_turn = not game.board.is_white_turn  # opposite because it registered move
 
     black_player = Player.query.filter_by(email=game.black_player).first().id if game.black_player else None
     white_player = Player.query.filter_by(email=game.white_player).first().id if game.white_player else None
