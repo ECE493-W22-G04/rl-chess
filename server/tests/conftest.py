@@ -1,6 +1,7 @@
 import pytest
 from flask_socketio import SocketIO
 from server import create_app
+from .fixtures.player import player, access_token
 
 
 @pytest.fixture()
