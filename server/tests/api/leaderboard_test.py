@@ -7,6 +7,7 @@ from flask_jwt_extended import create_access_token
 from server.api.models import Game, SavedGame, Player, db
 from ..constants import TEST_EMAIL, TEST_PASSWORD
 
+
 def test_leaderboard(client: FlaskClient, app: Flask):
     with app.app_context():
         player1 = Player(email=TEST_EMAIL, password=TEST_PASSWORD)
@@ -26,15 +27,14 @@ def test_leaderboard(client: FlaskClient, app: Flask):
         resp = client.get('/api/leaderboard/')
         json_response = resp.json
 
-        expected_payloads = [
-            {
-                'email': player1.email,
-                'numWins': 2,
-            }
-        ]
+        expected_payloads = [{
+            'email': player1.email,
+            'numWins': 2,
+        }]
         assert resp.status_code == 200
         for expected_payload in expected_payloads:
             assert expected_payload in json_response
+
 
 def test_empty_leaderboard(client: FlaskClient, app: Flask):
     with app.app_context():
