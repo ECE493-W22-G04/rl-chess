@@ -1,11 +1,12 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Game } from '../../types';
+import { Game, SerializedMove } from '../../types';
 import BoardTile from './BoardTile';
 import socket from '../../services/socket';
 import AuthService from '../../services/auth';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import PromotionModal from './PromotionModal';
+import MoveHistory from './MoveHistory';
 
 type BoardProps = {
     game: Game;
@@ -121,6 +122,7 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
                 </div>
                 <div className="display-message">{displayMessage && <div className="alert alert-warning">{displayMessage}</div>}</div>
             </Card>
+            <MoveHistory gameMoves={game.board.moves as unknown as SerializedMove[]} />
         </div>
     );
 };

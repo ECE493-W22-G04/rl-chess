@@ -10,6 +10,8 @@ export type Move = {
     promotion: number; // piece
 };
 
+export type SerializedMove = [[number, number], [number, number], number];
+
 export type Square = {
     x: number;
     y: number;
