@@ -42,7 +42,7 @@ const Room: FC = () => {
             console.log(data);
         });
 
-        socket.on('game-over', (data) => {
+        socket.on('game_over', (data) => {
             const msg: GameOverMessage = JSON.parse(data);
             setWinner(msg.winner);
         });
