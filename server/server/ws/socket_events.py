@@ -2,10 +2,9 @@ import json
 from flask_socketio import SocketIO, join_room, emit
 
 from rl_agent import rl_agent
-from game.move import Move, Square
-from api.routes.games import current_games
-from api.models import SavedGame, Player, Game, db
-import json
+from server.game.move import Move, Square
+from server.api.routes.games import current_games
+from server.api.models import SavedGame, Player, Game, db
 
 PLAYERS_PER_PVP_ROOM = 2
 PLAYERS_PER_PVC_ROOM = 1
@@ -126,7 +125,7 @@ def register_ws_events(socketio: SocketIO):
         if game.board.is_draw():
             # TODO: handle this emit client side and close the game after
             payload = {'winner': None}
-            emit("game-over", json.dumps(payload), broadcast=True, to=game_id)
+            emit("game_over", json.dumps(payload), broadcast=True, to=game_id)
             save_game(game, True)
             # TODO: remove game from current_games
             return
@@ -154,7 +153,7 @@ def register_ws_events(socketio: SocketIO):
     def accept_draw(data):
         game_id = data["gameId"]
         payload = {'winner': 'Nobody'}
-        emit('game-over', json.dumps(payload), broadcast=True, to=game_id)
+        emit('game_over', json.dumps(payload), broadcast=True, to=game_id)
         save_game(current_games[game_id], True)
 
     @socketio.on("concede")
@@ -163,7 +162,7 @@ def register_ws_events(socketio: SocketIO):
         current_player = data["currentPlayer"]
         other_player = get_other_player(game_id, current_player)
         payload = {'winner': other_player}
-        emit('game-over', json.dumps(payload), broadcast=True, to=game_id)
+        emit('game_over', json.dumps(payload), broadcast=True, to=game_id)
         save_game(current_games[game_id], False)
 
 
@@ -180,7 +179,7 @@ def handle_game_over(game: Game):
         # Black player made the last move and was a checkmate
         winner = game.black_player
     payload = {'winner': winner}
-    emit('game-over', json.dumps(payload), broadcast=True, to=game.id)
+    emit('game_over', json.dumps(payload), broadcast=True, to=game.id)
     save_game(game, False)
 
 

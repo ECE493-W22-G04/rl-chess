@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from flask import request, jsonify, Blueprint
 from flask_jwt_extended import create_access_token
 
-from api.models import Player, db
+from ..models import Player, db
 
 auth = Blueprint("auth", __name__, url_prefix="/auth")
 

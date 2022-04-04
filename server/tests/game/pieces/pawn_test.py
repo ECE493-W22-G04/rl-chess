@@ -1,7 +1,7 @@
-from server.game.board import Board
 from server.game.piece import Piece
+from server.game.board import Board
 from server.game.move import Move, Square
-from server.tests.game.pieces.helper import get_empty_board
+from .helper import get_empty_board
 
 
 def test_validate_pawn_forward_three():

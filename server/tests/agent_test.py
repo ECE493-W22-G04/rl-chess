@@ -1,10 +1,10 @@
 import sys
 import os
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from server.game.board import Board
+from rl_agent.agent import RlAgent
 
-from ..rl_agent.agent import RlAgent
-from ..game.board import Board
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def test_rl_can_predict_moves():

@@ -1,8 +1,7 @@
 import numpy as np
-
 from gym import Env, spaces
 
-from game.board import Board
+from server.game.board import Board
 
 
 class ChessEnv(Env):

@@ -7,9 +7,9 @@ from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
 
-from .chess_env import ChessEnv
-from game.board import Board
-from game.move import Move
+from rl_agent.chess_env import ChessEnv
+from server.game.board import Board
+from server.game.move import Move
 
 
 class RlAgent():
