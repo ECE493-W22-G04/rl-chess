@@ -1,6 +1,20 @@
+import internal, { PipelineCallback } from "stream";
+
 export type Board = {
     state: number[][];
     is_white_turn: boolean;
+    moves: Move[];
+};
+
+export type Move = {
+    from_square: Square;
+    to_square: Square;
+    promotion: number; // piece
+};
+
+export type Square = {
+    x: number;
+    y: number;
 };
 
 export type Player = string; // Player is identified by their email (can be found in their JWT)

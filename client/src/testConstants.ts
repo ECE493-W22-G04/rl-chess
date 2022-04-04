@@ -17,6 +17,7 @@ export const mockGame: Game = {
             [4, 3, 2, 5, 6, 2, 3, 4],
         ],
         is_white_turn: true,
+        moves: [],
     },
     has_started: true,
 };
