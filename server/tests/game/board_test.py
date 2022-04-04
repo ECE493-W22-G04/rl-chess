@@ -1,5 +1,4 @@
 from copy import deepcopy
-from webbrowser import get
 
 from server.game.board import Board
 from server.game.piece import Piece
