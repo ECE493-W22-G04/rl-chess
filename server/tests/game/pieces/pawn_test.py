@@ -157,3 +157,23 @@ def test_pawn_not_en_passant():
     assert board.register_move(move3)
     assert board.register_move(move4)
     assert not board.register_move(move5)
+
+
+def test_pawn_invalid_en_passant():
+    board = Board()
+
+    move1 = Move(Square(4, 6), Square(4, 4))
+    move2 = Move(Square(5, 1), Square(4, 2))
+
+    assert board.register_move(move1)
+    assert not board.register_move(move2)
+
+
+def test_pawn_invalid_capture():
+    board = Board()
+
+    move1 = Move(Square(3, 6), Square(3, 4))
+    move2 = Move(Square(7, 1), Square(3, 5))
+
+    assert board.register_move(move1)
+    assert not board.register_move(move2)

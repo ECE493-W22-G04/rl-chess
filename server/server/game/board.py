@@ -303,6 +303,11 @@ class Board:
         piece_to_move = self.state[move.from_square.y][move.from_square.x]
         if not is_diagonal_forward(move, piece_to_move > 0):
             return False
+
+        # prevent bishop like moves
+        if abs(move.from_square.y - move.to_square.y) != 1 or abs(move.from_square.x - move.to_square.x) != 1:
+            return False
+
         # last move was a double move
         last_piece_moved = self.state[self.last_move.to_square.y][self.last_move.to_square.x]
         x_diff = self.last_move.from_square.x - self.last_move.to_square.x
@@ -310,8 +315,10 @@ class Board:
         if abs(piece_to_move) != Piece.PAWN or abs(last_piece_moved) != Piece.PAWN or x_diff != 0 or abs(y_diff) != 2:
             return False
 
+        test_y = 2 if piece_to_move > 0 else 5
+
         # current move captures
-        return move.to_square.x == self.last_move.from_square.x and move.to_square.y != self.last_move.to_square.y
+        return move.to_square.x == self.last_move.from_square.x and move.to_square.y == test_y
 
     def is_move_possible(self, move: Move):
         from_x = move.from_square.x
