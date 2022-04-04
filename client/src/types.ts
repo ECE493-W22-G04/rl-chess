@@ -1,5 +1,3 @@
-import internal, { PipelineCallback } from "stream";
-
 export type Board = {
     state: number[][];
     is_white_turn: boolean;
