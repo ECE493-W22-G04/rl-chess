@@ -26,6 +26,11 @@ const Header: React.FC = () => {
             {currentUser ? (
                 <div className="navbar-nav ml-auto">
                     <li className="nav-item">
+                        <Link to={'/leaderboard'} className="nav-link">
+                            Leaderboard
+                        </Link>
+                    </li>
+                    <li className="nav-item">
                         <a href="/login" className="nav-link" onClick={logout}>
                             Logout
                         </a>
