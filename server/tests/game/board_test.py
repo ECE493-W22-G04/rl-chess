@@ -30,7 +30,8 @@ def test_actions():
     pieces_to_target_to = 8 * 8
     pieces_to_promote = 8 * 2
     pieces_to_promote_to = 4
-    assert len(board.get_actions()) < pieces_to_choose_from * pieces_to_target_to + pieces_to_promote * pieces_to_promote_to
+    assert len(board.get_actions()) < pieces_to_choose_from * \
+        pieces_to_target_to + pieces_to_promote * pieces_to_promote_to
 
 
 def test_no_duplicate_actions():
