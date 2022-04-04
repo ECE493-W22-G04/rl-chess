@@ -5,11 +5,11 @@ import socket from '../../services/socket';
 import AuthService from '../../services/auth';
 import { OfferDrawMessage } from '../../types';
 
-type OfferDrawModelProps = {
+type OfferDrawModalProps = {
     gameId: string | null;
 };
 
-const OfferDrawModel: React.FC<OfferDrawModelProps> = ({ gameId }: OfferDrawModelProps) => {
+const OfferDrawModal: React.FC<OfferDrawModalProps> = ({ gameId }: OfferDrawModalProps) => {
     const [isModalShown, setIsModalShown] = useState<boolean>(false);
     const handleClose = () => {
         setIsModalShown(false);
@@ -47,4 +47,4 @@ const OfferDrawModel: React.FC<OfferDrawModelProps> = ({ gameId }: OfferDrawMode
     );
 };
 
-export default OfferDrawModel;
+export default OfferDrawModal;
