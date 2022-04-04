@@ -1,4 +1,4 @@
-import { Game } from './types';
+import { Game, Leaderboard } from './types';
 
 export const mockGame: Game = {
     id: 'asdf-asdf-asdf',
@@ -21,3 +21,14 @@ export const mockGame: Game = {
     },
     has_started: true,
 };
+
+export const mockLeaderboard: Leaderboard = [
+    {
+        email: 'bob@gmail.com',
+        numWins: 2,
+    },
+    {
+        email: 'alice@gmail.com',
+        numWins: 1,
+    },
+];
