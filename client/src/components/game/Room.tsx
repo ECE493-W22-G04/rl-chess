@@ -41,7 +41,6 @@ const Room: FC = () => {
         });
 
         socket.on('players_in_room', (players_in_room) => {
-            console.log(players_in_room);
             setPlayers(players_in_room);
         });
 
