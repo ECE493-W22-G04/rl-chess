@@ -21,26 +21,8 @@ const MoveHistory: React.FC<MoveHistoryProps> = ({ gameMoves }: MoveHistoryProps
     }));
 
     const moveNotation = (square: Square) => {
-        switch (square.x) {
-            case 0:
-                return `a${square.y + 1}`;
-            case 1:
-                return `b${square.y + 1}`;
-            case 2:
-                return `c${square.y + 1}`;
-            case 3:
-                return `d${square.y + 1}`;
-            case 4:
-                return `e${square.y + 1}`;
-            case 5:
-                return `f${square.y + 1}`;
-            case 6:
-                return `g${square.y + 1}`;
-            case 7:
-                return `h${square.y + 1}`;
-            default:
-                return `a${square.y + 1}`;
-        }
+        const charX = String.fromCharCode(97 + square.x);
+        return `${charX}${square.y + 1}`;
     };
 
     const promotionString = (promotion: number) => {
@@ -54,7 +36,7 @@ const MoveHistory: React.FC<MoveHistoryProps> = ({ gameMoves }: MoveHistoryProps
             case 5:
                 return 'Queen';
             default:
-                return 'None';
+                return '-';
         }
     };
 
