@@ -213,3 +213,20 @@ def test_castle_piece_in_way():
     castle = Move(king, Square(2, 7))
 
     assert not board.validate_move(castle)
+
+
+def test_castle_under_check():
+    board = get_empty_board()
+
+    king = Square(4, 7)
+    rook = Square(0, 7)
+    queen = Square(4, 0)
+
+    board.state[king.y][king.x] = Piece.KING
+    board.state[rook.y][rook.x] = Piece.ROOK
+    board.state[queen.y][queen.x] = -Piece.QUEEN
+
+    castle = Move(king, Square(2, 7))
+
+    assert not board.validate_move(castle)
+    assert not board.register_move(castle)
