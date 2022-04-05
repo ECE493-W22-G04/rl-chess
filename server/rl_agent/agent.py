@@ -1,3 +1,4 @@
+from copy import deepcopy
 from sys import stderr
 import numpy as np
 from tensorflow.keras.models import Sequential
@@ -6,10 +7,13 @@ from tensorflow.keras.optimizers import Adam
 from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
-
 from rl_agent.chess_env import ChessEnv
 from server.game.board import Board
-from server.game.move import Move
+from server.game.move import Move, Square
+from server.api.models import SavedGame
+from server.api import create_app
+from server.game.actions import ACTIONS
+import json
 
 
 class RlAgent():
@@ -63,3 +67,43 @@ class RlAgent():
         env = ChessEnv()
         self.__agent.fit(env, nb_steps=num_episodes, visualize=False, verbose=1)
         self.__agent.save_weights(self.WEIGHTS_FILE, overwrite=True)
+
+    def belief_revision(self, num_episodes: int = 100):
+        env = ChessEnv()
+        trained_id = 0
+
+        try:
+            f = open("revised.txt", "r")
+            trained_id = int(f.readline())
+        except:
+            print("creating a record of games trained")
+
+        games = None
+        app = create_app()
+        with app.app_context():
+            games = SavedGame.query.filter(SavedGame.id > trained_id).all()
+
+        if games is None:
+            return
+
+        for game in games:
+            moves = json.loads(game.game_history)
+            print("training game ", game.id)
+
+            # fit games 1 at a time since train_policy will not reset
+            for _ in range(num_episodes):
+                env.reset()
+                move_copy = deepcopy(moves)
+
+                def train_policy(observation):
+                    move = move_copy.pop(0)
+                    action_move = Move(Square(move[0][0], move[0][1]), Square(move[1][0], move[1][1]), move[2])
+                    return ACTIONS.index(action_move)
+
+                self.__agent.fit(env, nb_steps=1, visualize=False, start_step_policy=train_policy, nb_max_start_steps=len(moves), verbose=0)
+
+            self.__agent.save_weights(self.WEIGHTS_FILE, overwrite=True)
+            trained_id += 1
+
+        with open("revised.txt", "w") as f:
+            f.write(str(trained_id))
