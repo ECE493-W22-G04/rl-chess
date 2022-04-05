@@ -52,7 +52,7 @@ def register_ws_events(socketio: SocketIO):
             user_rooms[game_id] = [user]
 
         join_room(game_id)
-        emit("message", user + " has joined the room", broadcast=True, to=game_id)
+        emit('players_in_room', user_rooms[game_id], broadcast=True, to=game_id)
 
         if is_room_full(game.is_pvp, len(user_rooms[game_id])):
             emit("room_full", broadcast=True, to=game_id)
