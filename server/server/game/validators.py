@@ -73,7 +73,11 @@ def is_pawn_path_clear(board: list[list[Piece]], move: Move, is_white: bool):
 
 
 # check that end row forces a promotion
-def is_pawn_end_row_valid(move: Move, is_white):
+def is_pawn_end_row_valid(move: Move, piece: Piece):
+    if abs(piece) != Piece.PAWN:
+        return False
+
+    is_white = piece > 0
     test_y = 0 if is_white else 7
     if move.to_square.y == test_y:
         return move.promotion != None
