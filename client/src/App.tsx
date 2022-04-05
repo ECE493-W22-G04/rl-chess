@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './components/login';
 import Register from './components/register';
@@ -8,6 +9,7 @@ import Header from './components/Header';
 import RequireAuth from './services/RequireAuth';
 import MainMenu from './components/MainMenu';
 import Room from './components/game/Room';
+import Leaderboard from './components/Leaderboard';
 
 const App: React.FunctionComponent = () => {
     return (
@@ -28,6 +30,14 @@ const App: React.FunctionComponent = () => {
                         element={
                             <RequireAuth>
                                 <Room />
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="/leaderboard"
+                        element={
+                            <RequireAuth>
+                                <Leaderboard />
                             </RequireAuth>
                         }
                     />

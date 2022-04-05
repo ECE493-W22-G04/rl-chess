@@ -45,3 +45,12 @@ export type GameOverMessage = {
 export type OfferDrawMessage = {
     offer_draw_to: string;
 };
+
+export type LeaderboardEntry = {
+    email: string;
+    numGamesWon: number;
+    numGamesPlayed: number;
+    winRate: number;
+};
+
+export type Leaderboard = LeaderboardEntry[];
