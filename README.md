@@ -18,3 +18,10 @@ cd client
 npm install
 npm start
 ```
+
+### Run belief revision
+Get migration from production db then run:
+```
+cd server
+python -m rl_agent.belief_revision
+```
