@@ -6,6 +6,7 @@ import AuthService from '../../services/auth';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import PromotionModal from './PromotionModal';
+import MoveHistory from './MoveHistory';
 
 type BoardProps = {
     game: Game;
@@ -121,6 +122,7 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
                 </div>
                 <div className="display-message">{displayMessage && <div className="alert alert-warning">{displayMessage}</div>}</div>
             </Card>
+            <MoveHistory gameMoves={game.board.moves} />
         </div>
     );
 };

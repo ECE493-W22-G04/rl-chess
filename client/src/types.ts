@@ -1,7 +1,7 @@
 export type Board = {
     state: number[][];
     is_white_turn: boolean;
-    moves: Move[];
+    moves: SerializedMove[];
 };
 
 export type Move = {
@@ -9,6 +9,8 @@ export type Move = {
     to_square: Square;
     promotion: number; // piece
 };
+
+export type SerializedMove = [[number, number], [number, number], number];
 
 export type Square = {
     x: number;
