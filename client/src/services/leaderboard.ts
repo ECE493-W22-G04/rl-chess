@@ -9,7 +9,7 @@ export async function getLeaderboard() {
         const resp = await axios.get(API_URL, {
             headers: authHeader(),
         });
-        return JSON.parse(resp.data);
+        return resp.data;
     } catch (err) {
         console.error(err);
     }
