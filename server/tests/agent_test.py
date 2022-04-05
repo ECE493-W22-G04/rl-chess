@@ -1,10 +1,5 @@
 from server.game.board import Board
 from rl_agent.agent import RlAgent
-import sys
-import os
-
-from server.game.board import Board
-from rl_agent.agent import RlAgent
 
 
 def test_rl_can_predict_moves():
