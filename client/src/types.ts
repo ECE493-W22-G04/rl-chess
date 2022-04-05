@@ -1,7 +1,7 @@
 export type Board = {
     state: number[][];
     is_white_turn: boolean;
-    moves: Move[];
+    moves: SerializedMove[];
 };
 
 export type Move = {

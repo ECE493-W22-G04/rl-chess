@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Game, SerializedMove } from '../../types';
+import { Game } from '../../types';
 import BoardTile from './BoardTile';
 import socket from '../../services/socket';
 import AuthService from '../../services/auth';
@@ -122,7 +122,7 @@ const Board: FC<BoardProps> = ({ game }: BoardProps) => {
                 </div>
                 <div className="display-message">{displayMessage && <div className="alert alert-warning">{displayMessage}</div>}</div>
             </Card>
-            <MoveHistory gameMoves={game.board.moves as unknown as SerializedMove[]} />
+            <MoveHistory gameMoves={game.board.moves} />
         </div>
     );
 };
