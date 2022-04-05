@@ -9,9 +9,8 @@ export async function getLeaderboard() {
         const resp = await axios.get(API_URL, {
             headers: authHeader(),
         });
-        return JSON.parse(resp.data);
+        return resp.data;
     } catch (err) {
-        console.error(err);
         // Many errors are caused by bad token so clear it and refresh
         localStorage.clear();
         window.location.reload();
