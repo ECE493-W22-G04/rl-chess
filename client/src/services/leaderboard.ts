@@ -12,9 +12,5 @@ export async function getLeaderboard() {
         return JSON.parse(resp.data);
     } catch (err) {
         console.error(err);
-        // Many errors are caused by bad token so clear it and refresh
-        localStorage.clear();
-        window.location.reload();
-        return null;
     }
 }
