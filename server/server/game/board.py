@@ -292,21 +292,20 @@ class Board:
             if to_x == 6 and white_rook_7_moved:
                 return False
 
-        # simulate moves
-        # test_board = deepcopy(self)
+        # check if king would be attacked
         if from_y == 0:
             if to_x == 2:
-                if self.is_attacked(Square(3, 0)):
+                if self.is_attacked(Square(3, 0)) or self.is_attacked(Square(2, 0)):
                     return False
             else:
-                if self.is_attacked(Square(5, 0)):
+                if self.is_attacked(Square(5, 0)) or self.is_attacked(Square(6, 0)):
                     return False
         else:
             if to_x == 2:
-                if self.is_attacked(Square(3, 7)):
+                if self.is_attacked(Square(3, 7)) or self.is_attacked(Square(2, 7)):
                     return False
             else:
-                if self.is_attacked(Square(5, 7)):
+                if self.is_attacked(Square(5, 7)) or self.is_attacked(Square(6, 7)):
                     return False
 
         # cannot castle while in check
