@@ -9,9 +9,13 @@ const WinnerModal: React.FC<WinnerModalProps> = ({ winner }: WinnerModalProps) =
     const [isModalShown, setIsModalShown] = useState<boolean>(true);
     if (winner == null) {
         return <></>;
+    } else if (winner == '') {
+        winner = 'RL Agent';
     }
     const handleClose = () => {
         setIsModalShown(false);
+        // Redirect players to homepage after game
+        window.location.assign('/');
     };
     return (
         <Modal show={isModalShown} onHide={handleClose} centered>
