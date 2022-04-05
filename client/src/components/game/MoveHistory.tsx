@@ -1,5 +1,5 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container';
+import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import { SerializedMove, Move, Square } from '../../types';
 
@@ -59,26 +59,29 @@ const MoveHistory: React.FC<MoveHistoryProps> = ({ gameMoves }: MoveHistoryProps
     };
 
     return (
-        <Container fluid="md">
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>From</th>
-                        <th>To</th>
-                        <th>Promotion</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {moveArr.map((move, i) => (
-                        <tr key={i}>
-                            <td>{moveNotation(move.from_square)}</td>
-                            <td>{moveNotation(move.to_square)}</td>
-                            <td>{promotionString(move.promotion)}</td>
+        <Card style={{ display: 'flex', height: '32em' }}>
+            <Card.Header>Move History</Card.Header>
+            <Card.Body style={{ overflowY: 'scroll' }}>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Promotion</th>
                         </tr>
-                    ))}
-                </tbody>
-            </Table>
-        </Container>
+                    </thead>
+                    <tbody>
+                        {moveArr.map((move, i) => (
+                            <tr key={i}>
+                                <td>{moveNotation(move.from_square)}</td>
+                                <td>{moveNotation(move.to_square)}</td>
+                                <td>{promotionString(move.promotion)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            </Card.Body>
+        </Card>
     );
 };
 
