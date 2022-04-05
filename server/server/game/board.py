@@ -172,7 +172,7 @@ class Board:
             self.state[self.last_move.to_square.y][self.last_move.to_square.x] = Piece.NONE
 
         # promotion
-        elif move.promotion != None:
+        elif is_pawn_end_row_valid(move, piece_to_move) and move.promotion != None:
             multiplier = 1 if self.is_white_turn else -1
             self.state[move.to_square.y][move.to_square.x] = move.promotion * multiplier
             self.state[move.from_square.y][move.from_square.x] = Piece.NONE
@@ -351,12 +351,15 @@ class Board:
         if is_same_side(piece_to_move, piece_at_target):
             return False
 
+        if abs(piece_to_move) != Piece.PAWN and move.promotion != None:
+            return False
+
         if abs(piece_to_move) == Piece.PAWN:
             if is_diagonal_forward(move, piece_to_move > 0):
-                return self.is_en_passant(move) or (abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE and is_pawn_end_row_valid(move, piece_to_move > 0))
+                return self.is_en_passant(move) or (abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE and is_pawn_end_row_valid(move, piece_to_move))
             if is_pawns_first_move(move, piece_to_move > 0):
                 return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) <= 2 and is_pawn_path_clear(self.state, move, piece_to_move > 0)
-            return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1 and is_pawn_path_clear(self.state, move, piece_to_move > 0) and is_pawn_end_row_valid(move, piece_to_move > 0)
+            return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1 and is_pawn_path_clear(self.state, move, piece_to_move > 0) and is_pawn_end_row_valid(move, piece_to_move)
         if abs(piece_to_move) == Piece.BISHOP:
             return is_diagonal_move(move) and is_diagonal_path_clear(self.state, move)
         if abs(piece_to_move) == Piece.KNIGHT:
