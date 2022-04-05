@@ -48,6 +48,9 @@ class RlAgent():
             self.train(100)
 
     def predict(self, board: Board) -> Move:
+        self.__agent = self.__build_agent()
+        self.__load_weights()
+
         actions = board.get_actions()
         predicted_move_index = self.__agent.forward(board.state)
         predicted_move = actions[predicted_move_index]
