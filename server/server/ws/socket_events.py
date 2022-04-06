@@ -11,6 +11,11 @@ PLAYERS_PER_PVC_ROOM = 1
 
 user_rooms = {}
 
+# This File is used to satisfy the following functional requirements:
+# FR16 - Start.Game 
+# FR24 - Record.Game
+# FR26 - Accept.Draw
+# FR27 - Store.Draw
 
 def register_ws_events(socketio: SocketIO):
 

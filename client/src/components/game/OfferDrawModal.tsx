@@ -5,6 +5,9 @@ import socket from '../../services/socket';
 import AuthService from '../../services/auth';
 import { OfferDrawMessage } from '../../types';
 
+// This File is used to satisfy the following functional requirements:
+// FR26 - Accept.Draw
+
 type OfferDrawModalProps = {
     gameId: string | null;
 };

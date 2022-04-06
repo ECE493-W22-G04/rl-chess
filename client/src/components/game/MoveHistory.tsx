@@ -3,6 +3,9 @@ import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import { SerializedMove, Move, Square } from '../../types';
 
+// This File is used to satisfy the following functional requirements:
+// FR21 - Board.History
+
 type MoveHistoryProps = {
     gameMoves: SerializedMove[];
 };

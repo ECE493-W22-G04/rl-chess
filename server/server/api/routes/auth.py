@@ -7,6 +7,10 @@ from ..models import Player, db
 
 auth = Blueprint("auth", __name__, url_prefix="/auth")
 
+# This File is used to satisfy the following functional requirements:
+# FR1 - User.Registration
+# FR2 - Secure.Passwords
+# FR4 - User.Login
 
 # Create a route to authenticate users and return JWTs.
 @auth.route("/signin", methods=["POST"])
