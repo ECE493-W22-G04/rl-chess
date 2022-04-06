@@ -5,7 +5,7 @@ import authHeader from './auth-header';
 const API_URL = `${config.SERVER_ENDPOINT}/api/games/`;
 
 // This File is used to satisfy the following functional requirements:
-// FR12 - Redirect.Unauthentic.Users 
+// FR12 - Redirect.Unauthentic.Users
 
 export async function createGame(isPvP: boolean) {
     const payload = {

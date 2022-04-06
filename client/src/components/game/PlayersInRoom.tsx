@@ -4,7 +4,7 @@ import Card from 'react-bootstrap/Card';
 
 // This File is used to satisfy the following functional requirements:
 // FR14 - Broadcast.New.Players
-// FR15 - Display.Players 
+// FR15 - Display.Players
 
 type PlayersInRoomProps = {
     players: Player[];

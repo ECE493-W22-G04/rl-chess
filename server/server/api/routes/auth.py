@@ -12,6 +12,7 @@ auth = Blueprint("auth", __name__, url_prefix="/auth")
 # FR2 - Secure.Passwords
 # FR4 - User.Login
 
+
 # Create a route to authenticate users and return JWTs.
 @auth.route("/signin", methods=["POST"])
 def signin():

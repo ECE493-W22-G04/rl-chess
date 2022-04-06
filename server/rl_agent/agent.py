@@ -16,6 +16,7 @@ from server.game.move import Move
 # FR7 - Computer.Model
 # FR9 - Computer.Self.Learn
 
+
 class RlAgent():
     WEIGHTS_FILE = 'checkpoints/checkpoint'
 

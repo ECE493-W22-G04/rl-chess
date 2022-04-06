@@ -14,6 +14,7 @@ current_games: dict[str, Game] = {}
 # FR11 - Generate.Link
 # FR13 - Allow.Authentic.Users
 
+
 @game.route("/", methods=["POST"])
 @jwt_required()
 def create_game():
