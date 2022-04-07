@@ -1,5 +1,4 @@
 import os
-from random import random
 from sys import stderr
 import numpy as np
 from tensorflow.keras.models import Sequential
