@@ -171,6 +171,7 @@ class Board:
         for (check_x, check_y) in itertools.product(range(8), repeat=2):
             if self.state[check_y][check_x] == king_piece:
                 king_square = Square(check_x, check_y)
+                break
 
         # can only occur in testing, don't want to break
         if king_square is None:
@@ -186,9 +187,10 @@ class Board:
                 break
             # simulate move
             sim_board = deepcopy(self)
-            sim_board.register_move(legal_action)
+            sim_board.__register_move_unsafe(legal_action)
             if not sim_board.is_attacked(king_square):
                 can_block = True
+                break
 
         return not (can_king_move or can_block)
 
