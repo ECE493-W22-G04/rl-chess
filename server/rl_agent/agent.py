@@ -18,6 +18,7 @@ import json
 # This File is used to satisfy the following functional requirements:
 # FR5 - Computer.Setup
 # FR7 - Computer.Model
+# FR8 - Computer.Learn
 # FR9 - Computer.Self.Learn
 
 
