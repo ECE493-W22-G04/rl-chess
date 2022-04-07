@@ -8,6 +8,11 @@ import Button from 'react-bootstrap/Button';
 import PromotionModal from './PromotionModal';
 import MoveHistory from './MoveHistory';
 
+// This File is used to satisfy the following functional requirements:
+// FR17 - Display.Board
+// FR28 - Concede
+// FR25 - Offer.Draw
+
 type BoardProps = {
     game: Game;
 };

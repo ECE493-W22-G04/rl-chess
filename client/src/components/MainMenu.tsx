@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { createGame } from '../services/game';
 import Button from 'react-bootstrap/Button';
 
+// This File is used to satisfy the following functional requirements:
+// FR5 - Computer.Setup
+
 const MainMenu: FC = () => {
     const navigate = useNavigate();
     const handlePlayAgainstComputer = async () => {

@@ -9,6 +9,11 @@ game = Blueprint("games", __name__, url_prefix="/games")
 
 current_games: dict[str, Game] = {}
 
+# This File is used to satisfy the following functional requirements:
+# FR10 - Initialize.Lobby
+# FR11 - Generate.Link
+# FR13 - Allow.Authentic.Users
+
 
 @game.route("/", methods=["POST"])
 @jwt_required()

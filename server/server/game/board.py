@@ -7,6 +7,13 @@ from collections import Counter
 import json
 import itertools
 
+# This File is used to satisfy the following functional requirements:
+# FR18 - Alternate.Turns
+# FR19 - Detect.Stalemate
+# FR20 - Valid.Move
+# FR22 - Detect.Checkmate
+# FR23 - Detect.Repetition
+
 
 class Board:
 

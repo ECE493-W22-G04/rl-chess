@@ -6,6 +6,9 @@ import Card from 'react-bootstrap/Card';
 
 import AuthService from '../services/auth';
 
+// This File is used to satisfy the following functional requirements:
+// FR4 - User.Login
+
 const Login: React.FunctionComponent = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');

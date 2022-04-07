@@ -11,6 +11,11 @@ from rl_agent.chess_env import ChessEnv
 from server.game.board import Board
 from server.game.move import Move
 
+# This File is used to satisfy the following functional requirements:
+# FR5 - Computer.Setup
+# FR7 - Computer.Model
+# FR9 - Computer.Self.Learn
+
 
 class RlAgent():
     WEIGHTS_FILE = 'checkpoints/checkpoint'
