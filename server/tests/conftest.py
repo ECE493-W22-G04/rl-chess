@@ -1,5 +1,7 @@
+from flask import Flask
 import pytest
 from flask_socketio import SocketIO
+from flask_socketio.test_client import SocketIOTestClient
 from server import create_app
 from .fixtures.player import player, access_token
 
@@ -11,14 +13,18 @@ def app():
         "TESTING": True,
     })
 
-    SocketIO(app)
-
     yield app
 
 
 @pytest.fixture()
 def client(app):
     return app.test_client()
+
+
+@pytest.fixture()
+def socketio_client(app: Flask) -> SocketIOTestClient:
+    socketio = SocketIO(app)
+    return socketio.test_client(app)
 
 
 @pytest.fixture()
