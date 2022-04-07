@@ -89,3 +89,45 @@ def test_computer_wins(app: Flask, socketio_client: SocketIOTestClient, client: 
         assert saved_game.white_player == player.id
         assert saved_game.black_player == None
         assert saved_game.winner == None  # Equivalent to computer winning
+
+
+def test_deletes_game(app: Flask, socketio_client: SocketIOTestClient, client: FlaskClient, access_token: str, player: list[Player]):
+    # Create computer game
+    resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
+    assert resp.status_code == 201
+    game = json.loads(resp.json)
+    game_id = game['id']
+
+    # Join game
+    socketio_client.emit('join', {'user': player.email, 'gameId': game_id})
+
+    # Start game
+    socketio_client.emit('pick_side', {'gameId': game_id, 'color': 'white', 'user': player.email})
+
+    # Disconnect from game
+    socketio_client.disconnect()
+
+    resp = client.get(f'/api/games/{game_id}', headers={'Authorization': f'Bearer {access_token}'})
+    assert resp.status_code == 404
+
+
+def test_keeps_game_when_one_player_remains(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: str, players: list[Player], app: Flask):
+    resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
+    assert resp.status_code == 201
+    game = json.loads(resp.json)
+    game_id = game['id']
+
+    # Create second client
+    socketio_client2 = socketio.test_client(app, flask_test_client=client)
+
+    # Join game
+    socketio_client.emit('join', {'user': players[0].email, 'gameId': game_id})
+    socketio_client2.emit('join', {'user': players[1].email, 'gameId': game_id})
+
+    # Disconnect from game
+    socketio_client2.disconnect()
+
+    messages = socketio_client.get_received()
+
+    resp = client.get(f'/api/games/{game_id}', headers={'Authorization': f'Bearer {access_tokens[0]}'})
+    assert resp.status_code == 200
