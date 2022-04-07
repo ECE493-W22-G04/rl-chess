@@ -356,3 +356,33 @@ def test_stores_moves():
     assert board.register_move(first_move)
     assert len(board.moves) == 1
     assert board.moves[0] == first_move
+
+
+def test_promotion_non_pawn():
+    board = get_empty_board()
+
+    king = Square(0, 6)
+
+    board.state[king.y][king.x] = Piece.KING
+
+    move = Move(king, Square(0, 7), promotion=Piece.QUEEN)
+
+    assert not board.register_move(move)
+
+
+def test_blocking_check():
+    board = Board()
+
+    move1 = Move(Square(4, 6), Square(4, 4))
+    move2 = Move(Square(4, 1), Square(4, 3))
+    move3 = Move(Square(3, 7), Square(7, 3))
+    move4 = Move(Square(2, 1), Square(2, 3))
+    move5 = Move(Square(7, 3), Square(4, 3))
+
+    assert board.register_move(move1)
+    assert board.register_move(move2)
+    assert board.register_move(move3)
+    assert board.register_move(move4)
+    assert board.register_move(move5)
+    assert board.is_check()
+    assert not board.is_checkmate()

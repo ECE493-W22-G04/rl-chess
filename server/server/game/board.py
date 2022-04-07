@@ -1,10 +1,18 @@
 from .piece import Piece
-from .move import Move
+from .move import Move, Square
 from .validators import is_diagonal_forward, is_same_side, is_diagonal_move, is_forward_move, is_pawns_first_move, is_diagonal_path_clear, is_knight_move, is_rook_move, is_rook_path_clear, is_pawn_path_clear, is_pawn_end_row_valid
 from .actions import ACTIONS
 from copy import deepcopy
 from collections import Counter
 import json
+import itertools
+
+# This File is used to satisfy the following functional requirements:
+# FR18 - Alternate.Turns
+# FR19 - Detect.Stalemate
+# FR20 - Valid.Move
+# FR22 - Detect.Checkmate
+# FR23 - Detect.Repetition
 
 
 class Board:
@@ -106,6 +114,41 @@ class Board:
             return True
         return False
 
+    def is_attacked(self, attack_square: Square):
+        multiplier = -1 if self.is_white_turn else 1
+
+        for (from_x, from_y) in itertools.product(range(8), repeat=2):
+            piece = self.state[from_y][from_x]
+
+            # only opposite sided pieces attack
+            if (piece * multiplier) <= 0:
+                continue
+
+            move = Move(Square(from_x, from_y), attack_square)
+            x_diff = abs(from_x - attack_square.x)
+            y_diff = abs(from_y - attack_square.y)
+
+            if abs(piece) == Piece.PAWN:
+                modifier = -1 if piece > 0 else 1
+                # attack diagonally
+                return (from_y + modifier) == attack_square.y and x_diff == 1
+            elif abs(piece) == Piece.BISHOP:
+                if is_diagonal_path_clear(self.state, move):
+                    return True
+            elif abs(piece) == Piece.KNIGHT:
+                if (x_diff == 2 and y_diff == 1) or (x_diff == 1 and y_diff == 2):
+                    return True
+            elif abs(piece) == Piece.ROOK:
+                if is_rook_path_clear(self.state, move):
+                    return True
+            elif abs(piece) == Piece.QUEEN:
+                if is_rook_path_clear(self.state, move) and is_diagonal_path_clear(self.state, move):
+                    return True
+            elif abs(piece) == Piece.KING:
+                if x_diff <= 1 and y_diff <= 1:
+                    return True
+        return False
+
     def is_check(self) -> bool:
         """Returns true if the current player is being checked"""
         was_white_turn = self.is_white_turn
@@ -128,15 +171,36 @@ class Board:
         if not self.is_check():
             return False
 
+        # find king
+        king_piece = Piece.KING if self.is_white_turn else -Piece.KING
+
+        king_square = None
+        for (check_x, check_y) in itertools.product(range(8), repeat=2):
+            if self.state[check_y][check_x] == king_piece:
+                king_square = Square(check_x, check_y)
+                break
+
+        # can only occur in testing, don't want to break
+        if king_square is None:
+            return False
+
         legal_actions = self.get_legal_actions()
         can_king_move = False
+        can_block = False
         for legal_action in legal_actions:
             from_piece = self.state[legal_action.from_square.y][legal_action.from_square.x]
             if abs(from_piece) == Piece.KING:
                 can_king_move = True
                 break
+            # simulate move
+            sim_board = deepcopy(self)
+            sim_board.__register_move_unsafe(legal_action)
+            sim_board.is_white_turn = self.is_white_turn
+            if not sim_board.is_attacked(king_square):
+                can_block = True
+                break
 
-        return not can_king_move
+        return not (can_king_move or can_block)
 
     def __register_move_unsafe(self, move: Move) -> bool:
         """Registers move without validation"""
@@ -172,7 +236,7 @@ class Board:
             self.state[self.last_move.to_square.y][self.last_move.to_square.x] = Piece.NONE
 
         # promotion
-        elif move.promotion != None:
+        elif is_pawn_end_row_valid(move, piece_to_move) and move.promotion != None:
             multiplier = 1 if self.is_white_turn else -1
             self.state[move.to_square.y][move.to_square.x] = move.promotion * multiplier
             self.state[move.from_square.y][move.from_square.x] = Piece.NONE
@@ -256,49 +320,24 @@ class Board:
             if to_x == 6 and white_rook_7_moved:
                 return False
 
-        # simulate moves
-        test_board = deepcopy(self)
+        # check if king would be attacked
         if from_y == 0:
             if to_x == 2:
-                test_board.state[0][4] = Piece.NONE
-                test_board.state[0][3] = -Piece.KING
-                if test_board.is_check():
-                    return False
-                test_board.state[0][3] = Piece.NONE
-                test_board.state[0][2] = -Piece.KING
-                if test_board.is_check():
+                if self.is_attacked(Square(3, 0)) or self.is_attacked(Square(2, 0)):
                     return False
             else:
-                test_board.state[0][4] = Piece.NONE
-                test_board.state[0][5] = -Piece.KING
-                if test_board.is_check():
-                    return False
-                test_board.state[0][5] = Piece.NONE
-                test_board.state[0][6] = -Piece.KING
-                if test_board.is_check():
+                if self.is_attacked(Square(5, 0)) or self.is_attacked(Square(6, 0)):
                     return False
         else:
             if to_x == 2:
-                test_board.state[7][4] = Piece.NONE
-                test_board.state[7][3] = Piece.KING
-                if test_board.is_check():
-                    return False
-                test_board.state[7][3] = Piece.NONE
-                test_board.state[7][2] = Piece.KING
-                if test_board.is_check():
+                if self.is_attacked(Square(3, 7)) or self.is_attacked(Square(2, 7)):
                     return False
             else:
-                test_board.state[7][4] = Piece.NONE
-                test_board.state[7][5] = Piece.KING
-                if test_board.is_check():
-                    return False
-                test_board.state[7][5] = Piece.NONE
-                test_board.state[7][6] = Piece.KING
-                if test_board.is_check():
+                if self.is_attacked(Square(5, 7)) or self.is_attacked(Square(6, 7)):
                     return False
 
         # cannot castle while in check
-        if self.is_check():
+        if self.is_attacked(move.from_square):
             return False
 
         return True
@@ -351,12 +390,15 @@ class Board:
         if is_same_side(piece_to_move, piece_at_target):
             return False
 
+        if abs(piece_to_move) != Piece.PAWN and move.promotion != None:
+            return False
+
         if abs(piece_to_move) == Piece.PAWN:
             if is_diagonal_forward(move, piece_to_move > 0):
-                return self.is_en_passant(move) or (abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE and is_pawn_end_row_valid(move, piece_to_move > 0))
+                return self.is_en_passant(move) or (abs(to_x - from_x) == 1 and abs(to_y - from_y) == 1 and piece_at_target != Piece.NONE and is_pawn_end_row_valid(move, piece_to_move))
             if is_pawns_first_move(move, piece_to_move > 0):
                 return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) <= 2 and is_pawn_path_clear(self.state, move, piece_to_move > 0)
-            return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1 and is_pawn_path_clear(self.state, move, piece_to_move > 0) and is_pawn_end_row_valid(move, piece_to_move > 0)
+            return is_forward_move(move, piece_to_move > 0) and abs(to_y - from_y) == 1 and is_pawn_path_clear(self.state, move, piece_to_move > 0) and is_pawn_end_row_valid(move, piece_to_move)
         if abs(piece_to_move) == Piece.BISHOP:
             return is_diagonal_move(move) and is_diagonal_path_clear(self.state, move)
         if abs(piece_to_move) == Piece.KNIGHT:

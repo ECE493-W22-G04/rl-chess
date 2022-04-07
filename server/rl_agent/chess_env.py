@@ -3,6 +3,9 @@ from gym import Env, spaces
 
 from server.game.board import Board
 
+# This File is used to satisfy the following functional requirements:
+# FR6 - Computer.Move
+
 
 class ChessEnv(Env):
 

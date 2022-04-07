@@ -4,11 +4,12 @@ import Board from './Board';
 import Lobby from './Lobby';
 import { getGameDetails } from '../../services/game';
 import socket from '../../services/socket';
-import { Game, GameOverMessage } from '../../types';
+import { Game, GameOverMessage, Player } from '../../types';
 import AuthService from '../../services/auth';
 import PickSide from './PickSide';
 import WinnerModal from './WinnerModal';
 import OfferDrawModal from './OfferDrawModal';
+import PlayersInRoom from './PlayersInRoom';
 
 const Room: FC = () => {
     const { gameId } = useParams();
@@ -16,6 +17,7 @@ const Room: FC = () => {
     const [isGameReady, setIsGameReady] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(true);
     const [winner, setWinner] = useState<string | null>(null);
+    const [players, setPlayers] = useState<Player[]>([]);
 
     useEffect(() => {
         if (gameId == null) {
@@ -36,6 +38,10 @@ const Room: FC = () => {
         socket.on('update', (data) => {
             const new_game: Game = JSON.parse(data);
             setGame(new_game);
+        });
+
+        socket.on('players_in_room', (players_in_room) => {
+            setPlayers(players_in_room);
         });
 
         socket.on('message', (data) => {
@@ -63,15 +69,27 @@ const Room: FC = () => {
 
     if (!game.has_started) {
         if (isGameReady && game.host == AuthService.getCurrentUser()) {
-            return <PickSide gameId={game.id} />;
+            return (
+                <div>
+                    <PlayersInRoom players={players}></PlayersInRoom>
+                    <PickSide gameId={game.id} />
+                </div>
+            );
         }
-        return <Lobby host={game.host} />;
+        return (
+            <div>
+                <PlayersInRoom players={players}></PlayersInRoom>
+                <Lobby host={game.host} />
+            </div>
+        );
     }
 
     return (
         <>
             <WinnerModal winner={winner} />
             <OfferDrawModal gameId={game.id} />
+            <PlayersInRoom players={players}></PlayersInRoom>
+            <br />
             <Board game={game} />
         </>
     );

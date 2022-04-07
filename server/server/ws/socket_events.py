@@ -1,5 +1,6 @@
 import json
 from flask_socketio import SocketIO, join_room, emit
+import eventlet
 
 from rl_agent import rl_agent
 from server.game.move import Move, Square
@@ -10,6 +11,13 @@ PLAYERS_PER_PVP_ROOM = 2
 PLAYERS_PER_PVC_ROOM = 1
 
 user_rooms = {}
+
+# This File is used to satisfy the following functional requirements:
+# FR7 - Computer.Model
+# FR16 - Start.Game
+# FR24 - Record.Game
+# FR26 - Accept.Draw
+# FR27 - Store.Draw
 
 
 def register_ws_events(socketio: SocketIO):
@@ -52,7 +60,7 @@ def register_ws_events(socketio: SocketIO):
             user_rooms[game_id] = [user]
 
         join_room(game_id)
-        emit("message", user + " has joined the room", broadcast=True, to=game_id)
+        emit('players_in_room', user_rooms[game_id], broadcast=True, to=game_id)
 
         if is_room_full(game.is_pvp, len(user_rooms[game_id])):
             emit("room_full", broadcast=True, to=game_id)
@@ -85,6 +93,7 @@ def register_ws_events(socketio: SocketIO):
 
         game.start_game()
         emit('update', game.toJSON(), broadcast=True, to=game_id)
+        eventlet.sleep(0)
 
         # Make first move as computer
         if game.is_pvp:
@@ -122,6 +131,7 @@ def register_ws_events(socketio: SocketIO):
             emit("message", "Invalid move " + move_str, to=game_id)
             return
         emit('update', game.toJSON(), broadcast=True, to=game_id)
+        eventlet.sleep(0)
 
         if game.board.is_checkmate():
             handle_game_over(game)
@@ -129,7 +139,7 @@ def register_ws_events(socketio: SocketIO):
 
         if game.board.is_draw():
             # TODO: handle this emit client side and close the game after
-            payload = {'winner': None}
+            payload = {'winner': 'Nobody'}
             emit("game_over", json.dumps(payload), broadcast=True, to=game_id)
             save_game(game, True)
             # TODO: remove game from current_games

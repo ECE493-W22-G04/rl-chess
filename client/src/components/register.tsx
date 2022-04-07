@@ -6,6 +6,10 @@ import Card from 'react-bootstrap/Card';
 
 import AuthService from '../services/auth';
 
+// This File is used to satisfy the following functional requirements:
+// FR1 - User.Registration
+// FR3 - Email.Validation
+
 const Register: React.FunctionComponent = () => {
     const [successful, setSuccessful] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');
