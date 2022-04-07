@@ -1,9 +1,11 @@
-from flask import Flask
 import pytest
+from flask import Flask
+from flask.testing import FlaskClient
 from flask_socketio import SocketIO
 from flask_socketio.test_client import SocketIOTestClient
 from server import create_app
-from .fixtures.player import player, access_token
+from server.ws.socket_events import register_ws_events
+from .fixtures.player import player, players, access_token, access_tokens
 from server.api.models import db
 
 
@@ -28,9 +30,15 @@ def client(app):
 
 
 @pytest.fixture()
-def socketio_client(app: Flask) -> SocketIOTestClient:
+def socketio(app: Flask):
     socketio = SocketIO(app)
-    return socketio.test_client(app)
+    register_ws_events(socketio)
+    yield socketio
+
+
+@pytest.fixture()
+def socketio_client(socketio: SocketIO, app: Flask, client: FlaskClient) -> SocketIOTestClient:
+    return socketio.test_client(app, flask_test_client=client)
 
 
 @pytest.fixture()
