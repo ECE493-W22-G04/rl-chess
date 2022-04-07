@@ -95,20 +95,38 @@ class RlAgent():
             return
 
         for game in games:
+            self.__load_weights()
             moves = json.loads(game.game_history)
+            moves = list(map(lambda move: Move(Square(move[0][0], move[0][1]), Square(move[1][0], move[1][1]), move[2]), moves))
+
+            # play game and check that state doesn't repeat initial board position
+            test_board = Board()
+            flag = 0
+            while True:
+                for (i, move) in enumerate(moves):
+                    test_board.register_move(move)
+                    if test_board.state == Board().state:
+                        flag = i
+                        break
+                if flag != 0:
+                    moves = moves[(i + 1):]  # remove the repeating moves from the array
+                else:
+                    break
+
             print("training game ", game.id)
 
-            # fit games 1 at a time since train_policy will not reset
-            for _ in range(num_episodes):
-                env.reset()
-                move_copy = deepcopy(moves)
+            env.reset()
+            index = 0
 
-                def train_policy(observation):
-                    move = move_copy.pop(0)
-                    action_move = Move(Square(move[0][0], move[0][1]), Square(move[1][0], move[1][1]), move[2])
-                    return ACTIONS.index(action_move)
+            def train_policy(observation):
+                nonlocal index
+                if observation == Board().state:
+                    index = 0
+                move = moves[index]
+                index += 1
+                return ACTIONS.index(move)
 
-                self.__agent.fit(env, nb_steps=1, visualize=False, start_step_policy=train_policy, nb_max_start_steps=len(moves), verbose=0)
+            self.__agent.fit(env, nb_steps=num_episodes, visualize=False, start_step_policy=train_policy, nb_max_start_steps=len(moves), verbose=1)
 
             self.__agent.save_weights(self.WEIGHTS_FILE, overwrite=True)
             trained_id += 1

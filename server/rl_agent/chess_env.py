@@ -33,9 +33,6 @@ class ChessEnv(Env):
 
             return self.__state.state, reward, done, {}
 
-        opponent_move = np.random.choice(np.array(self.__state.get_legal_action_indices()))
-        self.__state.register_move(self.__state.get_actions()[opponent_move])
-
         reward = 1
         if self.__state.is_checkmate():
             reward = 100
