@@ -1,4 +1,4 @@
-from copy import deepcopy
+import os
 from sys import stderr
 import numpy as np
 from tensorflow.keras.models import Sequential
@@ -88,6 +88,7 @@ class RlAgent():
 
         games = None
         app = create_app()
+        app.config.update({"SQLALCHEMY_DATABASE_URI": os.getenv('GAMES_DATABASE_URL').replace("postgres://", "postgresql://", 1)})
         with app.app_context():
             games = SavedGame.query.filter(SavedGame.id > trained_id).all()
 
@@ -113,7 +114,7 @@ class RlAgent():
                 else:
                     break
 
-            print("training game ", game.id)
+            print(f"training game {game.id}")
 
             env.reset()
             index = 0
