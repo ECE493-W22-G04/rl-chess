@@ -95,7 +95,7 @@ def test_computer_wins(app: Flask, socketio_client: SocketIOTestClient, client: 
         assert saved_game.winner == None  # Equivalent to computer winning
 
 
-def test_deletes_game(app: Flask, socketio_client: SocketIOTestClient, client: FlaskClient, access_token: str, player: list[Player]):
+def test_deletes_game_after_game_has_started(app: Flask, socketio_client: SocketIOTestClient, client: FlaskClient, access_token: str, player: list[Player]):
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
     assert resp.status_code == 201
@@ -107,6 +107,23 @@ def test_deletes_game(app: Flask, socketio_client: SocketIOTestClient, client: F
 
     # Start game
     socketio_client.emit('pick_side', {'gameId': game_id, 'color': 'white', 'user': player.email})
+
+    # Disconnect from game
+    socketio_client.disconnect()
+
+    resp = client.get(f'/api/games/{game_id}', headers={'Authorization': f'Bearer {access_token}'})
+    assert resp.status_code == 404
+
+
+def test_deletes_game_before_game_has_started(app: Flask, socketio_client: SocketIOTestClient, client: FlaskClient, access_token: str, player: list[Player]):
+    # Create computer game
+    resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
+    assert resp.status_code == 201
+    game = json.loads(resp.json)
+    game_id = game['id']
+
+    # Join game
+    socketio_client.emit('join', {'user': player.email, 'gameId': game_id})
 
     # Disconnect from game
     socketio_client.disconnect()

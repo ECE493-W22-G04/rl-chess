@@ -38,22 +38,23 @@ def register_ws_events(socketio: SocketIO):
         game = current_games[game_id]
         players_in_room = user_rooms[game_id]
         players_in_room.remove(user)
+
         if not game.has_started:
             # Give chance for host to reinvite client
             emit('room_not_full', broadcast=True, to=game_id)
             emit('players_in_room', players_in_room, broadcast=True, to=game_id)
+        else:
+            # Wrap up current game
+            winner = players_in_room[0] if len(players_in_room) > 0 else None
+            payload = {'winner': winner}
+            emit('game_over', json.dumps(payload), broadcast=True, to=game.id)
+            save_game(current_games[game_id], is_draw=False)
 
-        if len(players_in_room) == 0:
-            del user_rooms[game_id]
-
-        if not game.has_started:
+        if len(players_in_room) != 0:
             return
 
-        # Wrap up current game
-        winner = players_in_room[0] if len(players_in_room) > 0 else None
-        payload = {'winner': winner}
-        emit('game_over', json.dumps(payload), broadcast=True, to=game.id)
-        save_game(current_games[game_id], is_draw=False)
+        # No more users in ther oom
+        del user_rooms[game_id]
         del current_games[game_id]
 
     @socketio.on("join")
