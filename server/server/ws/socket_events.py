@@ -1,4 +1,5 @@
 import json
+from flask import request
 from flask_socketio import SocketIO, join_room, emit
 import eventlet
 
@@ -10,7 +11,9 @@ from server.api.models import SavedGame, Player, Game, db
 PLAYERS_PER_PVP_ROOM = 2
 PLAYERS_PER_PVC_ROOM = 1
 
-user_rooms = {}
+user_rooms: dict[str, list[str]] = {}
+socket_id_to_user: dict[str, str] = {}
+user_to_room: dict[str, str] = {}
 
 # This File is used to satisfy the following functional requirements:
 # FR7 - Computer.Model
@@ -28,7 +31,39 @@ def register_ws_events(socketio: SocketIO):
 
     @socketio.on("disconnect")
     def disconnect():
-        pass
+        user = socket_id_to_user.get(request.sid)
+        if user == None:
+            # User never made it into a room
+            return
+        del socket_id_to_user[request.sid]
+
+        game_id = user_to_room.get(user)
+        if game_id == None or (game_id not in current_games) or (game_id not in user_rooms):
+            # Game was never created
+            return
+        del user_to_room[user]
+
+        game = current_games[game_id]
+        players_in_room = user_rooms[game_id]
+        players_in_room.remove(user)
+
+        if not game.has_started:
+            # Give chance for host to reinvite client
+            emit('room_not_full', broadcast=True, to=game_id)
+            emit('players_in_room', players_in_room, broadcast=True, to=game_id)
+        else:
+            # Wrap up current game
+            winner = players_in_room[0] if len(players_in_room) > 0 else None
+            payload = {'winner': winner}
+            emit('game_over', json.dumps(payload), broadcast=True, to=game.id)
+            save_game(current_games[game_id], is_draw=False)
+
+        if len(players_in_room) != 0:
+            return
+
+        # No more users in ther oom
+        del user_rooms[game_id]
+        del current_games[game_id]
 
     @socketio.on("join")
     def on_join(data):
@@ -58,6 +93,9 @@ def register_ws_events(socketio: SocketIO):
             user_rooms[game_id].append(user)
         else:
             user_rooms[game_id] = [user]
+
+        socket_id_to_user[request.sid] = user
+        user_to_room[user] = game_id
 
         join_room(game_id)
         emit('players_in_room', user_rooms[game_id], broadcast=True, to=game_id)
