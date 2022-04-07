@@ -1,4 +1,5 @@
 import os
+from random import random
 from sys import stderr
 import numpy as np
 from tensorflow.keras.models import Sequential
@@ -45,7 +46,7 @@ class RlAgent():
 
         memory = SequentialMemory(limit=50000, window_length=1)
         policy = BoltzmannQPolicy()
-        dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=50, target_model_update=1e-2, policy=policy)
+        dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=50, target_model_update=1e-2, policy=policy, test_policy=policy)
         dqn.compile(Adam(learning_rate=1e-1), metrics=['mae'])
         return dqn
 
@@ -71,12 +72,13 @@ class RlAgent():
 
         return predicted_move
 
-    def train(self, num_episodes: int = 50000):
+    def train(self, num_episodes: int = 1000):
+        # learn on random move games
         env = ChessEnv()
         self.__agent.fit(env, nb_steps=num_episodes, visualize=False, verbose=1)
         self.__agent.save_weights(self.WEIGHTS_FILE, overwrite=True)
 
-    def belief_revision(self, num_episodes: int = 100):
+    def belief_revision(self, num_episodes: int = 10):
         env = ChessEnv()
         trained_id = 0
 
@@ -127,9 +129,9 @@ class RlAgent():
                 index += 1
                 return ACTIONS.index(move)
 
-            self.__agent.fit(env, nb_steps=num_episodes, visualize=False, start_step_policy=train_policy, nb_max_start_steps=len(moves), verbose=1)
-
-            self.__agent.save_weights(self.WEIGHTS_FILE, overwrite=True)
+            for _ in range(num_episodes):
+                self.__agent.fit(env, nb_steps=100, visualize=False, start_step_policy=train_policy, nb_max_start_steps=len(moves), verbose=1)
+                self.__agent.save_weights(self.WEIGHTS_FILE, overwrite=True)
             trained_id += 1
 
         with open("revised.txt", "w") as f:
