@@ -40,6 +40,7 @@ def register_ws_events(socketio: SocketIO):
         players_in_room.remove(user)
         if not game.has_started:
             # Give chance for host to reinvite client
+            emit('room_not_full', broadcast=True, to=game_id)
             emit('players_in_room', players_in_room, broadcast=True, to=game_id)
 
         if len(players_in_room) == 0:

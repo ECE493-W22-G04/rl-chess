@@ -30,10 +30,14 @@ def test_updates_players_in_room(socketio: SocketIO, socketio_client: SocketIOTe
     messages = socketio_client.get_received()
 
     players_in_room_message_count = 0
+    room_not_full_message_count = 0
     for message in messages:
         if message['name'] == 'players_in_room':
             players_in_room_message_count += 1
+        if message['name'] == 'room_not_full':
+            room_not_full_message_count += 1
     assert players_in_room_message_count == 3  # First message when player[0] joins, second when player[1] joins, finally when player[1] disconnects
+    assert room_not_full_message_count == 1
 
 
 def test_ends_ongoing_game(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: str, players: list[Player], app: Flask):
