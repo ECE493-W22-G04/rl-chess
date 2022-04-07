@@ -21,6 +21,7 @@ user_to_room: dict[str, str] = {}
 # FR24 - Record.Game
 # FR26 - Accept.Draw
 # FR27 - Store.Draw
+# FR29 - Leave.Game
 
 
 def register_ws_events(socketio: SocketIO):
