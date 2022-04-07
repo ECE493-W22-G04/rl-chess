@@ -26,7 +26,7 @@ def test_valid_token_user_route(client):
 def test_valid_signup_signin_route(client):
     # This test case covers:
     # FR 3
-    # In Partition Tests: 
+    # In Partition Tests:
     # works normally
     email = "test@test.com"
     password = "testpass"
@@ -41,9 +41,9 @@ def test_valid_signup_signin_route(client):
 def test_email_exists_signup_route(client):
     # This test case covers:
     # FR 1
-    # In Partition Tests: 
+    # In Partition Tests:
     # works normally
-    # Out of Partition tests: 
+    # Out of Partition tests:
     # user exists
     email = "test@test.com"
     password = "testpass"
@@ -54,10 +54,11 @@ def test_email_exists_signup_route(client):
     response = client.post("/api/auth/signup", follow_redirects=True, data=json.dumps({"email": email, "password": password}), content_type='application/json')
     assert f"Email already exists {email}" in response.json["message"]
 
+
 def test_invalid_email_format_signup(client):
     # This test case covers:
     # FR 1
-    # Out of Partition tests: 
+    # Out of Partition tests:
     # invalid email
     # no email
     email = "thisisnotanemail"
@@ -69,10 +70,11 @@ def test_invalid_email_format_signup(client):
     response = client.post("/api/auth/signup", follow_redirects=True, data=json.dumps({"email": "", "password": password}), content_type='application/json')
     assert "No email provided!" in response.json["message"]
 
+
 def test_invalid_password_signup(client):
     # This test case covers:
     # FR 1
-    # Out of Partition tests: 
+    # Out of Partition tests:
     # 7 character pass
     # no pass
     email = "test@test.com"
