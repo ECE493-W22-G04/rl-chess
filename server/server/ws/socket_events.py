@@ -1,5 +1,6 @@
 import json
 from flask_socketio import SocketIO, join_room, emit
+import eventlet
 
 from rl_agent import rl_agent
 from server.game.move import Move, Square
@@ -85,6 +86,7 @@ def register_ws_events(socketio: SocketIO):
 
         game.start_game()
         emit('update', game.toJSON(), broadcast=True, to=game_id)
+        eventlet.sleep(0)
 
         # Make first move as computer
         if game.is_pvp:
@@ -122,6 +124,7 @@ def register_ws_events(socketio: SocketIO):
             emit("message", "Invalid move " + move_str, to=game_id)
             return
         emit('update', game.toJSON(), broadcast=True, to=game_id)
+        eventlet.sleep(0)
 
         if game.board.is_checkmate():
             handle_game_over(game)
