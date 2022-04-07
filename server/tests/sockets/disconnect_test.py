@@ -5,7 +5,7 @@ from flask.testing import FlaskClient
 from flask_socketio.test_client import SocketIOTestClient
 from pytest import fail
 
-from server.api.models import Player
+from server.api.models import Player, SavedGame
 from server.ws.socket_events import register_ws_events
 from tests.constants import TEST_EMAIL2
 
@@ -65,3 +65,27 @@ def test_ends_ongoing_game(socketio: SocketIO, socketio_client: SocketIOTestClie
             assert winner == players[0].email
             return
     fail('Game over was not issued for the remaining player')
+
+
+def test_computer_wins(app: Flask, socketio_client: SocketIOTestClient, client: FlaskClient, access_token: str, player: list[Player]):
+    # Create computer game
+    resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
+    assert resp.status_code == 201
+    game = json.loads(resp.json)
+    game_id = game['id']
+
+    # Join game
+    socketio_client.emit('join', {'user': player.email, 'gameId': game_id})
+
+    # Start game
+    socketio_client.emit('pick_side', {'gameId': game_id, 'color': 'white', 'user': player.email})
+
+    # Disconnect from game
+    socketio_client.disconnect()
+
+    with app.app_context():
+        assert len(SavedGame.query.all()) == 1
+        saved_game = SavedGame.query.first()
+        assert saved_game.white_player == player.id
+        assert saved_game.black_player == None
+        assert saved_game.winner == None  # Equivalent to computer winning
