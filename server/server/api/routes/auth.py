@@ -54,7 +54,7 @@ def signup():
                 return jsonify({"message": "No password provided"}), 400
 
             if not re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', email):
-                return jsonify({"message": "Inavlid email format"}), 400
+                return jsonify({"message": "Invalid email format"}), 400
             if len(password) < 8:
                 return jsonify({"message": "password must be 8 characters or more"}), 400
 

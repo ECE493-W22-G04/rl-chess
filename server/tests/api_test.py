@@ -65,7 +65,7 @@ def test_invalid_email_format_signup(client):
     password = "testpass"
     # Test signup with invalid email
     response = client.post("/api/auth/signup", follow_redirects=True, data=json.dumps({"email": email, "password": password}), content_type='application/json')
-    assert "Inavlid email format" in response.json["message"]
+    assert "Invalid email format" in response.json["message"]
     # Test signup without email
     response = client.post("/api/auth/signup", follow_redirects=True, data=json.dumps({"email": "", "password": password}), content_type='application/json')
     assert "No email provided!" in response.json["message"]
