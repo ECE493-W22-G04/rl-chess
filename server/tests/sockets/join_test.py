@@ -1,6 +1,7 @@
 import json
 from flask.testing import FlaskClient
 from flask_socketio.test_client import SocketIOTestClient
+from pytest import fail
 
 from ..constants import TEST_EMAIL
 
@@ -13,3 +14,9 @@ def test_join_pvc(socketio_client: SocketIOTestClient, client: FlaskClient, acce
     game_id = game['id']
 
     socketio_client.emit('join', {'user': TEST_EMAIL, 'gameId': game_id})
+
+    messages = socketio_client.get_received()
+    for message in messages:
+        if message['name'] == 'room_full':
+            return
+    fail('Did not find room_full message after joining computer room')
