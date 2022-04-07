@@ -1,11 +1,13 @@
 import json
 from uuid import uuid4
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 from .exceptions import PlayerDoesNotExist
 from ..game.board import Board
 
 db = SQLAlchemy()
+migrate = Migrate()
 
 
 class Player(db.Model):
