@@ -35,6 +35,10 @@ const Room: FC = () => {
             setIsGameReady(true);
         });
 
+        socket.on('room_not_full', () => {
+            setIsGameReady(false);
+        });
+
         socket.on('update', (data) => {
             const new_game: Game = JSON.parse(data);
             setGame(new_game);
