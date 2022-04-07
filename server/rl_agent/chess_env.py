@@ -3,6 +3,9 @@ from gym import Env, spaces
 
 from server.game.board import Board
 
+# This File is used to satisfy the following functional requirements:
+# FR6 - Computer.Move
+
 
 class ChessEnv(Env):
 
@@ -18,20 +21,16 @@ class ChessEnv(Env):
 
     def reset(self):
         self.__state = Board()
-
         return self.__state.state
 
-    def step(self, opponent_move):
+    def step(self, action):
         done = False
 
-        if not self.__state.register_move(self.__state.get_actions()[opponent_move]):
+        if not self.__state.register_move(self.__state.get_actions()[action]):
             done = True
             reward = -999
 
             return self.__state.state, reward, done, {}
-
-        opponent_move = np.random.choice(np.array(self.__state.get_legal_action_indices()))
-        self.__state.register_move(self.__state.get_actions()[opponent_move])
 
         reward = 1
         if self.__state.is_checkmate():

@@ -1,6 +1,7 @@
 import json
 from flask import request
 from flask_socketio import SocketIO, join_room, emit
+import eventlet
 
 from rl_agent import rl_agent
 from server.game.move import Move, Square
@@ -13,6 +14,13 @@ PLAYERS_PER_PVC_ROOM = 1
 user_rooms: dict[str, list[str]] = {}
 socket_id_to_user: dict[str, str] = {}
 user_to_room: dict[str, str] = {}
+
+# This File is used to satisfy the following functional requirements:
+# FR7 - Computer.Model
+# FR16 - Start.Game
+# FR24 - Record.Game
+# FR26 - Accept.Draw
+# FR27 - Store.Draw
 
 
 def register_ws_events(socketio: SocketIO):
@@ -123,6 +131,7 @@ def register_ws_events(socketio: SocketIO):
 
         game.start_game()
         emit('update', game.toJSON(), broadcast=True, to=game_id)
+        eventlet.sleep(0)
 
         # Make first move as computer
         if game.is_pvp:
@@ -160,6 +169,7 @@ def register_ws_events(socketio: SocketIO):
             emit("message", "Invalid move " + move_str, to=game_id)
             return
         emit('update', game.toJSON(), broadcast=True, to=game_id)
+        eventlet.sleep(0)
 
         if game.board.is_checkmate():
             handle_game_over(game)

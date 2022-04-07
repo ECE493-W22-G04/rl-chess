@@ -3,6 +3,9 @@ import { Player } from '../../types';
 import AuthService from '../../services/auth';
 import Card from 'react-bootstrap/Card';
 
+// This File is used to satisfy the following functional requirements:
+// FR10 - Initialize.Lobby
+
 type LobbyProps = {
     host: Player;
 };

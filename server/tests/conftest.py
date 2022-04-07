@@ -10,7 +10,7 @@ from server.api.models import db
 
 
 @pytest.fixture()
-def app():
+def app() -> Flask:
     app = create_app()
     app.config.update({"TESTING": True, "SQLALCHEMY_DATABASE_URI": f'sqlite:///:memory:'})
 
@@ -25,12 +25,12 @@ def app():
 
 
 @pytest.fixture()
-def client(app):
+def client(app) -> FlaskClient:
     return app.test_client()
 
 
 @pytest.fixture()
-def socketio(app: Flask):
+def socketio(app: Flask) -> SocketIOTestClient:
     socketio = SocketIO(app)
     register_ws_events(socketio)
     yield socketio

@@ -4,6 +4,9 @@ import Table from 'react-bootstrap/Table';
 import { getLeaderboard } from '../services/leaderboard';
 import { Leaderboard as LeaderboardType } from '../types';
 
+// This File is used to satisfy the following functional requirements:
+// FR30 - Display.Leaderboard
+
 const Leaderboard: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [entries, setEntries] = useState<LeaderboardType | null>(null);
