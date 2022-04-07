@@ -1,15 +1,4 @@
-import pytest
 import json
-
-from server import create_app
-
-
-# Preload an app client which we can access in the tests
-@pytest.fixture
-def client():
-    app = create_app()
-    with app.test_client() as client:
-        yield client
 
 
 def test_default_route(client):

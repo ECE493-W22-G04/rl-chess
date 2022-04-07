@@ -3,4 +3,4 @@ based_on_style = "google"
 column_limit = 200
 
 [tool.yapfignore]
-ignore_patterns = ["**/__pycache__/", "venv/"]
+ignore_patterns = ["**/__pycache__/", "venv/", "migrations/"]
