@@ -12,6 +12,7 @@ PLAYERS_PER_PVC_ROOM = 1
 user_rooms = {}
 
 # This File is used to satisfy the following functional requirements:
+# FR7 - Computer.Model
 # FR16 - Start.Game
 # FR24 - Record.Game
 # FR26 - Accept.Draw
