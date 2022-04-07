@@ -15,7 +15,7 @@ class ChessEnv(Env):
         self.__state = Board()
 
         self.observation_shape = (8, 8)
-        self.observation_space = spaces.Box(low=np.ones(self.observation_shape) * -8, high=np.ones(self.observation_shape) * 8, dtype=np.int32)
+        self.observation_space = spaces.Box(low=np.ones(self.observation_shape) * -6, high=np.ones(self.observation_shape) * 6, dtype=np.int32)
 
         self.action_space = spaces.Discrete(len(self.__state.get_actions()))
 
