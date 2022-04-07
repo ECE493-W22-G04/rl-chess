@@ -1,0 +1,35 @@
+import json
+from flask_socketio import SocketIO
+from flask import Flask
+from flask.testing import FlaskClient
+from flask_socketio.test_client import SocketIOTestClient
+
+from server.api.models import Player
+from server.ws.socket_events import register_ws_events
+from tests.constants import TEST_EMAIL2
+
+
+def test_updates_players_in_room(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: str, players: list[Player], app: Flask):
+    # Create computer game
+    resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
+    assert resp.status_code == 201
+    game = json.loads(resp.json)
+    game_id = game['id']
+
+    # Create second client
+    socketio_client2 = socketio.test_client(app, flask_test_client=client)
+
+    # Join game
+    socketio_client.emit('join', {'user': players[0].email, 'gameId': game_id})
+    socketio_client2.emit('join', {'user': players[1].email, 'gameId': game_id})
+
+    # Disconnect from game
+    socketio_client2.disconnect()
+
+    messages = socketio_client.get_received()
+
+    players_in_room_message_count = 0
+    for message in messages:
+        if message['name'] == 'players_in_room':
+            players_in_room_message_count += 1
+    assert players_in_room_message_count == 3  # First message when player[0] joins, second when player[1] joins, finally when player[1] disconnects
