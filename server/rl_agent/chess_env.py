@@ -21,13 +21,12 @@ class ChessEnv(Env):
 
     def reset(self):
         self.__state = Board()
-
         return self.__state.state
 
-    def step(self, opponent_move):
+    def step(self, action):
         done = False
 
-        if not self.__state.register_move(self.__state.get_actions()[opponent_move]):
+        if not self.__state.register_move(self.__state.get_actions()[action]):
             done = True
             reward = -999
 
