@@ -1,13 +1,11 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from flask_migrate import Migrate
 
-# local imports
-from .config import load_config, get_log_folder
+from .config import load_config
 from .routes.api import api
 from .routes.index import index
-from .models import db
+from .models import db, migrate
 
 
 def create_app():
@@ -31,10 +29,7 @@ def create_app():
 
     # Set-up SQLAlchemy
     db.init_app(app)
-    migrate = Migrate(app, db)
-    with app.app_context():
-        db.drop_all()  # Clears all tables and resets them, possibly later we will want to migrate
-        db.create_all()
+    migrate.init_app(app, db)
 
     # Set-up JWT manager
     jwt = JWTManager(app)
