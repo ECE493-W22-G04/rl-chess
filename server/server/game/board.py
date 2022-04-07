@@ -188,6 +188,7 @@ class Board:
             # simulate move
             sim_board = deepcopy(self)
             sim_board.__register_move_unsafe(legal_action)
+            sim_board.is_white_turn = self.is_white_turn
             if not sim_board.is_attacked(king_square):
                 can_block = True
                 break
