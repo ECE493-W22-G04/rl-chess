@@ -108,3 +108,24 @@ def test_computer_makes_move_in_pvc(socketio_client: SocketIOTestClient, client:
     last_update = list(filter(lambda message: message['name'] == 'update', messages))[-1]
     last_update_json_message = json.loads(last_update['args'][0])
     assert len(last_update_json_message['board']['moves']) > 1
+
+def test_computer_makes_first_move_in_pvc(socketio_client: SocketIOTestClient, client: FlaskClient, access_token: str, player: Player):
+    # Create computer game
+    resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
+    assert resp.status_code == 201
+    game = json.loads(resp.json)
+    game_id = game['id']
+
+    # Join game
+    socketio_client.emit('join', {'user': player.email, 'gameId': game_id})
+
+    # Pick side
+    socketio_client.emit('pick_side', {'gameId': game_id, 'color': 'black', 'user': player.email})
+
+    # Wait for computer move
+    messages = socketio_client.get_received()
+
+    # Check whether computer registers its own move
+    last_update = list(filter(lambda message: message['name'] == 'update', messages))[-1]
+    last_update_json_message = json.loads(last_update['args'][0])
+    assert len(last_update_json_message['board']['moves']) > 0
