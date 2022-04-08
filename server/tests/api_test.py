@@ -6,23 +6,6 @@ def test_default_route(client):
     assert "Hello! I'm a message that came from the backend" in response.json["message"]
 
 
-def test_home_route(client):
-    response = client.get("/api/home", follow_redirects=True)
-    assert "This is the generic homepage" in response.json["message"]
-
-
-def test_invalid_token_user_route(client):
-    response = client.get("/api/user", follow_redirects=True)
-    assert "token given in authorization header is invalid" in response.json["message"]
-
-
-def test_valid_token_user_route(client):
-    token = "1"
-    response = client.get("/api/user", follow_redirects=True, headers={"Authorization": token})
-    assert "This is the homepage of user with token: " + \
-        token in response.json["message"]
-
-
 def test_valid_signup_signin_route(client):
     email = "test@test.com"
     password = "testpass"

@@ -70,17 +70,3 @@ def signup():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Unsuccessful registration attempt: {e}"}), 400
-
-
-# Create a route to display a homepage message to an authenticated user
-@auth.route("/user", methods=["GET"])
-def user():
-    token = request.headers.get("authorization", None)
-    # TODO: Check that token is valid
-    if token:
-        response_msg = 'This is the homepage of user with token: ' + token
-        response_code = 200
-    else:
-        response_msg = 'token given in authorization header is invalid'
-        response_code = 401
-    return jsonify({"message": response_msg}), response_code
