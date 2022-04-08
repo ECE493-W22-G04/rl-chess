@@ -5,11 +5,17 @@ from flask.testing import FlaskClient
 from flask_socketio.test_client import SocketIOTestClient
 from pytest import fail
 
-from server.api.models import Player
+from server.api.models import Player, SavedGame
 from server.game.move import Move, Square
 
 
 def test_pvp_checkmate(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: str, players: list[Player], app: Flask):
+    # This test case covers:
+    # FR 22
+    # FR 24
+    # In Partition Tests:
+    # works normally
+
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201
@@ -62,6 +68,13 @@ def test_pvp_checkmate(socketio: SocketIO, socketio_client: SocketIOTestClient, 
 
 
 def test_draw(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: str, players: list[Player], app: Flask):
+    # This test case covers:
+    # FR 23
+    # FR 24
+    # FR 27
+    # In Partition Tests:
+    # works normally
+
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201

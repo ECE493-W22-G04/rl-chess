@@ -8,11 +8,23 @@ from ..constants import TEST_EMAIL, TEST_PASSWORD
 
 
 def test_leaderboard_unauthed(client: FlaskClient):
+    # This test case covers:
+    # FR 30
+    # In Partition Tests:
+    # works normally
+    # Out of Partition tests:
+    # user is unauthenticated
     resp = client.get('/api/leaderboard/')
     assert resp.status_code == 401
 
 
-def test_leaderboard_excludes_players_with_less_than_4_wins(client: FlaskClient, app: Flask):
+def test_leaderboard_excludes_players_with_less_than_4_games(client: FlaskClient, app: Flask):
+    # This test case covers:
+    # FR 30
+    # In Partition Tests:
+    # works normally
+    # Out of Partition tests:
+    # does not include users with less than 4 games against computers
     with app.app_context():
         player1 = Player(email=TEST_EMAIL, password=TEST_PASSWORD)
         player2 = Player(email='asdf@mail.com', password=TEST_PASSWORD)
@@ -57,6 +69,10 @@ def test_leaderboard_excludes_players_with_less_than_4_wins(client: FlaskClient,
 
 
 def test_empty_leaderboard(client: FlaskClient, app: Flask, access_token: str):
+    # This test case covers:
+    # FR 30
+    # In Partition Tests:
+    # works normally
     resp = client.get('/api/leaderboard/', headers={'Authorization': f'Bearer {access_token}'})
     json_response = resp.json
 
@@ -66,6 +82,10 @@ def test_empty_leaderboard(client: FlaskClient, app: Flask, access_token: str):
 
 
 def test_leaderboard_ordering(client: FlaskClient, app: Flask):
+    # This test case covers:
+    # FR 30
+    # In Partition Tests:
+    # works normally
     with app.app_context():
         player1 = Player(email=TEST_EMAIL, password=TEST_PASSWORD)
         player2 = Player(email='asdf@mail.com', password=TEST_PASSWORD)
@@ -100,6 +120,10 @@ def test_leaderboard_ordering(client: FlaskClient, app: Flask):
 
 
 def test_leaderboard_excludes_pvp_games(client: FlaskClient, app: Flask):
+    # This test case covers:
+    # FR 30
+    # In Partition Tests:
+    # works normally
     with app.app_context():
         player1 = Player(email=TEST_EMAIL, password=TEST_PASSWORD)
         player2 = Player(email='asdf@mail.com', password=TEST_PASSWORD)

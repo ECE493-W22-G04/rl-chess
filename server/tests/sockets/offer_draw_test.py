@@ -5,10 +5,17 @@ from flask.testing import FlaskClient
 from flask_socketio.test_client import SocketIOTestClient
 from pytest import fail
 
-from server.api.models import Player
+from server.api.models import Player, SavedGame
 
 
 def test_draw_pvp(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: str, players: list[Player], app: Flask):
+    # This test case covers:
+    # FR 25
+    # FR 26
+    # FR 28
+    # In Partition Tests:
+    # works normally
+
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201

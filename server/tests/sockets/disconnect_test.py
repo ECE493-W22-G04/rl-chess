@@ -9,6 +9,11 @@ from server.api.models import Player, SavedGame
 
 
 def test_updates_players_in_room(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: str, players: list[Player], app: Flask):
+    # This test case covers:
+    # FR 29
+    # In Partition Tests:
+    # works normally
+
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201
@@ -39,6 +44,11 @@ def test_updates_players_in_room(socketio: SocketIO, socketio_client: SocketIOTe
 
 
 def test_ends_ongoing_game(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: str, players: list[Player], app: Flask):
+    # This test case covers:
+    # FR 29
+    # In Partition Tests:
+    # works normally
+
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201
@@ -94,6 +104,11 @@ def test_computer_wins(app: Flask, socketio_client: SocketIOTestClient, client: 
 
 
 def test_deletes_game_after_game_has_started(app: Flask, socketio_client: SocketIOTestClient, client: FlaskClient, access_token: str, player: list[Player]):
+    # This test case covers:
+    # FR 29
+    # In Partition Tests:
+    # works normally
+
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
     assert resp.status_code == 201
@@ -131,6 +146,11 @@ def test_deletes_game_before_game_has_started(app: Flask, socketio_client: Socke
 
 
 def test_keeps_game_when_one_player_remains(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: str, players: list[Player], app: Flask):
+    # This test case covers:
+    # FR 29
+    # In Partition Tests:
+    # works normally
+
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201
     game = resp.json
