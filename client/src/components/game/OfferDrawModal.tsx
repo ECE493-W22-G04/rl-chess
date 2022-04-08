@@ -20,7 +20,7 @@ const OfferDrawModal: React.FC<OfferDrawModalProps> = ({ gameId }: OfferDrawModa
 
     useEffect(() => {
         socket.on('offer_draw', (data) => {
-            const msg: OfferDrawMessage = JSON.parse(data);
+            const msg: OfferDrawMessage = data;
             if (AuthService.getCurrentUser() == msg.offer_draw_to) {
                 setIsModalShown(true);
             }

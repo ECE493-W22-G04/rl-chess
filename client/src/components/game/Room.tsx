@@ -53,7 +53,7 @@ const Room: FC = () => {
         });
 
         socket.on('game_over', (data) => {
-            const msg: GameOverMessage = JSON.parse(data);
+            const msg: GameOverMessage = data;
             setWinner(msg.winner);
         });
     }, []);
