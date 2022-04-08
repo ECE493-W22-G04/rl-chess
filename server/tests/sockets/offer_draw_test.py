@@ -43,3 +43,9 @@ def test_draw_pvp(socketio: SocketIO, socketio_client: SocketIOTestClient, clien
         json_message = last_message['args'][0]
         winner = json_message['winner']
         assert winner == 'Nobody'
+
+    with app.app_context():
+        saved_game = SavedGame.query.first()
+        assert saved_game.white_player == players[0].id
+        assert saved_game.black_player == players[1].id
+        assert saved_game.winner == None
