@@ -68,7 +68,7 @@ def test_broadcast_move_in_pvc(socketio_client: SocketIOTestClient, client: Flas
 
     messages = socketio_client.get_received()
 
-    # Check whether move is broadcasted to each client
+    # Check whether move is broadcasted back
     move_found = False
     for message in messages:
         if message['name'] != 'update':
@@ -83,3 +83,28 @@ def test_broadcast_move_in_pvc(socketio_client: SocketIOTestClient, client: Flas
                 continue
             move_found = True
     assert move_found
+
+
+def test_computer_makes_move_in_pvc(socketio_client: SocketIOTestClient, client: FlaskClient, access_token: str, player: Player):
+    # Create computer game
+    resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
+    assert resp.status_code == 201
+    game = json.loads(resp.json)
+    game_id = game['id']
+
+    # Join game
+    socketio_client.emit('join', {'user': player.email, 'gameId': game_id})
+
+    # Pick side
+    socketio_client.emit('pick_side', {'gameId': game_id, 'color': 'white', 'user': player.email})
+
+    # Make move
+    valid_first_move = '5,6->5,4'
+    socketio_client.emit('make_move', {'gameId': game_id, 'moveStr': valid_first_move, 'promotion': '0'})
+
+    messages = socketio_client.get_received()
+
+    # Check whether computer registers its own move
+    last_update = list(filter(lambda message: message['name'] == 'update', messages))[-1]
+    last_update_json_message = json.loads(last_update['args'][0])
+    assert len(last_update_json_message['board']['moves']) > 1
