@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import socket from './services/socket';
 import { io } from 'socket.io-client';
 import Header from './components/Header';
-import Home from './components/home';
+import MainMenu from './components/MainMenu';
 
 jest.mock('./services/socket');
 const mockSocket = jest.mocked(socket);
@@ -15,8 +15,8 @@ mockedIo.mockReturnValue(mockSocket);
 
 test('renders RL Chess homepage', () => {
     const res = shallow(<App />);
-    const home = res.find(<Home />);
-    expect(home).not.toBeNull();
+    const menu = res.find(<MainMenu />);
+    expect(menu).not.toBeNull();
 });
 
 test('contains Header', () => {
