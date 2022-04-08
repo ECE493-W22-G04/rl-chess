@@ -5,7 +5,7 @@ from flask_socketio import SocketIO
 from flask_socketio.test_client import SocketIOTestClient
 from server import create_app
 from server.ws.socket_events import register_ws_events
-from .fixtures.player import player, players, access_token, access_tokens
+from .fixtures.player import player, missing_player, players, access_token, access_tokens, missing_player_access_token
 from server.api.models import db
 
 

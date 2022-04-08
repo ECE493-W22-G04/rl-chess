@@ -24,6 +24,22 @@ def test_board_init():
     assert board.state == expected
 
 
+def test_board_str():
+    board = Board()
+    try:
+        board.__str__()
+    except Exception as e:
+        assert False, f"Board to string raised expection {e}"
+
+
+def test_board_json():
+    board = Board()
+    try:
+        board.toJSON()
+    except Exception as e:
+        assert False, f"Board to json raised expection {e}"
+
+
 def test_actions():
     board = Board()
     pieces_to_choose_from = 8 * 8
