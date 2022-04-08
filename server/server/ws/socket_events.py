@@ -167,7 +167,7 @@ def register_ws_events(socketio: SocketIO):
             move = Move(Square(int(from_x), int(from_y)), Square(int(to_x), int(to_y)))
         game = current_games[game_id]
         if not game.board.register_move(move):
-            emit("message", "Invalid move " + move_str, to=game_id)
+            emit("message", "Invalid move")
             return
         emit('update', game.toJSON(), broadcast=True, to=game_id)
         eventlet.sleep(0)
