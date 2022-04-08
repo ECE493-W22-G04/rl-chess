@@ -40,7 +40,7 @@ const Room: FC = () => {
         });
 
         socket.on('update', (data) => {
-            const new_game: Game = JSON.parse(data);
+            const new_game: Game = data;
             setGame(new_game);
         });
 
@@ -53,7 +53,7 @@ const Room: FC = () => {
         });
 
         socket.on('game_over', (data) => {
-            const msg: GameOverMessage = JSON.parse(data);
+            const msg: GameOverMessage = data;
             setWinner(msg.winner);
         });
     }, []);

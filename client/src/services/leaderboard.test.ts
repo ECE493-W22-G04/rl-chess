@@ -21,7 +21,7 @@ describe('getLeaderboard', () => {
         mockAxios.get = mockGet;
 
         mockGet.mockResolvedValue({
-            data: JSON.stringify(mockLeaderboard),
+            data: mockLeaderboard,
         });
     });
 

@@ -5,15 +5,21 @@ from flask.testing import FlaskClient
 from flask_socketio.test_client import SocketIOTestClient
 from pytest import fail
 
-from server.api.models import Player
+from server.api.models import Player, SavedGame
 from server.game.move import Move, Square
 
 
 def test_pvp_checkmate(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: str, players: list[Player], app: Flask):
+    # This test case covers:
+    # FR 22
+    # FR 24
+    # In Partition Tests:
+    # works normally
+
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Create second client
@@ -49,16 +55,30 @@ def test_pvp_checkmate(socketio: SocketIO, socketio_client: SocketIOTestClient, 
         if last_message['name'] != 'game_over':
             fail('Last message was not game over')
 
-        json_message = json.loads(last_message['args'][0])
+        json_message = last_message['args'][0]
         winner = json_message['winner']
         assert winner == players[1].email
 
+    with app.app_context():
+        saved_game = SavedGame.query.first()
+        assert saved_game.white_player == players[0].id
+        assert saved_game.black_player == players[1].id
+        assert saved_game.game_history == json.dumps(moves)
+        assert saved_game.winner == players[1].id
+
 
 def test_draw(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: str, players: list[Player], app: Flask):
+    # This test case covers:
+    # FR 23
+    # FR 24
+    # FR 27
+    # In Partition Tests:
+    # works normally
+
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Create second client
@@ -77,7 +97,7 @@ def test_draw(socketio: SocketIO, socketio_client: SocketIOTestClient, client: F
         Move(Square(1, 0), Square(2, 2)),
         Move(Square(5, 5), Square(6, 7)),
         Move(Square(2, 2), Square(1, 0)),
-    ] * 3
+    ] * 2
     serialized_moves = list(map(lambda move: f'{move.from_square.x},{move.from_square.y}->{move.to_square.x},{move.to_square.y}', moves))
     for i, move in enumerate(serialized_moves):
         if i % 2 == 0:
@@ -94,6 +114,13 @@ def test_draw(socketio: SocketIO, socketio_client: SocketIOTestClient, client: F
         if last_message['name'] != 'game_over':
             fail('Last message was not game over')
 
-        json_message = json.loads(last_message['args'][0])
+        json_message = last_message['args'][0]
         winner = json_message['winner']
         assert winner == 'Nobody'
+
+    with app.app_context():
+        saved_game = SavedGame.query.first()
+        assert saved_game.white_player == players[0].id
+        assert saved_game.black_player == players[1].id
+        assert saved_game.game_history == json.dumps(moves)
+        assert saved_game.winner == None

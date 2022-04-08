@@ -15,7 +15,7 @@ export async function createGame(isPvP: boolean) {
         const resp = await axios.post(API_URL, payload, {
             headers: authHeader(),
         });
-        return JSON.parse(resp.data);
+        return resp.data;
     } catch (err) {
         console.error(err);
         // Many errors are caused by bad token so clear it and refresh
@@ -30,7 +30,7 @@ export async function getGameDetails(gameId: string) {
         const resp = await axios.get(`${API_URL}${gameId}`, {
             headers: authHeader(),
         });
-        return JSON.parse(resp.data);
+        return resp.data;
     } catch (err) {
         console.error(err);
         // Many errors are caused by bad token so clear it and refresh

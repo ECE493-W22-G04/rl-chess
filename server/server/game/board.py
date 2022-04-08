@@ -57,7 +57,7 @@ class Board:
         return '\n\n'.join(['\t'.join([piece_to_str(piece) for piece in row]) for row in self.state])
 
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+        return self.__dict__
 
     def get_actions(self):
         return ACTIONS
