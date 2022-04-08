@@ -41,6 +41,7 @@ def test_broadcasts_other_player_as_winner_in_pvp(socketio: SocketIO, socketio_c
         winner = json_message['winner']
         assert winner == players[0].email
 
+
 def test_broadcasts_other_player_as_winner_in_pvc(socketio_client: SocketIOTestClient, client: FlaskClient, access_token: str, player: Player):
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
