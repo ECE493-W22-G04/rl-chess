@@ -6,8 +6,6 @@ from flask_socketio.test_client import SocketIOTestClient
 from pytest import fail
 
 from server.api.models import Player, SavedGame
-from server.ws.socket_events import register_ws_events
-from tests.constants import TEST_EMAIL2
 
 
 def test_updates_players_in_room(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: str, players: list[Player], app: Flask):
