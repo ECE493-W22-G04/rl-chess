@@ -176,7 +176,6 @@ def register_ws_events(socketio: SocketIO):
             return
 
         if game.board.is_draw():
-            # TODO: handle this emit client side and close the game after
             payload = {'winner': 'Nobody'}
             emit("game_over", json.dumps(payload), broadcast=True, to=game_id)
             save_game(game, True)
@@ -214,7 +213,8 @@ def register_ws_events(socketio: SocketIO):
         game_id = data["gameId"]
         current_player = data["currentPlayer"]
         other_player = get_other_player(game_id, current_player)
-        payload = {'winner': other_player}
+        winner = other_player if current_games[game_id].is_pvp else 'RL Agent'
+        payload = {'winner': winner}
         emit('game_over', json.dumps(payload), broadcast=True, to=game_id)
         save_game(current_games[game_id], False)
 
@@ -231,6 +231,8 @@ def handle_game_over(game: Game):
     if game.board.is_white_turn:
         # Black player made the last move and was a checkmate
         winner = game.black_player
+    if not game.is_pvp and winner == '':
+        winner = 'RL Agent'
     payload = {'winner': winner}
     emit('game_over', json.dumps(payload), broadcast=True, to=game.id)
     save_game(game, False)
