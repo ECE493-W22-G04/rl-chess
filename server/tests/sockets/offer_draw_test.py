@@ -40,6 +40,6 @@ def test_draw_pvp(socketio: SocketIO, socketio_client: SocketIOTestClient, clien
         if last_message['name'] != 'game_over':
             fail('Last message was not game over')
 
-        json_message = json.loads(last_message['args'][0])
+        json_message = last_message['args'][0]
         winner = json_message['winner']
         assert winner == 'Nobody'

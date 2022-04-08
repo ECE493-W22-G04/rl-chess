@@ -37,7 +37,7 @@ def test_broadcasts_other_player_as_winner_in_pvp(socketio: SocketIO, socketio_c
         if last_message['name'] != 'game_over':
             fail('Last message was not game over')
 
-        json_message = json.loads(last_message['args'][0])
+        json_message = last_message['args'][0]
         winner = json_message['winner']
         assert winner == players[0].email
 
@@ -65,6 +65,6 @@ def test_broadcasts_other_player_as_winner_in_pvc(socketio_client: SocketIOTestC
     if last_message['name'] != 'game_over':
         fail('Last message was not game over')
 
-    json_message = json.loads(last_message['args'][0])
+    json_message = last_message['args'][0]
     winner = json_message['winner']
     assert winner == 'RL Agent'

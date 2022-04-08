@@ -62,7 +62,7 @@ def test_ends_ongoing_game(socketio: SocketIO, socketio_client: SocketIOTestClie
 
     for message in messages:
         if message['name'] == 'game_over':
-            message_body = json.loads(message['args'][0])
+            message_body = message['args'][0]
             winner = message_body['winner']
             assert winner == players[0].email
             return
