@@ -9,8 +9,6 @@ const WinnerModal: React.FC<WinnerModalProps> = ({ winner }: WinnerModalProps) =
     const [isModalShown, setIsModalShown] = useState<boolean>(true);
     if (winner == null) {
         return <></>;
-    } else if (winner == '') {
-        winner = 'RL Agent';
     }
     const handleClose = () => {
         setIsModalShown(false);
