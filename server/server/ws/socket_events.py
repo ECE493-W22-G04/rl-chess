@@ -1,6 +1,6 @@
 import json
 from flask import request
-from flask_socketio import SocketIO, join_room, emit, send
+from flask_socketio import SocketIO, join_room, emit
 import eventlet
 
 from rl_agent import rl_agent
