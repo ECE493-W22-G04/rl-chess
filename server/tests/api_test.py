@@ -38,6 +38,28 @@ def test_valid_signup_signin_route(client):
     assert f"Welcome {email}" in response.json["message"]
 
 
+def test_invalid_signin_route(client):
+    # This test case covers:
+    # FR 3
+    # In Partition Tests:
+    # works normally
+    email = "test@test.com"
+    password = "testpass"
+    incorrect_password = "wrongpass"
+    # Test signup
+    response = client.post("/api/auth/signup", follow_redirects=True, data=json.dumps({"email": email, "password": password}), content_type='application/json')
+    assert f"Registration Successful {email}!" in response.json["message"]
+    # Test signin with incorrect password
+    response = client.post("/api/auth/signin", follow_redirects=True, data=json.dumps({"email": email, "password": incorrect_password}), content_type='application/json')
+    assert f"Incorrect password" in response.json["message"]
+    # Test signin without email
+    response = client.post("/api/auth/signin", follow_redirects=True, data=json.dumps({"email": "", "password": password}), content_type='application/json')
+    assert f"No email provided!" in response.json["message"]
+    # Test signin without password
+    response = client.post("/api/auth/signin", follow_redirects=True, data=json.dumps({"email": email, "password": ""}), content_type='application/json')
+    assert f"No password provided" in response.json["message"]
+
+
 def test_email_exists_signup_route(client):
     # This test case covers:
     # FR 1
