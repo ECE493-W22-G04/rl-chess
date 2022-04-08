@@ -23,6 +23,14 @@ def test_create_pvp_game(client: FlaskClient, access_token: str):
     assert resp_json['is_pvp']
 
 
+def test_create_pvp_game_missing_player(client: FlaskClient, missing_player_access_token: str):
+    resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {missing_player_access_token}'}, content_type='application/json')
+    assert resp.status_code == 400
+    resp_json = json.loads(resp.json)
+    assert 'err' in resp_json
+    assert resp_json['err'] == "Player does not exist"
+
+
 def test_get_game(client: FlaskClient, access_token: str):
     post_resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
     post_resp_json = json.loads(post_resp.json)

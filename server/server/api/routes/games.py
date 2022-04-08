@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+import json
 
 from ..models import Game
 from ..exceptions import PlayerDoesNotExist
@@ -23,8 +24,8 @@ def create_game():
     try:
         game = Game(host_email=current_user, is_pvp=is_pvp)
     except PlayerDoesNotExist:
-        err_msg = {"err": "Player does not exist"}
-        return err_msg, 400
+        err_msg = '{"err": "Player does not exist"}'
+        return jsonify(err_msg), 400
     current_games[game.id] = game
     return jsonify(game.toJSON()), 201
 
