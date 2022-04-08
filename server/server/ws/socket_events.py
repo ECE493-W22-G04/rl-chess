@@ -176,7 +176,6 @@ def register_ws_events(socketio: SocketIO):
             return
 
         if game.board.is_draw():
-            # TODO: handle this emit client side and close the game after
             payload = {'winner': 'Nobody'}
             emit("game_over", json.dumps(payload), broadcast=True, to=game_id)
             save_game(game, True)
