@@ -1,27 +1,18 @@
-# rl-chess
+# RL-Chess
 Play chess against other players or an RL agent
 
-
 ### Setup
-Start server
-```
-cd server
-virtualenv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python main.py
-```
+Read the documentation in `client` to setup the client.
+Read the documentation in `server` to setup the server.
 
-Start client
-```
-cd client
-npm install
-npm start
-```
+Run both the `client` and `server` to run the app.
 
-### Run belief revision
-Get migration from production db then run:
-```
-cd server
-python -m rl_agent.belief_revision
-```
+### Deployment
+Deployment is handled autonomously whenever a pull request is merged in github.
+
+Pull requests also have automatic CI on them through github actions.
+
+### Contributors
+- Robert Mah
+- Joshua Patrck
+- Armianto Sumitro
