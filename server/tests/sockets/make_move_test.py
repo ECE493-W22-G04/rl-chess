@@ -11,7 +11,7 @@ def test_broadcast_move_in_pvp(socketio: SocketIO, socketio_client: SocketIOTest
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Create second client
@@ -37,7 +37,7 @@ def test_broadcast_move_in_pvp(socketio: SocketIO, socketio_client: SocketIOTest
         for message in messages:
             if message['name'] != 'update':
                 continue
-            json_message = json.loads(message['args'][0])
+            json_message = message['args'][0]
             board = json_message['board']
             moves = board['moves']
             if len(moves) == 0:
@@ -53,7 +53,7 @@ def test_broadcast_move_in_pvc(socketio_client: SocketIOTestClient, client: Flas
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Join game
@@ -73,7 +73,7 @@ def test_broadcast_move_in_pvc(socketio_client: SocketIOTestClient, client: Flas
     for message in messages:
         if message['name'] != 'update':
             continue
-        json_message = json.loads(message['args'][0])
+        json_message = message['args'][0]
         board = json_message['board']
         moves = board['moves']
         if len(moves) == 0:
@@ -89,7 +89,7 @@ def test_computer_makes_move_in_pvc(socketio_client: SocketIOTestClient, client:
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Join game
@@ -106,7 +106,7 @@ def test_computer_makes_move_in_pvc(socketio_client: SocketIOTestClient, client:
 
     # Check whether computer registers its own move
     last_update = list(filter(lambda message: message['name'] == 'update', messages))[-1]
-    last_update_json_message = json.loads(last_update['args'][0])
+    last_update_json_message = last_update['args'][0]
     assert len(last_update_json_message['board']['moves']) > 1
 
 
@@ -114,7 +114,7 @@ def test_computer_makes_first_move_in_pvc(socketio_client: SocketIOTestClient, c
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Join game
@@ -128,5 +128,5 @@ def test_computer_makes_first_move_in_pvc(socketio_client: SocketIOTestClient, c
 
     # Check whether computer registers its own move
     last_update = list(filter(lambda message: message['name'] == 'update', messages))[-1]
-    last_update_json_message = json.loads(last_update['args'][0])
+    last_update_json_message = last_update['args'][0]
     assert len(last_update_json_message['board']['moves']) > 0

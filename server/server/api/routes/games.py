@@ -23,8 +23,7 @@ def create_game():
     try:
         game = Game(host_email=current_user, is_pvp=is_pvp)
     except PlayerDoesNotExist:
-        err_msg = '{"err": "Player does not exist"}'
-        return jsonify(err_msg), 400
+        return jsonify({"err": "Player does not exist"}), 400
     current_games[game.id] = game
     return jsonify(game.toJSON()), 201
 

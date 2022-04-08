@@ -12,7 +12,7 @@ def test_broadcasts_other_player_as_winner_in_pvp(socketio: SocketIO, socketio_c
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Create second client
@@ -46,7 +46,7 @@ def test_broadcasts_other_player_as_winner_in_pvc(socketio_client: SocketIOTestC
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Join game

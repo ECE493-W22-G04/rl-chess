@@ -54,7 +54,15 @@ class Game():
         self.has_started = True
 
     def toJSON(self) -> dict:
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+        return {
+            'id': self.id,
+            'host': self.host,
+            'black_player': self.black_player,
+            'white_player': self.white_player,
+            'board': self.board.toJSON(),
+            'is_pvp': self.is_pvp,
+            'has_started': self.has_started,
+        }
 
     def set_white_player(self, player_email: str):
         if Player.query.filter_by(email=player_email).first() == None:

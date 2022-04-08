@@ -11,7 +11,7 @@ def test_choose_white_in_pvp(socketio: SocketIO, socketio_client: SocketIOTestCl
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Create second client
@@ -27,16 +27,15 @@ def test_choose_white_in_pvp(socketio: SocketIO, socketio_client: SocketIOTestCl
     get_resp = client.get(f'/api/games/{game_id}', headers={'Authorization': f'Bearer {access_tokens[0]}'})
     assert get_resp.status_code == 200
 
-    get_resp_json = json.loads(get_resp.json)
-    assert get_resp_json['white_player'] == players[0].email
-    assert get_resp_json['black_player'] == players[1].email
+    assert get_resp.json['white_player'] == players[0].email
+    assert get_resp.json['black_player'] == players[1].email
 
 
 def test_choose_black_in_pvp(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: list[str], players: list[Player], app: Flask):
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Create second client
@@ -52,16 +51,15 @@ def test_choose_black_in_pvp(socketio: SocketIO, socketio_client: SocketIOTestCl
     get_resp = client.get(f'/api/games/{game_id}', headers={'Authorization': f'Bearer {access_tokens[0]}'})
     assert get_resp.status_code == 200
 
-    get_resp_json = json.loads(get_resp.json)
-    assert get_resp_json['black_player'] == players[0].email
-    assert get_resp_json['white_player'] == players[1].email
+    assert get_resp.json['black_player'] == players[0].email
+    assert get_resp.json['white_player'] == players[1].email
 
 
 def test_choose_white_in_pvc(socketio_client: SocketIOTestClient, client: FlaskClient, access_token: str, player: list[Player]):
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Join game
@@ -73,16 +71,15 @@ def test_choose_white_in_pvc(socketio_client: SocketIOTestClient, client: FlaskC
     get_resp = client.get(f'/api/games/{game_id}', headers={'Authorization': f'Bearer {access_token}'})
     assert get_resp.status_code == 200
 
-    get_resp_json = json.loads(get_resp.json)
-    assert get_resp_json['white_player'] == player.email
-    assert get_resp_json['black_player'] == None
+    assert get_resp.json['white_player'] == player.email
+    assert get_resp.json['black_player'] == None
 
 
 def test_choose_black_in_pvc(socketio_client: SocketIOTestClient, client: FlaskClient, access_token: str, player: list[Player]):
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Join game
@@ -94,16 +91,15 @@ def test_choose_black_in_pvc(socketio_client: SocketIOTestClient, client: FlaskC
     get_resp = client.get(f'/api/games/{game_id}', headers={'Authorization': f'Bearer {access_token}'})
     assert get_resp.status_code == 200
 
-    get_resp_json = json.loads(get_resp.json)
-    assert get_resp_json['black_player'] == player.email
-    assert get_resp_json['white_player'] == None
+    assert get_resp.json['black_player'] == player.email
+    assert get_resp.json['white_player'] == None
 
 
 def test_broadcasts_game_has_started_in_pvp(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: list[str], players: list[Player], app: Flask):
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Create second client
@@ -125,7 +121,7 @@ def test_broadcasts_game_has_started_in_pvp(socketio: SocketIO, socketio_client:
         for message in messages:
             if message['name'] != 'update':
                 continue
-            json_body = json.loads(message['args'][0])
+            json_body = message['args'][0]
             if json_body['has_started'] == False:
                 continue
             game_start_message_count += 1
@@ -137,7 +133,7 @@ def test_broadcasts_game_has_started_in_pvc(socketio_client: SocketIOTestClient,
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': False}), headers={'Authorization': f'Bearer {access_token}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Join game
@@ -153,7 +149,7 @@ def test_broadcasts_game_has_started_in_pvc(socketio_client: SocketIOTestClient,
     for message in messages:
         if message['name'] != 'update':
             continue
-        json_body = json.loads(message['args'][0])
+        json_body = message['args'][0]
         if json_body['has_started'] == False:
             continue
         game_start_message_count += 1

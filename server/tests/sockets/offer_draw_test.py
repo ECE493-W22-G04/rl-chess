@@ -12,7 +12,7 @@ def test_draw_pvp(socketio: SocketIO, socketio_client: SocketIOTestClient, clien
     # Create computer game
     resp = client.post('/api/games/', data=json.dumps({'isPvP': True}), headers={'Authorization': f'Bearer {access_tokens[0]}'}, content_type='application/json')
     assert resp.status_code == 201
-    game = json.loads(resp.json)
+    game = resp.json
     game_id = game['id']
 
     # Create second client
