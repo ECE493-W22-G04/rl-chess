@@ -1,4 +1,5 @@
 import bcrypt
+import re
 from sqlalchemy.exc import IntegrityError
 from flask import request, jsonify, Blueprint
 from flask_jwt_extended import create_access_token
@@ -51,6 +52,11 @@ def signup():
                 return jsonify({"message": "No email provided!"}), 400
             if not password:
                 return jsonify({"message": "No password provided"}), 400
+
+            if not re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', email):
+                return jsonify({"message": "Invalid email format"}), 400
+            if len(password) < 8:
+                return jsonify({"message": "password must be 8 characters or more"}), 400
 
             # Hash password and store hashed value in db
             hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
