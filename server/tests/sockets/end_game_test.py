@@ -33,7 +33,7 @@ def test_pvp_checkmate(socketio: SocketIO, socketio_client: SocketIOTestClient, 
         Move(Square(6, 6), Square(6, 4)),
         Move(Square(3, 0), Square(7, 4)),
     ]
-    serialized_moves = list(map(lambda move : f'{move.from_square.x},{move.from_square.y}->{move.to_square.x},{move.to_square.y}', moves))
+    serialized_moves = list(map(lambda move: f'{move.from_square.x},{move.from_square.y}->{move.to_square.x},{move.to_square.y}', moves))
     for i, move in enumerate(serialized_moves):
         if i % 2 == 0:
             socketio_client.emit('make_move', {'gameId': game_id, 'moveStr': move, 'promotion': '0'})
@@ -48,10 +48,11 @@ def test_pvp_checkmate(socketio: SocketIO, socketio_client: SocketIOTestClient, 
         last_message = messages[-1]
         if last_message['name'] != 'game_over':
             fail('Last message was not game over')
-    
+
         json_message = json.loads(last_message['args'][0])
         winner = json_message['winner']
         assert winner == players[1].email
+
 
 def test_draw(socketio: SocketIO, socketio_client: SocketIOTestClient, client: FlaskClient, access_tokens: str, players: list[Player], app: Flask):
     # Create computer game
@@ -77,7 +78,7 @@ def test_draw(socketio: SocketIO, socketio_client: SocketIOTestClient, client: F
         Move(Square(5, 5), Square(6, 7)),
         Move(Square(2, 2), Square(1, 0)),
     ] * 3
-    serialized_moves = list(map(lambda move : f'{move.from_square.x},{move.from_square.y}->{move.to_square.x},{move.to_square.y}', moves))
+    serialized_moves = list(map(lambda move: f'{move.from_square.x},{move.from_square.y}->{move.to_square.x},{move.to_square.y}', moves))
     for i, move in enumerate(serialized_moves):
         if i % 2 == 0:
             socketio_client.emit('make_move', {'gameId': game_id, 'moveStr': move, 'promotion': '0'})
@@ -92,7 +93,7 @@ def test_draw(socketio: SocketIO, socketio_client: SocketIOTestClient, client: F
         last_message = messages[-1]
         if last_message['name'] != 'game_over':
             fail('Last message was not game over')
-    
+
         json_message = json.loads(last_message['args'][0])
         winner = json_message['winner']
         assert winner == 'Nobody'
