@@ -25,7 +25,8 @@ const MoveHistory: React.FC<MoveHistoryProps> = ({ gameMoves }: MoveHistoryProps
 
     const moveNotation = (square: Square) => {
         const charX = String.fromCharCode(97 + square.x);
-        return `${charX}${square.y + 1}`;
+        const yVal = 8 - square.y;
+        return `${charX}${yVal}`;
     };
 
     const promotionString = (promotion: number) => {
