@@ -56,7 +56,7 @@ def register_ws_events(socketio: SocketIO):
             # Wrap up current game
             winner = players_in_room[0] if len(players_in_room) > 0 else None
             payload = {'winner': winner}
-            emit('game_over', json.dumps(payload), broadcast=True, to=game.id)
+            emit('game_over', payload, broadcast=True, to=game.id)
             save_game(current_games[game_id], is_draw=False)
 
         if len(players_in_room) != 0:
@@ -178,7 +178,7 @@ def register_ws_events(socketio: SocketIO):
 
         if game.board.is_draw():
             payload = {'winner': 'Nobody'}
-            emit("game_over", json.dumps(payload), broadcast=True, to=game_id)
+            emit("game_over", payload, broadcast=True, to=game_id)
             save_game(game, True)
             # TODO: remove game from current_games
             return
@@ -200,13 +200,13 @@ def register_ws_events(socketio: SocketIO):
         other_player = get_other_player(game_id, current_player)
 
         data = {'offer_draw_to': other_player}
-        emit('offer_draw', json.dumps(data), broadcast=True, to=game_id)
+        emit('offer_draw', data, broadcast=True, to=game_id)
 
     @socketio.on("accept_draw")
     def accept_draw(data):
         game_id = data["gameId"]
         payload = {'winner': 'Nobody'}
-        emit('game_over', json.dumps(payload), broadcast=True, to=game_id)
+        emit('game_over', payload, broadcast=True, to=game_id)
         save_game(current_games[game_id], True)
 
     @socketio.on("concede")
@@ -216,7 +216,7 @@ def register_ws_events(socketio: SocketIO):
         other_player = get_other_player(game_id, current_player)
         winner = other_player if current_games[game_id].is_pvp else 'RL Agent'
         payload = {'winner': winner}
-        emit('game_over', json.dumps(payload), broadcast=True, to=game_id)
+        emit('game_over', payload, broadcast=True, to=game_id)
         save_game(current_games[game_id], False)
 
 
@@ -235,7 +235,7 @@ def handle_game_over(game: Game):
     if not game.is_pvp and winner == '':
         winner = 'RL Agent'
     payload = {'winner': winner}
-    emit('game_over', json.dumps(payload), broadcast=True, to=game.id)
+    emit('game_over', payload, broadcast=True, to=game.id)
     save_game(game, False)
 
 
